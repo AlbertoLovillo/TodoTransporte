@@ -1,4 +1,4 @@
-package com.s25am.todotransporte.ui.screens
+package com.s25am.todotransporte.ui.screens.schedule
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

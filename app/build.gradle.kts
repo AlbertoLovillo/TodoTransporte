@@ -66,5 +66,9 @@ dependencies {
 
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    // MapBox
+    implementation(libs.mapbox.maps.compose)
+    implementation(libs.mapbox.maps.android)
 }
