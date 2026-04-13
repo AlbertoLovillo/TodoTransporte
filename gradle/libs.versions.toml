@@ -9,6 +9,12 @@ activityCompose = "1.13.0"
 kotlin = "2.2.10"
 composeBom = "2024.09.00"
 
+# Nav3
+nav3Core = "1.0.1"
+kotlinxSerializationCore = "1.10.0"
+kotlinSerialization = "2.3.20"
+
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -25,7 +31,19 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 
+# Nav3
+androidx-navigation3-runtime = {module="androidx.navigation3:navigation3-runtime",version.ref="nav3Core"}
+androidx-navigation3-ui = {module="androidx.navigation3:navigation3-ui", version.ref="nav3Core"}
+kotlinx-serialization-core= {module="org.jetbrains.kotlinx:kotlinx-serialization-core",version.ref="kotlinxSerializationCore"}
+
+# ViewModel
+androidx-lifecycle-viewmodel-ktx={module="androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref="lifecycleRuntimeKtx"}
+
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
+# Nav3
+jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref="kotlinSerialization" }
 
