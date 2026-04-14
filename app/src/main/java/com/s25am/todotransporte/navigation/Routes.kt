@@ -5,8 +5,6 @@ import kotlinx.serialization.Serializable
 
 sealed class Routes : NavKey {
     @Serializable
-    data object Home : Routes()
-    @Serializable
     data object Maps : Routes()
     @Serializable
     data object Schedule : Routes()

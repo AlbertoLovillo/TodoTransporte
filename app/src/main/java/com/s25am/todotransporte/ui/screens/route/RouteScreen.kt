@@ -1,4 +1,4 @@
-package com.s25am.todotransporte.ui.screens
+package com.s25am.todotransporte.ui.screens.route
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
