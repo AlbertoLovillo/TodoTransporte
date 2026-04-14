@@ -13,19 +13,21 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.s25am.todotransporte.ui.screens.maps.viewmodel.MapsViewModel
 
 @Composable
-fun MapsScreen() {
-    var filtroSeleccionado by remember { mutableIntStateOf(0) }
+fun MapsScreen(
+    viewModel: MapsViewModel = viewModel<MapsViewModel>()
+) {
+    val uiState by viewModel.uiState.collectAsState()
     val filtros = listOf("Transporte", "Puntos de Venta")
 
     Column(
@@ -33,11 +35,11 @@ fun MapsScreen() {
             .fillMaxSize()
             .background(Color.LightGray)
     ) {
-        // Fila de botones flotantes sobre el mapa para los filtros
 
         SingleChoiceSegmentedButtonRow(
             modifier = Modifier
                 .fillMaxWidth()
+
                 .padding(16.dp)
         ) {
             filtros.forEachIndexed { index, label ->
@@ -46,10 +48,10 @@ fun MapsScreen() {
                         index = index,
                         count = filtros.size
                     ),
-                    onClick = { filtroSeleccionado = index },
-                    selected = index == filtroSeleccionado,
+                    onClick = { uiState.mapSelected = index },
+                    selected = index == uiState.mapSelected,
                     label = { Text(label) },
-                    modifier = Modifier.height(64.dp)
+                    modifier = Modifier.height(60.dp)
                 )
             }
         }

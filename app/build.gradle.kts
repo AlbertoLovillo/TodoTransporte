@@ -71,4 +71,9 @@ dependencies {
     // MapBox
     implementation(libs.mapbox.maps.compose)
     implementation(libs.mapbox.maps.android)
+
+    // Supabase
+    implementation(libs.supabase.gotrue)
+    implementation(libs.supabase.postgrest)
+    implementation(libs.ktor.client.android)
 }

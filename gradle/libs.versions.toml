@@ -14,10 +14,14 @@ nav3Core = "1.1.0"
 kotlinxSerializationCore = "1.10.0"
 kotlinSerialization = "2.3.20"
 
-# ViewModel
-
 # MapBox
 mapbox = "11.2.0"
+
+# SupaBase
+supabase-gotrue = "2.6.1"
+supabase-postgrest = "3.5.0"
+ktor = "3.4.2"
+
 
 
 [libraries]
@@ -49,6 +53,11 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 mapbox-maps-compose = { group = "com.mapbox.extension", name = "maps-compose", version.ref = "mapbox" }
 mapbox-maps-android = { group = "com.mapbox.maps", name = "android", version.ref = "mapbox" }
 
+# Supabase
+supabase-gotrue = { group = "io.github.jan-tennert.supabase", name = "gotrue-kt", version.ref = "supabase-gotrue" }
+supabase-postgrest = { group = "io.github.jan-tennert.supabase", name = "postgrest-kt", version.ref = "supabase-postgrest" }
+ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -56,4 +65,3 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 
 # Nav3
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization" }
-
