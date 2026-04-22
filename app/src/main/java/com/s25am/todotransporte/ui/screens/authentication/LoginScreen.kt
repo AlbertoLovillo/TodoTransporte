@@ -97,7 +97,13 @@ fun LoginScreen(
                     onValueChange = { viewModel.updateEmail(it) },
                     label = { Text("Email") },
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.Black,   // Color cuando escribes
+                        unfocusedTextColor = Color.Black, // Color cuando no está seleccionado
+                        focusedLabelColor = Color.Black,  // Opcional: color del label al pinchar
+                        cursorColor = Color.Black         // Opcional: color del palito que parpadea
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -109,7 +115,11 @@ fun LoginScreen(
                     label = { Text("Contraseña") },
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black
+                    )
                 )
 
                 // Mensaje de error dinámico (solo aparece si authError no es nulo)

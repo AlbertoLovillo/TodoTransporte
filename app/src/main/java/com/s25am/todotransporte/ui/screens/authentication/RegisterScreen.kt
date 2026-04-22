@@ -97,7 +97,13 @@ fun RegisterScreen(
                     onValueChange = { viewModel.updateEmail(it) },
                     label = { Text("Email") },
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.Black,   // Color cuando escribes
+                        unfocusedTextColor = Color.Black, // Color cuando no está seleccionado
+                        focusedLabelColor = Color.Black,  // Opcional: color del label al pinchar
+                        cursorColor = Color.Black         // Opcional: color del palito que parpadea
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -109,7 +115,11 @@ fun RegisterScreen(
                     label = { Text("Contraseña") },
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -121,7 +131,11 @@ fun RegisterScreen(
                     label = { Text("Repetir Contraseña") },
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black
+                    )
                 )
 
                 // Si hay un error (ej: contraseñas no coinciden), se muestra aquí
