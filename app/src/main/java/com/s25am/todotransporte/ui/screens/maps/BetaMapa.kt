@@ -18,13 +18,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.s25am.todotransporte.ui.screens.maps.viewmodel.MapsViewModel
 
 @Composable
-fun MapsScreen(
+fun BetaMapa(
     viewModel: MapsViewModel = viewModel<MapsViewModel>()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -70,10 +69,4 @@ fun MapsScreen(
 //            MapComponent()
         }
     }
-}
-
-@Preview
-@Composable
-fun MapsPreview() {
-    MapsScreen()
 }

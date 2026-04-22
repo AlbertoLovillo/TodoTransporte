@@ -13,7 +13,7 @@ import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotation
 
 @OptIn(MapboxExperimental::class)
 @Composable
-fun MapComponent(
+fun BetaMapComponent(
     // TODO: viewModel heredado entre componentes de una misma pantalla
     // TODO: parametro de ruta concreta y que salga su linea y paradas
 ) {

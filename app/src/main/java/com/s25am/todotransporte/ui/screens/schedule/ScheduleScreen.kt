@@ -1,5 +1,8 @@
 package com.s25am.todotransporte.ui.screens.schedule
 
+//import androidx.compose.material.icons.Icons
+//import androidx.compose.material.icons.filled.Star
+//import androidx.compose.material.icons.outlined.Star
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,12 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -65,11 +64,11 @@ fun LineItem(numeroLinea: Int) {
                 Text("Próximo bus: 5 min", style = MaterialTheme.typography.bodyMedium)
             }
             IconButton(onClick = { guardadoOffline = !guardadoOffline }) {
-                Icon(
-                    imageVector = if (guardadoOffline) Icons.Filled.Star else Icons.Outlined.Star,
-                    contentDescription = "Guardar offline",
-                    tint = if (guardadoOffline) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-                )
+//                Icon(
+//                    imageVector = if (guardadoOffline) Icons.Filled.Star else Icons.Outlined.Star,
+//                    contentDescription = "Guardar offline",
+//                    tint = if (guardadoOffline) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+//                )
             }
         }
     }
