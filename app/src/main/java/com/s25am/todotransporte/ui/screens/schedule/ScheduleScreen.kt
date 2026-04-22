@@ -9,9 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Star
+//import androidx.compose.material.icons.Icons
+//import androidx.compose.material.icons.filled.Star
+//import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -30,53 +30,53 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ScheduleScreen() {
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text("Líneas y Horarios", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(16.dp))
-
-        LazyColumn {
-            // Simulamos 3 líneas para la prueba visual
-            items(3) { index ->
-                LineItem(numeroLinea = index + 1)
-            }
-        }
-    }
+//    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+//        Text("Líneas y Horarios", style = MaterialTheme.typography.headlineMedium)
+//        Spacer(modifier = Modifier.height(16.dp))
+//
+//        LazyColumn {
+//            // Simulamos 3 líneas para la prueba visual
+//            items(3) { index ->
+//                LineItem(numeroLinea = index + 1)
+//            }
+//        }
+//    }
+//}
+//
+//@Composable
+//fun LineItem(numeroLinea: Int) {
+//    var guardadoOffline by remember { mutableStateOf(false) }
+//
+//    Card(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(vertical = 8.dp),
+//        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+//    ) {
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(16.dp),
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.SpaceBetween
+//        ) {
+//            Column {
+//                Text("Línea $numeroLinea", style = MaterialTheme.typography.titleLarge)
+//                Text("Próximo bus: 5 min", style = MaterialTheme.typography.bodyMedium)
+//            }
+//            IconButton(onClick = { guardadoOffline = !guardadoOffline }) {
+//                Icon(
+//                    imageVector = if (guardadoOffline) Icons.Filled.Star else Icons.Outlined.Star,
+//                    contentDescription = "Guardar offline",
+//                    tint = if (guardadoOffline) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+//                )
+//            }
+//        }
+//    }
 }
-
-@Composable
-fun LineItem(numeroLinea: Int) {
-    var guardadoOffline by remember { mutableStateOf(false) }
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column {
-                Text("Línea $numeroLinea", style = MaterialTheme.typography.titleLarge)
-                Text("Próximo bus: 5 min", style = MaterialTheme.typography.bodyMedium)
-            }
-            IconButton(onClick = { guardadoOffline = !guardadoOffline }) {
-                Icon(
-                    imageVector = if (guardadoOffline) Icons.Filled.Star else Icons.Outlined.Star,
-                    contentDescription = "Guardar offline",
-                    tint = if (guardadoOffline) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-                )
-            }
-        }
-    }
-}
-
-@Preview
-@Composable
-fun SchedulePreview() {
-    ScheduleScreen()
-}
+//
+//@Preview
+//@Composable
+//fun SchedulePreview() {
+//    ScheduleScreen()
+//}
