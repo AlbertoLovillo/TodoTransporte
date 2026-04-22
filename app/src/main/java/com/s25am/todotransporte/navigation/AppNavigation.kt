@@ -11,7 +11,7 @@ import com.s25am.todotransporte.ui.screens.wallet.WalletScreen
 
 @Composable
 fun AppNavigation(
-    padding: PaddingValues
+    padding: PaddingValues,
 ) {
     val backStack = rememberNavBackStack(Routes.Maps)
 

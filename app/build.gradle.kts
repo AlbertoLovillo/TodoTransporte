@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "com.s25am.todotransporte"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -74,7 +74,7 @@ dependencies {
     implementation(libs.mapbox.maps.android)
 
     // Supabase
-    implementation(libs.supabase.gotrue)
+    implementation(libs.supabase.auth)
     implementation(libs.supabase.postgrest)
     implementation(libs.ktor.client.android)
 }
