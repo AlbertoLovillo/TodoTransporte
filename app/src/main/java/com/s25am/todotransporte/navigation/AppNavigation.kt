@@ -19,7 +19,7 @@ import com.s25am.todotransporte.ui.screens.wallet.WalletScreen
  */
 @Composable
 fun AppNavigation(
-    padding: PaddingValues
+    padding: PaddingValues,
 ) {
     // Definimos la pila de navegación empezando por la pantalla de Login
     val backStack = rememberNavBackStack(Routes.Login)
