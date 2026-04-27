@@ -2,6 +2,8 @@ package com.s25am.todotransporte.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
@@ -18,8 +20,8 @@ import com.s25am.todotransporte.ui.screens.wallet.WalletScreen
 @Composable
 fun AppNavigation(
     padding: PaddingValues,
+    backStack: NavBackStack<NavKey>
 ) {
-    val backStack = rememberNavBackStack(Routes.Login)
 
     NavDisplay(
         backStack = backStack,
