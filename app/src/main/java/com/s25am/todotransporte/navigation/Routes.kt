@@ -9,10 +9,14 @@ sealed class Routes : NavKey {
 
     @Serializable
     data object Register : Routes()
+
     @Serializable
     data object Maps : Routes()
+
     @Serializable
     data object Schedule : Routes()
+
     @Serializable
     data object Wallet : Routes()
+
 }

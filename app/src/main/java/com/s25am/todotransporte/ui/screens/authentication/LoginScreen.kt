@@ -2,9 +2,25 @@ package com.s25am.todotransporte.ui.screens.authentication
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -13,35 +29,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.s25am.todotransporte.ui.screens.authentication.viewmodel.AuthenticationViewModel
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.s25am.todotransporte.R
+import com.s25am.todotransporte.ui.screens.authentication.viewmodel.AuthenticationViewModel
 
 @Composable
 fun LoginScreen(
-    viewModel: AuthenticationViewModel,
-    onNavigateToRegister: () -> Unit, // Acción para ir a la pantalla de registro
-    onLoginSuccess: () -> Unit       // Acción para navegar al mapa tras loguearse
+    viewModel: AuthenticationViewModel = viewModel(),
+    onNavigateToRegister: () -> Unit,
+    onLoginSuccess: () -> Unit
 ) {
-    // Obtenemos el estado desde el ViewModel para reaccionar a cambios
     val uiState by viewModel.uiState.collectAsState()
 
-    // Observador de éxito: Cuando el ViewModel marca isSuccess como true, navegamos
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
             onLoginSuccess()
         }
     }
 
-    // Contenedor principal de la pantalla
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,7 +65,6 @@ fun LoginScreen(
         verticalArrangement = Arrangement.Center
     ) {
 
-        // Tarjeta contenedora del formulario de acceso
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
@@ -64,18 +77,16 @@ fun LoginScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                // Imagen del logo circular
                 Image(
                     painter = painterResource(id = R.drawable.logo_sinfondo),
                     contentDescription = "Logo TodoTransporte",
                     modifier = Modifier
                         .size(180.dp)
-                        .clip(CircleShape) // Corte circular perfecto
+                        .clip(CircleShape)
                         .padding(bottom = 16.dp),
                     contentScale = ContentScale.Fit
                 )
 
-                // Nombre de la aplicación
                 Text(
                     "TodoTransporte",
                     fontSize = 32.sp,
@@ -86,12 +97,11 @@ fun LoginScreen(
                 Text(
                     "Inicia sesión para continuar",
                     fontSize = 16.sp,
-                    color = colorResource(id = R.color.rojoflojito)
+                    color = colorResource(id = R.color.rojoFlojito)
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Input para el correo electrónico
                 OutlinedTextField(
                     value = uiState.email,
                     onValueChange = { viewModel.updateEmail(it) },
@@ -99,16 +109,15 @@ fun LoginScreen(
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.Black,   // Color cuando escribes
-                        unfocusedTextColor = Color.Black, // Color cuando no está seleccionado
-                        focusedLabelColor = Color.Black,  // Opcional: color del label al pinchar
-                        cursorColor = Color.Black         // Opcional: color del palito que parpadea
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        focusedLabelColor = Color.Black,
+                        cursorColor = Color.Black
                     )
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Input para la contraseña con máscara de seguridad
                 OutlinedTextField(
                     value = uiState.password,
                     onValueChange = { viewModel.updatePassword(it) },
@@ -122,7 +131,6 @@ fun LoginScreen(
                     )
                 )
 
-                // Mensaje de error dinámico (solo aparece si authError no es nulo)
                 uiState.authError?.let {
                     Text(
                         text = it,
@@ -133,20 +141,18 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // Botón de acceso principal
                 Button(
                     onClick = { viewModel.login() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
-                    enabled = !uiState.isLoading, // Se bloquea durante la carga
+                    enabled = !uiState.isLoading,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = colorResource(id = R.color.RojoP),
                         contentColor = Color.White,
                         disabledContainerColor = Color.Gray
                     )
                 ) {
-                    // Muestra el indicador de carga o el texto según el estado
                     if (uiState.isLoading) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(24.dp),
@@ -157,17 +163,16 @@ fun LoginScreen(
                     }
                 }
 
-                // Botón secundario para usuarios sin cuenta
                 TextButton(
                     onClick = onNavigateToRegister,
                     colors = ButtonDefaults.textButtonColors(
-                        contentColor = colorResource(id = R.color.rojoflojito)
+                        contentColor = colorResource(id = R.color.rojoFlojito)
                     )
                 ) {
                     Text(
                         text = "¿No tienes cuenta? Regístrate",
                         style = TextStyle(
-                            textDecoration = TextDecoration.Underline // Texto subrayado
+                            textDecoration = TextDecoration.Underline
                         )
                     )
                 }

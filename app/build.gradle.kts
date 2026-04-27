@@ -43,11 +43,6 @@ android {
 }
 
 dependencies {
-    // Iconos básicos (Home, Person, etc.)
-    implementation("androidx.compose.material:material-icons-core")
-
-    // Iconos extra (Wallet, Map, etc.) - ALTAMENTE RECOMENDADO
-    implementation("androidx.compose.material:material-icons-extended")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -82,4 +77,10 @@ dependencies {
     implementation(libs.supabase.auth)
     implementation(libs.supabase.postgrest)
     implementation(libs.ktor.client.android)
+
+    // Iconos básicos
+    implementation("androidx.compose.material:material-icons-core")
+
+    // Iconos extra
+    implementation("androidx.compose.material:material-icons-extended")
 }

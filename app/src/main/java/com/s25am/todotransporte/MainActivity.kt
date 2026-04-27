@@ -7,7 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import com.s25am.todotransporte.navigation.AppNavigation
 import com.s25am.todotransporte.navigation.Routes
@@ -37,7 +36,7 @@ class MainActivity : ComponentActivity() {
                             currentRoute = currentRoute,
                             onNavigate = { route ->
                                 if (currentRoute != route) {
-                                    // Forzamos al backStack a aceptar el objeto directamente Esto hay que revisarlo errores raros
+                                    // TODO: Forzamos al backStack a aceptar el objeto directamente Esto hay que revisarlo errores raros
                                     (backStack as androidx.navigation3.runtime.NavBackStack<Any>).add(route)
                                 }
                             }

@@ -2,9 +2,25 @@ package com.s25am.todotransporte.ui.screens.authentication
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,26 +38,24 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.s25am.todotransporte.R
 import com.s25am.todotransporte.ui.screens.authentication.viewmodel.AuthenticationViewModel
 
 @Composable
 fun RegisterScreen(
-    viewModel: AuthenticationViewModel,
-    onNavigateToLogin: () -> Unit,    // Función para volver al Login
-    onRegisterSuccess: () -> Unit    // Función para ir al Mapa tras el éxito
+    viewModel: AuthenticationViewModel = viewModel(),
+    onNavigateToLogin: () -> Unit,
+    onRegisterSuccess: () -> Unit
 ) {
-    // Observamos el estado actual desde el ViewModel
     val uiState by viewModel.uiState.collectAsState()
 
-    // "Vigilante": Si el registro es exitoso en el ViewModel, dispara la navegación
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
             onRegisterSuccess()
         }
     }
 
-    // Contenedor principal que ocupa toda la pantalla
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,7 +65,6 @@ fun RegisterScreen(
         verticalArrangement = Arrangement.Center
     ) {
 
-        // Tarjeta blanca central que contiene el formulario
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
@@ -64,7 +77,6 @@ fun RegisterScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                // Logo de la empresa con recorte circular
                 Image(
                     painter = painterResource(id = R.drawable.logo_sinfondo),
                     contentDescription = "Logo TodoTransporte",
@@ -75,7 +87,6 @@ fun RegisterScreen(
                     contentScale = ContentScale.Fit
                 )
 
-                // Título principal con el color rojo de la marca
                 Text(
                     "Registro",
                     fontSize = 28.sp,
@@ -86,12 +97,11 @@ fun RegisterScreen(
                 Text(
                     "Crea tu cuenta de transporte",
                     fontSize = 14.sp,
-                    color = colorResource(id = R.color.rojoflojito)
+                    color = colorResource(id = R.color.rojoFlojito)
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Campo para introducir el correo electrónico
                 OutlinedTextField(
                     value = uiState.email,
                     onValueChange = { viewModel.updateEmail(it) },
@@ -99,16 +109,15 @@ fun RegisterScreen(
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = Color.Black,   // Color cuando escribes
-                        unfocusedTextColor = Color.Black, // Color cuando no está seleccionado
-                        focusedLabelColor = Color.Black,  // Opcional: color del label al pinchar
-                        cursorColor = Color.Black         // Opcional: color del palito que parpadea
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        focusedLabelColor = Color.Black,
+                        cursorColor = Color.Black
                     )
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Campo para la contraseña (oculta el texto)
                 OutlinedTextField(
                     value = uiState.password,
                     onValueChange = { viewModel.updatePassword(it) },
@@ -124,7 +133,6 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Campo para confirmar la contraseña
                 OutlinedTextField(
                     value = uiState.repeatedPassword,
                     onValueChange = { viewModel.updateRepeatedPassword(it) },
@@ -138,7 +146,6 @@ fun RegisterScreen(
                     )
                 )
 
-                // Si hay un error (ej: contraseñas no coinciden), se muestra aquí
                 uiState.authError?.let {
                     Text(
                         text = it,
@@ -150,20 +157,18 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Botón principal de registro
                 Button(
                     onClick = { viewModel.register() },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
-                    enabled = !uiState.isLoading, // Se deshabilita mientras carga
+                    enabled = !uiState.isLoading,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = colorResource(id = R.color.RojoP),
                         contentColor = Color.White,
                         disabledContainerColor = Color.Gray
                     )
                 ) {
-                    // Si está cargando, muestra un círculo; si no, el texto
                     if (uiState.isLoading) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(24.dp),
@@ -174,11 +179,10 @@ fun RegisterScreen(
                     }
                 }
 
-                // Enlace subrayado para volver a la pantalla de Login
                 TextButton(
                     onClick = onNavigateToLogin,
                     colors = ButtonDefaults.textButtonColors(
-                        contentColor = colorResource(id = R.color.rojoflojito)
+                        contentColor = colorResource(id = R.color.rojoFlojito)
                     )
                 ) {
                     Text(
