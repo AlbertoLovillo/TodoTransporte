@@ -1,7 +1,10 @@
 package com.s25am.todotransporte.navigation
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -23,48 +26,50 @@ fun AppNavigation(
     backStack: NavBackStack<NavKey>
 ) {
 
-    NavDisplay(
-        backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
-        entryProvider = entryProvider {
+    Box(modifier = Modifier.padding(padding)) {
+        NavDisplay(
+            backStack = backStack,
+            onBack = { backStack.removeLastOrNull() },
+            entryProvider = entryProvider {
 
-            entry<Routes.Login> {
-                LoginScreen(
-                    onNavigateToRegister = { backStack.add(Routes.Register) },
-                    onLoginSuccess = {
-                        while(backStack.isNotEmpty()) {
-                            backStack.removeLastOrNull()
+                entry<Routes.Login> {
+                    LoginScreen(
+                        onNavigateToRegister = { backStack.add(Routes.Register) },
+                        onLoginSuccess = {
+                            while (backStack.isNotEmpty()) {
+                                backStack.removeLastOrNull()
+                            }
+                            backStack.add(Routes.Maps)
                         }
-                        backStack.add(Routes.Maps)
-                    }
-                )
-            }
+                    )
+                }
 
-            entry<Routes.Register> {
-                RegisterScreen(
-                    onNavigateToLogin = {
-                        backStack.removeLastOrNull()
-                    },
-                    onRegisterSuccess = {
-                        while (backStack.isNotEmpty()) {
+                entry<Routes.Register> {
+                    RegisterScreen(
+                        onNavigateToLogin = {
                             backStack.removeLastOrNull()
+                        },
+                        onRegisterSuccess = {
+                            while (backStack.isNotEmpty()) {
+                                backStack.removeLastOrNull()
+                            }
+                            backStack.add(Routes.Maps)
                         }
-                        backStack.add(Routes.Maps)
-                    }
-                )
-            }
+                    )
+                }
 
-            entry<Routes.Maps> {
-                MapsScreen()
-            }
+                entry<Routes.Maps> {
+                    MapsScreen()
+                }
 
-            entry<Routes.Schedule> {
-                ScheduleScreen()
-            }
+                entry<Routes.Schedule> {
+                    ScheduleScreen()
+                }
 
-            entry<Routes.Wallet> {
-                WalletScreen()
+                entry<Routes.Wallet> {
+                    WalletScreen()
+                }
             }
-        }
-    )
+        )
+    }
 }

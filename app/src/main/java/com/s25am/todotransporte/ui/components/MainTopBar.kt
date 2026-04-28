@@ -22,8 +22,7 @@ fun MainTopBar(
     canNavigateBack: Boolean,
     onBack: () -> Unit
 ) {
-    // Solo mostramos la barra si NO estamos en la pantalla de Login
-    if (currentRoute != Routes.Login) {
+    if (currentRoute != Routes.Login && currentRoute != Routes.Register) {
         TopAppBar(
             title = {
                 Text(
@@ -32,7 +31,6 @@ fun MainTopBar(
                 )
             },
             navigationIcon = {
-                // Si el MainActivity nos dice que hay páginas atrás, ponemos la flecha
                 if (canNavigateBack) {
                     IconButton(onClick = onBack) {
                         Icon(

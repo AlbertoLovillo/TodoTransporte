@@ -11,14 +11,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mapbox.geojson.Point
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
-import com.s25am.todotransporte.database.DataBaseViewModel
 import com.s25am.todotransporte.ui.screens.maps.components.StopDialog
 import com.s25am.todotransporte.ui.screens.maps.components.StopsList
 import com.s25am.todotransporte.ui.screens.maps.components.TransportMap
 
 @OptIn(MapboxExperimental::class)
 @Composable
-fun MapsScreen(viewModel: DataBaseViewModel = viewModel()) {
+fun MapsScreen(
+    viewModel: MapsViewModel = viewModel()
+) {
     val lineas by viewModel.lineas.collectAsState()
     val lineaSeleccionada by viewModel.selectedLinea.collectAsState()
     val paradas by viewModel.paradas.collectAsState()

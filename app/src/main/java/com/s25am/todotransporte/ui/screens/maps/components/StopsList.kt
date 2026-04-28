@@ -12,16 +12,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.s25am.todotransporte.database.DataBaseViewModel
-import com.s25am.todotransporte.database.Linea
-import com.s25am.todotransporte.database.Parada
+import com.s25am.todotransporte.database.data.Linea
+import com.s25am.todotransporte.database.data.Parada
+import com.s25am.todotransporte.ui.screens.maps.MapsViewModel
 
 @Composable
 fun StopsList(
     lineas: List<Linea>,
     paradas: List<Parada>,
     lineaSeleccionada: Linea?,
-    viewModel: DataBaseViewModel
+    viewModel: MapsViewModel
 ) {
     Column(
 //        modifier = Modifier.align(Alignment.BottomCenter)
