@@ -63,7 +63,9 @@ import com.s25am.todotransporte.ui.theme.TodoTransporteTheme
  */
 @Composable
 fun ItemParada(
-    parada: Parada, proximoBusHora: String?, onClick: () -> Unit
+    parada: Parada,
+    proximoBusHora: String?,
+    onClick: () -> Unit
 ) {
     var esFavorito by remember { mutableStateOf(false) }
     val colorPrimario = MaterialTheme.colorScheme.primary
@@ -211,7 +213,7 @@ fun ScheduleScreen(
     val lineas by viewModel.lineas.collectAsState()
     val lineaSeleccionada by viewModel.selectedLinea.collectAsState()
     val paradas by viewModel.paradas.collectAsState()
-    val proximosBusesParadas by viewModel.proximosBusesParadas.collectAsState()
+    val proximosBuses by viewModel.proximosBusesParadas.collectAsState()
     val paradaSeleccionada by viewModel.paradaSeleccionada.collectAsState()
     val horariosParada by viewModel.horariosParada.collectAsState()
 
@@ -267,7 +269,7 @@ fun ScheduleScreen(
                 items(paradas) { parada ->
                     ItemParada(
                         parada = parada,
-                        proximoBusHora = proximosBusesParadas[parada.id],
+                        proximoBusHora = proximosBuses[parada.id],
                         onClick = { viewModel.mostrarInfoParada(parada) }
                     )
                 }

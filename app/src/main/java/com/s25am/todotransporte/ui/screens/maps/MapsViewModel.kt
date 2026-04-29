@@ -45,6 +45,7 @@ class MapsViewModel : ViewModel() {
         cargarLineas()
     }
 
+
     /**
      * Función que carga todas las líneas disponibles desde la base de datos.
      */
@@ -72,7 +73,7 @@ class MapsViewModel : ViewModel() {
     /**
      * Función que según la línea seleccionada actualiza la lista de paradas.
      */
-    open fun seleccionarLinea(linea: Linea) {
+    fun seleccionarLinea(linea: Linea) {
         _selectedLinea.value = linea
         cargarParadasDeLinea(linea.id)
     }
@@ -81,7 +82,7 @@ class MapsViewModel : ViewModel() {
     /**
      * Función que carga las paradas asociadas a una línea específica.
      */
-    protected fun cargarParadasDeLinea(lineaId: Int) {
+    private fun cargarParadasDeLinea(lineaId: Int) {
         viewModelScope.launch {
             try {
                 val cajas = supabase.from("Linea_Parada")
@@ -112,7 +113,7 @@ class MapsViewModel : ViewModel() {
     /**
      * Función que según la parada seleccionada obtiene la lista de todos los horarios.
      */
-    fun obtenerHorariosDeParada(paradaId: Int) {
+    private fun obtenerHorariosDeParada(paradaId: Int) {
         val lineaId = selectedLinea.value?.id ?: return
 
         viewModelScope.launch {
@@ -157,7 +158,7 @@ class MapsViewModel : ViewModel() {
     /**
      * Función que busca el próximo autobús que pasará por la parada según la hora actual.
      */
-    fun obtenerHorario(paradaId: Int) {
+    private fun obtenerHorario(paradaId: Int) {
         val lineaId = selectedLinea.value?.id ?: return
 
         viewModelScope.launch {
@@ -216,43 +217,6 @@ class MapsViewModel : ViewModel() {
             }
         }
     }
-
-//    private fun obtenerHorario(paradaId: Int) {
-//        val lineaId = selectedLinea.value?.id ?: return
-//
-//        viewModelScope.launch {
-//            try {
-//                _proximoBusHora.value = "Buscando..."
-//
-//                val zonaEspanya = ZoneId.of("Europe/Madrid")
-//                val horaActual = LocalTime.now(zonaEspanya)
-//                val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
-//                val horaActualStr = horaActual.format(formatter)
-//
-//                val resultados = supabase.from("Horario")
-//                    .select {
-//                        filter {
-//                            eq("id_linea", lineaId)
-//                            eq("id_parada", paradaId)
-//                            gte("hora_llegada", horaActualStr)
-//                        }
-//                        order("hora_llegada", order = Order.ASCENDING)
-//                        limit(1)
-//                    }.decodeList<Horario>()
-//
-//                if (resultados.isNotEmpty()) {
-//                    val proximaHoraBruta = resultados.first().hora_llegada
-//                    _proximoBusHora.value = corregirHoraGtfs(proximaHoraBruta)
-//                } else {
-//                    _proximoBusHora.value = "No hay más buses hoy"
-//                }
-//
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//                _proximoBusHora.value = "Error al consultar"
-//            }
-//        }
-//    }
 
 
     /**
