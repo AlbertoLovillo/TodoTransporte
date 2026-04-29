@@ -15,10 +15,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
-import com.s25am.todotransporte.database.Linea
+import com.s25am.todotransporte.database.data.Linea
 
 @Composable
-fun LineListButtom(linea: Linea, estaSeleccionada: Boolean, onClick: () -> Unit) {
+fun LineListButtom(
+    linea: Linea,
+    estaSeleccionada: Boolean,
+    onClick: () -> Unit
+) {
+
     val colorBase = try {
         Color(linea.color.toColorInt())
     } catch (e: Exception) {

@@ -44,7 +44,10 @@ class MainActivity : ComponentActivity() {
                     }
                 ) { innerPadding ->
                     // Pasamos el padding aquí para que el contenido no se tape
-                    AppNavigation(padding = innerPadding)
+                    AppNavigation(
+                        padding = innerPadding,
+                        backStack = backStack
+                    )
                 }
             }
         }

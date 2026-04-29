@@ -1,4 +1,4 @@
-package com.s25am.todotransporte.database
+package com.s25am.todotransporte.database.data
 
 import kotlinx.serialization.Serializable
 

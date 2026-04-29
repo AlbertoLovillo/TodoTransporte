@@ -12,9 +12,9 @@ import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotation
-import com.s25am.todotransporte.database.DataBaseViewModel
-import com.s25am.todotransporte.database.Linea
-import com.s25am.todotransporte.database.Parada
+import com.s25am.todotransporte.database.data.Linea
+import com.s25am.todotransporte.database.data.Parada
+import com.s25am.todotransporte.ui.screens.maps.MapsViewModel
 import android.graphics.Color as AndroidColor
 
 @OptIn(MapboxExperimental::class)
@@ -23,7 +23,7 @@ fun TransportMap(
     estadoCamara: MapViewportState,
     lineaSeleccionada: Linea?,
     paradas: List<Parada>,
-    viewModel: DataBaseViewModel
+    viewModel: MapsViewModel
     ) {
     MapboxMap(
         modifier = Modifier.fillMaxSize(),
