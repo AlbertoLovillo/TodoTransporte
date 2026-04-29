@@ -8,6 +8,7 @@ import com.s25am.todotransporte.database.data.Horario
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
 import com.s25am.todotransporte.database.data.RespuestaParada
+import com.s25am.todotransporte.database.data.RutaGeometria
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
@@ -30,7 +31,6 @@ class MapsViewModel : ViewModel() {
     private val _paradas = MutableStateFlow<List<Parada>>(emptyList())
     val paradas: StateFlow<List<Parada>> = _paradas
 
-
     private val _paradaSeleccionada = MutableStateFlow<Parada?>(null)
     val paradaSeleccionada: StateFlow<Parada?> = _paradaSeleccionada
 
@@ -39,6 +39,16 @@ class MapsViewModel : ViewModel() {
 
     private val _horariosParada = MutableStateFlow<List<Horario>>(emptyList())
     val horariosParada: StateFlow<List<Horario>> = _horariosParada
+
+    private val _direccionActual = MutableStateFlow<Int>(0)
+    val direccionActual: StateFlow<Int> = _direccionActual
+
+    private val _rutaGeojsonActual = MutableStateFlow<String?>(null)
+    val rutaGeojsonActual: StateFlow<String?> = _rutaGeojsonActual
+
+    private val _destino = MutableStateFlow<String?>(null)
+    val destino: StateFlow<String?> = _destino
+
 
 
     init {
@@ -71,11 +81,93 @@ class MapsViewModel : ViewModel() {
 
 
     /**
-     * Función que según la línea seleccionada actualiza la lista de paradas.
+     * Función que según la línea seleccionada actualiza la lista de paradas y resetea el sentido.
      */
     fun seleccionarLinea(linea: Linea) {
         _selectedLinea.value = linea
-        cargarParadasDeLinea(linea.id)
+        _direccionActual.value = 0
+        actualizarNombreDestino(linea.id, 0)
+        cerrarDialogo()
+        cargarDatosPorSentido(linea.id, 0)
+
+    }
+
+
+    /**
+     * Función para cambiar entre Ida y Vuelta.
+     */
+    fun alternarDireccion() {
+        val lineaActual = _selectedLinea.value ?: return
+        val nuevaDireccion = if (_direccionActual.value == 0) 1 else 0
+        _direccionActual.value = nuevaDireccion
+        actualizarNombreDestino(lineaActual.id, nuevaDireccion)
+
+        cerrarDialogo()
+        cargarDatosPorSentido(lineaActual.id, nuevaDireccion)
+    }
+
+
+    /**
+     * Función que carga las paradas (ordenadas) y el dibujo (GeoJSON) según el sentido.
+     */
+    private fun cargarDatosPorSentido(lineaId: Int, direccion: Int) {
+        viewModelScope.launch {
+            // 1. CARGAMOS LAS PARADAS
+            try {
+                val cajas = supabase.from("Linea_Parada")
+                    .select(Columns.Companion.raw("Parada(*)")) {
+                        filter {
+                            eq("id_linea", lineaId)
+                            eq("direccion", direccion)
+                        }
+                        order("orden", order = Order.ASCENDING)
+                    }
+                    .decodeList<RespuestaParada>()
+
+                _paradas.value = cajas.mapNotNull { it.parada }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _paradas.value = emptyList()
+            }
+
+            try {
+                val ruta = supabase.from("Ruta_Geometria")
+                    .select {
+                        filter {
+                            eq("id_linea", lineaId)
+                            eq("direccion", direccion)
+                        }
+                    }.decodeSingleOrNull<RutaGeometria>()
+
+                _rutaGeojsonActual.value = ruta?.geojson
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _rutaGeojsonActual.value = null
+            }
+        }
+    }
+
+
+    /**
+     * Función interna para actualizar el nombre del destino
+     */
+    private fun actualizarNombreDestino(lineaId: Int, direccion: Int) {
+        viewModelScope.launch {
+            try {
+                val resultado = supabase.from("Horario")
+                    .select(Columns.list("destino")) {
+                        filter {
+                            eq("id_linea", lineaId)
+                            eq("direccion", direccion)
+                        }
+                        limit(1)
+                    }.decodeSingleOrNull<Horario>()
+
+                _destino.value = resultado?.destino ?: "Desconocido"
+            } catch (e: Exception) {
+                _destino.value = "Error al cargar destino"
+            }
+        }
     }
 
 
@@ -118,13 +210,11 @@ class MapsViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                // 1. Averiguar QUÉ DÍA ES HOY
-                val zonaEspaña = TimeZone.getTimeZone("Europe/Madrid")
+                val zonaEspanya = TimeZone.getTimeZone("Europe/Madrid")
                 val formatoFecha = SimpleDateFormat("yyyyMMdd")
-                formatoFecha.timeZone = zonaEspaña
+                formatoFecha.timeZone = zonaEspanya
                 val fechaActualStr = formatoFecha.format(Calendar.getInstance().time)
 
-                // 2. BUSCAR EN EL CALENDARIO EL CÓDIGO DE HOY
                 val calendario =
                     supabase.from("Calendario").select(columns = Columns.list("service_id")) {
                         filter { eq("fecha", fechaActualStr) }
@@ -132,13 +222,13 @@ class MapsViewModel : ViewModel() {
 
                 val serviceIdHoy = calendario?.service_id ?: return@launch
 
-                // Obtenemos los horarios filtrando por línea, parada y el service_id de hoy
                 val resultados = supabase.from("Horario")
                     .select {
                         filter {
                             eq("id_linea", lineaId)
                             eq("id_parada", paradaId)
                             eq("service_id", serviceIdHoy)
+                            eq("direccion", _direccionActual.value)
                         }
                         order("hora_llegada", order = Order.ASCENDING)
                     }.decodeList<Horario>()
@@ -165,24 +255,20 @@ class MapsViewModel : ViewModel() {
             try {
                 _proximoBusHora.value = "Calculando..."
 
-                // 1. Averiguar QUÉ DÍA ES HOY (Formato 20260428)
-                val zonaEspaña = TimeZone.getTimeZone("Europe/Madrid")
+                val zonaEspanya = TimeZone.getTimeZone("Europe/Madrid")
                 val formatoFecha = SimpleDateFormat("yyyyMMdd")
-                formatoFecha.timeZone = zonaEspaña
+                formatoFecha.timeZone = zonaEspanya
                 val fechaActualStr = formatoFecha.format(Calendar.getInstance().time)
 
-                // Y LA HORA ACTUAL
                 val formatoHora = SimpleDateFormat("HH:mm:ss")
-                formatoHora.timeZone = zonaEspaña
+                formatoHora.timeZone = zonaEspanya
                 val horaActualStr = formatoHora.format(Calendar.getInstance().time)
 
-                // 2. BUSCAR EN EL CALENDARIO EL CÓDIGO DE HOY
                 val calendario =
                     supabase.from("Calendario").select(columns = Columns.list("service_id")) {
                         filter { eq("fecha", fechaActualStr) }
                     }.decodeSingleOrNull<Calendario>()
 
-                // Si no hay bus hoy (o hay un error), abortamos
                 val serviceIdHoy = calendario?.service_id
 
                 if (serviceIdHoy == null) {
@@ -190,25 +276,27 @@ class MapsViewModel : ViewModel() {
                     return@launch
                 }
 
-                // 3. BUSCAR EL HORARIO (Añadimos el filtro mágico eq("service_id", serviceIdHoy))
                 val resultados =
                     supabase.from("Horario").select {
                         filter {
                             eq("id_linea", lineaId)
                             eq("id_parada", paradaId)
                             eq("service_id", serviceIdHoy)
+                            eq("direccion", _direccionActual.value)
                             gte("hora_llegada", horaActualStr)
                         }
                         order("hora_llegada", order = Order.ASCENDING)
                         limit(1)
                     }.decodeList<Horario>()
 
-                // 4. Mostrar el resultado
                 if (resultados.isNotEmpty()) {
-                    val proximaHoraBruta = resultados.first().hora_llegada
-                    _proximoBusHora.value = corregirHoraGtfs(proximaHoraBruta)
+                    val primerBus = resultados.first()
+                    val proximaHoraLimpia = corregirHoraGtfs(primerBus.hora_llegada)
+
+                    val destino = primerBus.destino ?: "Fin de trayecto"
+                    _proximoBusHora.value = "$proximaHoraLimpia hacia $destino"
                 } else {
-                    _proximoBusHora.value = "No hay más rutas hoy"
+                    _proximoBusHora.value = "No hay más buses en este sentido"
                 }
 
             } catch (e: Exception) {

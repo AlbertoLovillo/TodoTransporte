@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.DirectionsBus
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -34,7 +35,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
@@ -53,7 +53,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.s25am.todotransporte.database.data.Horario
-import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
 import com.s25am.todotransporte.ui.screens.maps.components.LineListButtom
 import com.s25am.todotransporte.ui.theme.TodoTransporteTheme
@@ -216,6 +215,7 @@ fun ScheduleScreen(
     val proximosBuses by viewModel.proximosBusesParadas.collectAsState()
     val paradaSeleccionada by viewModel.paradaSeleccionada.collectAsState()
     val horariosParada by viewModel.horariosParada.collectAsState()
+    val direccionActual by viewModel.direccionActual.collectAsState()
 
     if (paradaSeleccionada != null) {
         AlertDialogParada(
@@ -245,24 +245,53 @@ fun ScheduleScreen(
                 .padding(rellenos)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            // Fila de selección de líneas
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxWidth()
+
+            val textoSentido = if (direccionActual == 0) "Ida" else "Vuelta"
+            Text(
+                text = "Sentido: $textoSentido",
+                modifier = Modifier.padding(start = 16.dp, top = 12.dp),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp, start = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                items(lineas) { linea ->
-                    LineListButtom(
-                        linea = linea,
-                        estaSeleccionada = linea.id == lineaSeleccionada?.id,
-                        onClick = { viewModel.seleccionarLinea(linea) }
+
+                IconButton(
+                    onClick = { viewModel.alternarDireccion() },
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.SwapHoriz,
+                        contentDescription = "Cambiar Sentido",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
+                }
+
+                LazyRow(
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues(end = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(lineas) { linea ->
+                        LineListButtom(
+                            linea = linea,
+                            estaSeleccionada = linea.id == lineaSeleccionada?.id,
+                            onClick = { viewModel.seleccionarLinea(linea) }
+                        )
+                    }
                 }
             }
 
-            // Lista de paradas de la línea seleccionada
             LazyColumn(
-                contentPadding = PaddingValues(16.dp),
+                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.weight(1f)
             ) {

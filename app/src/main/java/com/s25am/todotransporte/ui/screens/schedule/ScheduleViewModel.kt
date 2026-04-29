@@ -43,6 +43,12 @@ class ScheduleViewModel : ViewModel() {
     private val _proximosBusesParadas = MutableStateFlow<Map<Int, String>>(emptyMap())
     val proximosBusesParadas: StateFlow<Map<Int, String>> = _proximosBusesParadas
 
+    private val _direccionActual = MutableStateFlow<Int>(0)
+    val direccionActual: StateFlow<Int> = _direccionActual
+
+    private val _destino = MutableStateFlow<String?>(null)
+    val destino: StateFlow<String?> = _destino
+
 
     init {
         cargarLineas()
@@ -73,24 +79,68 @@ class ScheduleViewModel : ViewModel() {
 
 
     /**
-     * Función que según la línea seleccionada actualiza la lista de paradas.
+     * Función que se llama al seleccionar línea y resetear dirección.
      */
     fun seleccionarLinea(linea: Linea) {
         _selectedLinea.value = linea
-        cargarParadasDeLinea(linea.id)
-        actualizarProximosBuses(linea.id)
+        _direccionActual.value = 0
+        actualizarNombreDestino(linea.id, 0)
+        cargarParadasDeLinea(linea.id, 0)
+        actualizarProximosBuses(linea.id, 0)
+    }
+
+
+    /**
+     * NUEVO: Función para alternar entre Ida y Vuelta.
+     */
+    fun alternarDireccion() {
+        val lineaActual = _selectedLinea.value ?: return
+        val nuevaDireccion = if (_direccionActual.value == 0) 1 else 0
+        _direccionActual.value = nuevaDireccion
+        actualizarNombreDestino(lineaActual.id, nuevaDireccion)
+
+        cerrarDialogo()
+        cargarParadasDeLinea(lineaActual.id, nuevaDireccion)
+        actualizarProximosBuses(lineaActual.id, nuevaDireccion)
+    }
+
+
+    /**
+     * Función interna para actualizar el nombre del destino
+     */
+    private fun actualizarNombreDestino(lineaId: Int, direccion: Int) {
+        viewModelScope.launch {
+            try {
+                val resultado = supabase.from("Horario")
+                    .select(Columns.list("destino")) {
+                        filter {
+                            eq("id_linea", lineaId)
+                            eq("direccion", direccion)
+                        }
+                        limit(1)
+                    }.decodeSingleOrNull<Horario>()
+
+                _destino.value = resultado?.destino ?: "Desconocido"
+            } catch (e: Exception) {
+                _destino.value = "Error al cargar destino"
+            }
+        }
     }
 
 
     /**
      * Función que carga las paradas asociadas a una línea específica.
      */
-    private fun cargarParadasDeLinea(lineaId: Int) {
+    private fun cargarParadasDeLinea(lineaId: Int, direccion: Int) {
         viewModelScope.launch {
             try {
                 val cajas = supabase.from("Linea_Parada")
                     .select(Columns.Companion.raw("Parada(*)")) {
-                        filter { eq("id_linea", lineaId) }
+                        filter {
+                            eq("id_linea", lineaId)
+                            eq("direccion", direccion)
+                        }
+                        order("orden", order = Order.ASCENDING)
                     }
                     .decodeList<RespuestaParada>()
 
@@ -118,35 +168,31 @@ class ScheduleViewModel : ViewModel() {
      */
     private fun obtenerHorariosDeParada(paradaId: Int) {
         val lineaId = selectedLinea.value?.id ?: return
+        val direccion = _direccionActual.value
 
         viewModelScope.launch {
             try {
-                // 1. Averiguar QUÉ DÍA ES HOY
-                val zonaEspaña = TimeZone.getTimeZone("Europe/Madrid")
+                val zonaEspanya = TimeZone.getTimeZone("Europe/Madrid")
                 val formatoFecha = SimpleDateFormat("yyyyMMdd")
-                formatoFecha.timeZone = zonaEspaña
+                formatoFecha.timeZone = zonaEspanya
                 val fechaActualStr = formatoFecha.format(Calendar.getInstance().time)
 
-                // 2. BUSCAR EN EL CALENDARIO EL CÓDIGO DE HOY
-                val calendario =
-                    supabase.from("Calendario").select(columns = Columns.list("service_id")) {
-                        filter { eq("fecha", fechaActualStr) }
-                    }.decodeSingleOrNull<Calendario>()
-
+                val calendario = supabase.from("Calendario").select(columns = Columns.list("service_id")) {
+                    filter { eq("fecha", fechaActualStr) }
+                }.decodeSingleOrNull<Calendario>()
                 val serviceIdHoy = calendario?.service_id ?: return@launch
 
-                // Obtenemos los horarios filtrando por línea, parada y el service_id de hoy
                 val resultados = supabase.from("Horario")
                     .select {
                         filter {
                             eq("id_linea", lineaId)
                             eq("id_parada", paradaId)
                             eq("service_id", serviceIdHoy)
+                            eq("direccion", direccion) // Filtro mágico
                         }
                         order("hora_llegada", order = Order.ASCENDING)
                     }.decodeList<Horario>()
 
-                // Limpiamos los resultados
                 val listaLimpia = resultados
                     .map { it.copy(hora_llegada = corregirHoraGtfs(it.hora_llegada)) }
                     .distinctBy { it.hora_llegada }
@@ -166,57 +212,45 @@ class ScheduleViewModel : ViewModel() {
      */
     private fun obtenerHorario(paradaId: Int) {
         val lineaId = selectedLinea.value?.id ?: return
+        val direccion = _direccionActual.value
 
         viewModelScope.launch {
             try {
                 _proximoBusHora.value = "Calculando..."
 
-                // 1. Averiguar QUÉ DÍA ES HOY (Formato 20260428)
-                val zonaEspaña = TimeZone.getTimeZone("Europe/Madrid")
+                val zonaEspanya = TimeZone.getTimeZone("Europe/Madrid")
                 val formatoFecha = SimpleDateFormat("yyyyMMdd")
-                formatoFecha.timeZone = zonaEspaña
-                val fechaActualStr = formatoFecha.format(Calendar.getInstance().time)
-
-                // Y LA HORA ACTUAL
+                formatoFecha.timeZone = zonaEspanya
                 val formatoHora = SimpleDateFormat("HH:mm:ss")
-                formatoHora.timeZone = zonaEspaña
+                formatoHora.timeZone = zonaEspanya
+                val fechaActualStr = formatoFecha.format(Calendar.getInstance().time)
                 val horaActualStr = formatoHora.format(Calendar.getInstance().time)
 
-                // 2. BUSCAR EN EL CALENDARIO EL CÓDIGO DE HOY
-                val calendario =
-                    supabase.from("Calendario").select(columns = Columns.list("service_id")) {
-                        filter { eq("fecha", fechaActualStr) }
-                    }.decodeSingleOrNull<Calendario>()
+                val calendario = supabase.from("Calendario").select(columns = Columns.list("service_id")) {
+                    filter { eq("fecha", fechaActualStr) }
+                }.decodeSingleOrNull<Calendario>()
+                val serviceIdHoy = calendario?.service_id ?: return@launch
 
-                // Si no hay bus hoy (o hay un error), abortamos
-                val serviceIdHoy = calendario?.service_id
+                val resultados = supabase.from("Horario").select {
+                    filter {
+                        eq("id_linea", lineaId)
+                        eq("id_parada", paradaId)
+                        eq("service_id", serviceIdHoy)
+                        eq("direccion", direccion) // Filtro mágico
+                        gte("hora_llegada", horaActualStr)
+                    }
+                    order("hora_llegada", order = Order.ASCENDING)
+                    limit(1)
+                }.decodeList<Horario>()
 
-                if (serviceIdHoy == null) {
-                    _proximoBusHora.value = "No hay servicio hoy"
-                    return@launch
-                }
-
-                // 3. BUSCAR EL HORARIO (Añadimos el filtro mágico eq("service_id", serviceIdHoy))
-                val resultados =
-                    supabase.from("Horario").select {
-                        filter {
-                            eq("id_linea", lineaId)
-                            eq("id_parada", paradaId)
-                            eq("service_id", serviceIdHoy)
-                            gte("hora_llegada", horaActualStr)
-                        }
-                        order("hora_llegada", order = Order.ASCENDING)
-                        limit(1)
-                    }.decodeList<Horario>()
-
-                // 4. Mostrar el resultado
                 if (resultados.isNotEmpty()) {
-                    val proximaHoraBruta = resultados.first().hora_llegada
-                    _proximoBusHora.value = corregirHoraGtfs(proximaHoraBruta)
+                    val primerBus = resultados.first()
+                    val proximaHoraLimpia = corregirHoraGtfs(primerBus.hora_llegada)
+                    val destinoInfo = primerBus.destino?.let { " a $it" } ?: ""
+                    _proximoBusHora.value = "$proximaHoraLimpia$destinoInfo"
                 } else {
                     _proximoBusHora.value = "No hay más rutas hoy"
                 }
-
             } catch (e: Exception) {
                 e.printStackTrace()
                 _proximoBusHora.value = "Error al consultar"
@@ -225,34 +259,29 @@ class ScheduleViewModel : ViewModel() {
     }
 
 
-    fun actualizarProximosBuses(lineaId: Int) {
+    fun actualizarProximosBuses(lineaId: Int, direccion: Int) {
         viewModelScope.launch {
             try {
-                // 1. Averiguar QUÉ DÍA ES HOY
-                val zonaEspaña = TimeZone.getTimeZone("Europe/Madrid")
+                val zonaEspanya = TimeZone.getTimeZone("Europe/Madrid")
                 val formatoFecha = SimpleDateFormat("yyyyMMdd")
-                formatoFecha.timeZone = zonaEspaña
-                val fechaActualStr = formatoFecha.format(Calendar.getInstance().time)
-
-                // Y LA HORA ACTUAL
                 val formatoHora = SimpleDateFormat("HH:mm:ss")
-                formatoHora.timeZone = zonaEspaña
+                formatoFecha.timeZone = zonaEspanya
+                formatoHora.timeZone = zonaEspanya
+
+                val fechaActualStr = formatoFecha.format(Calendar.getInstance().time)
                 val horaActualStr = formatoHora.format(Calendar.getInstance().time)
 
-                // 2. BUSCAR EN EL CALENDARIO EL CÓDIGO DE HOY
-                val calendario =
-                    supabase.from("Calendario").select(columns = Columns.list("service_id")) {
-                        filter { eq("fecha", fechaActualStr) }
-                    }.decodeSingleOrNull<Calendario>()
-
+                val calendario = supabase.from("Calendario").select(columns = Columns.list("service_id")) {
+                    filter { eq("fecha", fechaActualStr) }
+                }.decodeSingleOrNull<Calendario>()
                 val serviceIdHoy = calendario?.service_id ?: return@launch
 
-                // 3. BUSCAR LOS HORARIOS
                 val resultados = supabase.from("Horario")
                     .select {
                         filter {
                             eq("id_linea", lineaId)
                             eq("service_id", serviceIdHoy)
+                            eq("direccion", direccion) // Filtro mágico
                             gte("hora_llegada", horaActualStr)
                         }
                         order("hora_llegada", order = Order.ASCENDING)
