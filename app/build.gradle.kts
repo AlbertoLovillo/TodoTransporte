@@ -83,4 +83,7 @@ dependencies {
 
     // Iconos extra
     implementation("androidx.compose.material:material-icons-extended")
+
+    // Librería para generar códigos QR
+    implementation("com.google.zxing:core:3.5.3")
 }

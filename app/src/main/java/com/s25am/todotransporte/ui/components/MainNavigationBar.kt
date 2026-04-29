@@ -27,7 +27,6 @@ fun MainNavigationBar(
     onNavigate: (Any) -> Unit
 ) {
 
-    // Solo mostramos la barra si NO estamos en Login o Registro
     if (currentRoute != Routes.Login && currentRoute != Routes.Register) {
         NavigationBar(
             containerColor = Color.White,
@@ -79,20 +78,15 @@ fun MainNavigationBar(
 @Composable
 fun MainNavigationBarPreview() {
     TodoTransporteTheme {
-        // El Scaffold es necesario para que la barra se posicione abajo
         Scaffold(
             bottomBar = {
-                // Le pasamos Maps para ver cómo queda seleccionada
                 MainNavigationBar(
                     currentRoute = Routes.Maps,
                     onNavigate = {}
                 )
             }
         ) { innerPadding ->
-            // IMPORTANTE: Aquí usamos el padding para que el contenido
-            // no se solape con la barra
             Box(modifier = Modifier.padding(innerPadding)) {
-                // Texto de relleno para el preview
                 Text(text = "El contenido de la pantalla va aquí")
             }
         }

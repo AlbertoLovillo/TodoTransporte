@@ -23,7 +23,7 @@ fun MainTopBar(
     onBack: () -> Unit
 ) {
     // Solo mostramos la barra si NO estamos en la pantalla de Login
-    if (currentRoute != Routes.Login) {
+    if (currentRoute != Routes.Login && currentRoute != Routes.Register) {
         TopAppBar(
             title = {
                 Text(
