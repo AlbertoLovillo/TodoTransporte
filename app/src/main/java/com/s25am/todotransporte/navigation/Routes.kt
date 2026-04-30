@@ -5,9 +5,18 @@ import kotlinx.serialization.Serializable
 
 sealed class Routes : NavKey {
     @Serializable
+    data object Login : Routes()
+
+    @Serializable
+    data object Register : Routes()
+
+    @Serializable
     data object Maps : Routes()
+
     @Serializable
     data object Schedule : Routes()
+
     @Serializable
     data object Wallet : Routes()
+
 }
