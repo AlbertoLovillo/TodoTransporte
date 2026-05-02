@@ -36,9 +36,7 @@ fun StopsList(
 ) {
 
 
-    Column(
-//        modifier = Modifier.align(Alignment.BottomCenter)
-    ) {
+    Column() {
         if (lineas.isEmpty()) {
             Text(
                 text = "Cargando líneas...",

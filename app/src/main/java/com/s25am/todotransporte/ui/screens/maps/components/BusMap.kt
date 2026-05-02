@@ -1,5 +1,6 @@
 package com.s25am.todotransporte.ui.screens.maps.components
 
+import android.location.Location
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -19,12 +20,13 @@ import android.graphics.Color as AndroidColor
 
 @OptIn(MapboxExperimental::class)
 @Composable
-fun TransportMap(
+fun BusMap(
     estadoCamara: MapViewportState,
     lineaSeleccionada: Linea?,
     paradas: List<Parada>,
-    viewModel: MapsViewModel
-    ) {
+    viewModel: MapsViewModel,
+    ubicacionUsuario: Location?
+) {
     MapboxMap(
         modifier = Modifier.fillMaxSize(),
         mapViewportState = estadoCamara
@@ -42,7 +44,11 @@ fun TransportMap(
                 }
 
                 if (puntosDeLaRuta.isNotEmpty()) {
-                    val colorLinea = try { AndroidColor.parseColor(linea.color) } catch (e: Exception) { AndroidColor.BLUE }
+                    val colorLinea = try {
+                        AndroidColor.parseColor(linea.color)
+                    } catch (e: Exception) {
+                        AndroidColor.RED
+                    }
                     PolylineAnnotation(
                         points = puntosDeLaRuta,
                         lineColorInt = colorLinea, // TODO: poner el color correcto
@@ -63,6 +69,16 @@ fun TransportMap(
                     viewModel.mostrarInfoParada(parada)
                     true
                 }
+            )
+        }
+
+        ubicacionUsuario?.let { ubicacion ->
+            CircleAnnotation(
+                point = Point.fromLngLat(ubicacion.longitude, ubicacion.latitude),
+                circleRadius = 8.0,
+                circleColorInt = AndroidColor.BLUE,
+                circleStrokeWidth = 2.0,
+                circleStrokeColorInt = AndroidColor.WHITE
             )
         }
     }

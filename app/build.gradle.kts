@@ -83,4 +83,7 @@ dependencies {
 
     // Iconos extra
     implementation("androidx.compose.material:material-icons-extended")
+
+    // Ubicacion a tiempo real
+    implementation("com.google.android.gms:play-services-location:21.2.0")
 }
