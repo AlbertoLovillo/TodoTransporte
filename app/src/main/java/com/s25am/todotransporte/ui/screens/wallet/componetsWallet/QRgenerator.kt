@@ -1,9 +1,8 @@
-package com.s25am.todotransporte.ui.screens.wallet.componets
+package com.s25am.todotransporte.ui.screens.wallet.componetsWallet
 
 import android.graphics.Bitmap
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
-import androidx.compose.ui.graphics.asImageBitmap
 
 fun generarQR(datos: String): Bitmap? {
     return try {

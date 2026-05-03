@@ -18,5 +18,7 @@ sealed class Routes : NavKey {
 
     @Serializable
     data object Wallet : Routes()
+    @Serializable
+    data object ByTickets : Routes()
 
 }

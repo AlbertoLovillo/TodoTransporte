@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Icon
@@ -64,6 +65,21 @@ fun MainNavigationBar(
                 onClick = { onNavigate(Routes.Wallet) },
                 icon = { Icon(Icons.Default.AccountBalanceWallet, contentDescription = "Cartera") },
                 label = { Text("Cartera") },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = colorResource(id = R.color.RojoP),
+                    unselectedIconColor = Color.Gray,
+                    indicatorColor = colorResource(id = R.color.rojoFlojito).copy(alpha = 0.2f)
+                )
+            )
+
+            // Ítem: COMPRAR (NUEVO)
+            NavigationBarItem(
+                selected = currentRoute == Routes.ByTickets, // Tu nueva ruta
+                onClick = { onNavigate(Routes.ByTickets) },
+                icon = {
+                    Icon(Icons.Default.AddShoppingCart, contentDescription = "Comprar")
+                },
+                label = { Text("Comprar") },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorResource(id = R.color.RojoP),
                     unselectedIconColor = Color.Gray,

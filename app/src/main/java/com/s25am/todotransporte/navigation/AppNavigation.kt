@@ -11,6 +11,7 @@ import com.s25am.todotransporte.ui.screens.authentication.LoginScreen
 import com.s25am.todotransporte.ui.screens.authentication.RegisterScreen
 import com.s25am.todotransporte.ui.screens.maps.MapsScreen
 import com.s25am.todotransporte.ui.screens.schedule.ScheduleScreen
+import com.s25am.todotransporte.ui.screens.wallet.BuyTicketScreen
 import com.s25am.todotransporte.ui.screens.wallet.WalletScreen
 
 /**
@@ -69,6 +70,13 @@ fun AppNavigation(
 
             entry<Routes.Wallet> {
                 WalletScreen()
+            }
+
+            entry<Routes.ByTickets> {BuyTicketScreen(
+                onBack = {
+                    backStack.removeLastOrNull()
+                }
+            )
             }
         }
     )

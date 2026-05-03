@@ -7,7 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.navigation3.runtime.rememberNavBackStack
 import com.s25am.todotransporte.navigation.AppNavigation
 import com.s25am.todotransporte.navigation.Routes
@@ -25,7 +24,6 @@ class MainActivity : ComponentActivity() {
                 val currentRoute = backStack.lastOrNull()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    containerColor = Color.White,
                     topBar = {
                         MainTopBar(
                             currentRoute = currentRoute,
@@ -45,8 +43,10 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 ) { innerPadding ->
-                    AppNavigation(padding = innerPadding,
-                    backStack = backStack
+                    // Pasamos el padding aquí para que el contenido no se tape
+                    AppNavigation(
+                        padding = innerPadding,
+                        backStack = backStack
                     )
                 }
             }

@@ -1,7 +1,7 @@
 package com.s25am.todotransporte.ui.screens.wallet.viewModel
 
 import androidx.lifecycle.ViewModel
-import com.s25am.todotransporte.ui.screens.wallet.componets.Tikets
+import com.s25am.todotransporte.ui.screens.wallet.componetsWallet.Tikets
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,5 +18,9 @@ class WalletViewModel: ViewModel() {
                 Tikets("3", "Billete Ida y Vuelta", "Linea 3", "Válido hasta 20/05")
             )
         )
+    }
+    fun addTicket(nuevoTicket: Tikets) {
+        val listaActualizada = _uiState.value.listaTikets + nuevoTicket
+        _uiState.value = _uiState.value.copy(listaTikets = listaActualizada)
     }
 }
