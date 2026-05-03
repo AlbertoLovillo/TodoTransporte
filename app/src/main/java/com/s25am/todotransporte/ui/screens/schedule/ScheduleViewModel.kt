@@ -177,9 +177,14 @@ class ScheduleViewModel : ViewModel() {
                 formatoFecha.timeZone = zonaEspanya
                 val fechaActualStr = formatoFecha.format(Calendar.getInstance().time)
 
-                val calendario = supabase.from("Calendario").select(columns = Columns.list("service_id")) {
-                    filter { eq("fecha", fechaActualStr) }
-                }.decodeSingleOrNull<Calendario>()
+                val calendario =
+                    supabase
+                        .from("Calendario")
+                        .select(columns = Columns.list("service_id")) {
+                            filter { eq("fecha", fechaActualStr) }
+                        }
+                        .decodeSingleOrNull<Calendario>()
+
                 val serviceIdHoy = calendario?.service_id ?: return@launch
 
                 val resultados = supabase.from("Horario")
@@ -226,9 +231,10 @@ class ScheduleViewModel : ViewModel() {
                 val fechaActualStr = formatoFecha.format(Calendar.getInstance().time)
                 val horaActualStr = formatoHora.format(Calendar.getInstance().time)
 
-                val calendario = supabase.from("Calendario").select(columns = Columns.list("service_id")) {
-                    filter { eq("fecha", fechaActualStr) }
-                }.decodeSingleOrNull<Calendario>()
+                val calendario =
+                    supabase.from("Calendario").select(columns = Columns.list("service_id")) {
+                        filter { eq("fecha", fechaActualStr) }
+                    }.decodeSingleOrNull<Calendario>()
                 val serviceIdHoy = calendario?.service_id ?: return@launch
 
                 val resultados = supabase.from("Horario").select {
@@ -271,9 +277,13 @@ class ScheduleViewModel : ViewModel() {
                 val fechaActualStr = formatoFecha.format(Calendar.getInstance().time)
                 val horaActualStr = formatoHora.format(Calendar.getInstance().time)
 
-                val calendario = supabase.from("Calendario").select(columns = Columns.list("service_id")) {
-                    filter { eq("fecha", fechaActualStr) }
-                }.decodeSingleOrNull<Calendario>()
+                val calendario = supabase
+                    .from("Calendario")
+                    .select(columns = Columns.list("service_id")) {
+                        filter { eq("fecha", fechaActualStr) }
+                    }
+                    .decodeSingleOrNull<Calendario>()
+
                 val serviceIdHoy = calendario?.service_id ?: return@launch
 
                 val resultados = supabase.from("Horario")
@@ -281,11 +291,12 @@ class ScheduleViewModel : ViewModel() {
                         filter {
                             eq("id_linea", lineaId)
                             eq("service_id", serviceIdHoy)
-                            eq("direccion", direccion) // Filtro mágico
+                            eq("direccion", direccion)
                             gte("hora_llegada", horaActualStr)
                         }
                         order("hora_llegada", order = Order.ASCENDING)
-                    }.decodeList<Horario>()
+                    }
+                    .decodeList<Horario>()
 
                 val proximos = resultados
                     .groupBy { it.id_parada }
