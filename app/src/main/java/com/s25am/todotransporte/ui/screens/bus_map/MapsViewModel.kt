@@ -1,4 +1,4 @@
-package com.s25am.todotransporte.ui.screens.maps
+package com.s25am.todotransporte.ui.screens.bus_map
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
