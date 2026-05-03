@@ -1,4 +1,4 @@
-package com.s25am.todotransporte.ui.screens.maps
+package com.s25am.todotransporte.ui.screens.bus_map
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -34,9 +36,9 @@ import com.google.android.gms.location.Priority
 import com.mapbox.geojson.Point
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
-import com.s25am.todotransporte.ui.screens.maps.components.BusMap
-import com.s25am.todotransporte.ui.screens.maps.components.StopDialog
-import com.s25am.todotransporte.ui.screens.maps.components.StopsList
+import com.s25am.todotransporte.ui.screens.bus_map.components.BusMap
+import com.s25am.todotransporte.ui.screens.bus_map.components.StopDialog
+import com.s25am.todotransporte.ui.screens.bus_map.components.StopsList
 
 @SuppressLint("MissingPermission")
 @OptIn(MapboxExperimental::class)
@@ -88,7 +90,7 @@ fun MapsScreen(
                 if (intent?.action == LocationManager.PROVIDERS_CHANGED_ACTION) {
                     val lm = context?.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
                     val isEnabled = lm?.isProviderEnabled(LocationManager.GPS_PROVIDER) == true ||
-                                    lm?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) == true
+                            lm?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) == true
 
                     if (isEnabled) {
                         startLocationUpdates()
@@ -111,7 +113,7 @@ fun MapsScreen(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
         onResult = { permisos ->
             val permisoConcedido = permisos[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
-                        permisos[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+                    permisos[Manifest.permission.ACCESS_COARSE_LOCATION] == true
 
             if (permisoConcedido) {
                 startLocationUpdates()
@@ -144,15 +146,33 @@ fun MapsScreen(
         }
     }
 
+
+    var mapaListo by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        kotlinx.coroutines.delay(1000)
+        mapaListo = true
+    }
+
+
     Column(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.weight(1f)) {
-            BusMap(
-                estadoCamara = estadoCamara,
-                lineaSeleccionada = lineaSeleccionada,
-                paradas = paradas,
-                viewModel = viewModel,
-                ubicacionUsuario = ubicacionUsuario
-            )
+            if (mapaListo) {
+                BusMap(
+                    estadoCamara = estadoCamara,
+                    lineaSeleccionada = lineaSeleccionada,
+                    paradas = paradas,
+                    viewModel = viewModel,
+                    ubicacionUsuario = ubicacionUsuario
+                )
+            } else {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
         }
 
         StopsList(

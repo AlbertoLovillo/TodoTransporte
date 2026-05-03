@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.s25am.todotransporte.database.data.Horario
 import com.s25am.todotransporte.database.data.Parada
-import com.s25am.todotransporte.ui.screens.maps.components.LineListButtom
+import com.s25am.todotransporte.ui.screens.bus_map.components.LineListButtom
 import com.s25am.todotransporte.ui.theme.TodoTransporteTheme
 
 /**

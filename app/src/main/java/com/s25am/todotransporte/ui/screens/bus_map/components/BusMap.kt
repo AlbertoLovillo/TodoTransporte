@@ -1,4 +1,4 @@
-package com.s25am.todotransporte.ui.screens.maps.components
+package com.s25am.todotransporte.ui.screens.bus_map.components
 
 import android.location.Location
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +15,7 @@ import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotation
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
-import com.s25am.todotransporte.ui.screens.maps.MapsViewModel
+import com.s25am.todotransporte.ui.screens.bus_map.MapsViewModel
 import android.graphics.Color as AndroidColor
 
 @OptIn(MapboxExperimental::class)

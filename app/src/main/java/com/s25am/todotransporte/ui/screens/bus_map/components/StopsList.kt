@@ -1,4 +1,4 @@
-package com.s25am.todotransporte.ui.screens.maps.components
+package com.s25am.todotransporte.ui.screens.bus_map.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
-import com.s25am.todotransporte.ui.screens.maps.MapsViewModel
+import com.s25am.todotransporte.ui.screens.bus_map.MapsViewModel
 
 @Composable
 fun StopsList(
