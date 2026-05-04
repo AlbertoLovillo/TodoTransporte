@@ -81,9 +81,7 @@ fun BuyTicketScreen(viewModel: WalletViewModel = viewModel(), // Compartimos el 
                 onQueryChange = { searchText = it }
             )
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
+                modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -99,7 +97,10 @@ fun BuyTicketScreen(viewModel: WalletViewModel = viewModel(), // Compartimos el 
                     CardCompra(
                         opcion = opcion,
                         onBuyClick = {
-                            viewModel.addTicket(opcion)
+                            val ticketParaGuardar = opcion.copy(
+                                id = java.util.UUID.randomUUID().toString()
+                            )
+                            viewModel.addTicket(ticketParaGuardar)
                             // TODO: Aquí irá la lógica para insertar en Supabase
                             println("Comprando: ${opcion.titulo}")
                             onBack()

@@ -24,6 +24,7 @@ import com.s25am.todotransporte.R
 import com.s25am.todotransporte.ui.screens.wallet.componetsWallet.TicketItem
 import com.s25am.todotransporte.ui.screens.wallet.viewModel.WalletViewModel
 import com.s25am.todotransporte.ui.screens.wallet.componetsWallet.QrDialog
+import com.s25am.todotransporte.ui.screens.wallet.componetsWallet.SwipeableTicketItem
 
 @Composable
 fun WalletScreen(viewModel: WalletViewModel = viewModel()) {
@@ -109,11 +110,12 @@ fun WalletScreen(viewModel: WalletViewModel = viewModel()) {
             }
 
             // Aquí dibujamos cada billete de la lista
-            items(uiState.listaTikets) { billete ->
-                TicketItem(
+            items(uiState.listaTikets, key = { it.id }) { billete -> // Usar key mejora las animaciones
+                SwipeableTicketItem(
                     ticket = billete,
-                    onQrClick = {
-                        billeteSeleccionadoId = billete.id
+                    onQrClick = { billeteSeleccionadoId = billete.id },
+                    onDeleteConfirm = {
+                        viewModel.deleteTicket(billete) // Llamamos a la función de borrado
                     }
                 )
             }

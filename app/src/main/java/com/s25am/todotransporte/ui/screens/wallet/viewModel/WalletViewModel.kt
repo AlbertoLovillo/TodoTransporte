@@ -21,9 +21,7 @@ class WalletViewModel: ViewModel() {
      */
     private fun fetchSavedTickets() {
         viewModelScope.launch {
-            // TODO: Cargar aquí los tickets desde Supabase
-            //Estaba pensando en usar los email como forma de identificar al usuario
-            // para que no aparezcan los billetes a todos
+            // TODO:cargar aquí los tickets filtrando por el email del usuario logueado
 
             _uiState.value = WalletUiState(listaTikets = emptyList())
         }
@@ -36,12 +34,29 @@ class WalletViewModel: ViewModel() {
         val listaActualizada = _uiState.value.listaTikets + nuevoTicket
         _uiState.value = _uiState.value.copy(listaTikets = listaActualizada)
 
-        // Persistencia en segundo plano
         viewModelScope.launch {
             try {
-                // TODO: Insertar aquí el nuevoTicket en la tabla de Supabase
+                // TODO:insertar aquí el nuevoTicket vinculado al email del usuario
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
-                println("Local: Ticket añadido a la lista. Pendiente subir a DB: ${nuevoTicket.titulo}")
+    /**
+     * Función para eliminar un ticket (Swipe to dismiss)
+     */
+    fun deleteTicket(ticketAEliminar: Tikets) {
+        // Borrado local inmediato para que la UI se actualice rápido
+        val listaActualizada = _uiState.value.listaTikets.filter { it.id != ticketAEliminar.id }
+        _uiState.value = _uiState.value.copy(listaTikets = listaActualizada)
+
+        viewModelScope.launch {
+            try {
+                // TODO: eliminar aquí el ticket de Supabase usando el ID
+                // Asegúrate de que solo se borre si pertenece al email del usuario actual
+
+                println("Local: Ticket eliminado. Pendiente borrar en DB: ${ticketAEliminar.titulo}")
             } catch (e: Exception) {
                 e.printStackTrace()
             }
