@@ -37,13 +37,17 @@ fun BuyTicketScreen(viewModel: WalletViewModel = viewModel(), // Compartimos el 
     val lineasReales by scheduleViewModel.lineas.collectAsState()
     var searchText by remember { mutableStateOf("") }
 
+    //obtener la fecha de hoy formateada
+    val sdf = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+    val fechaHoy = sdf.format(java.util.Calendar.getInstance().time)
+
     // Transformamos cada "Linea" en un objeto "Tikets" (tu clase de datos)
     val opcionesCompra = lineasReales.map { linea ->
         Tikets(
             id = linea.id.toString(),
             titulo = "Billete Línea ${linea.nombre}", // Ej: Billete Línea L1
             trayecto = "Trayecto: ${linea.nombre}",   // Aquí colocamos la línea automáticamente
-            fecha = "30/04/2026",                   // Fecha fija o calculada
+            fecha = fechaHoy,                   // Fecha fija o calculada
             precio = "1.50€"                         // Precio (podrías añadirlo a la tabla Linea)
         )
     }.filter { it.titulo.contains(searchText, ignoreCase = true) }

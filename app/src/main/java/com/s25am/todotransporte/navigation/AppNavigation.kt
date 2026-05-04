@@ -76,7 +76,7 @@ fun AppNavigation(
                 entry<Routes.ByTickets> {
                     BuyTicketScreen(
                         onBack = {
-                            backStack.removeLastOrNull()
+                            backStack.add(Routes.Wallet)
                         }
                     )
                 }
