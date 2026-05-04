@@ -63,7 +63,7 @@ fun CardCompra(opcion: Tikets, onBuyClick: () -> Unit) {
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(opcion.titulo, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(opcion.titulo, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = colorResource(id = R.color.rojoFlojito))
                 Text(opcion.trayecto, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
                 Text(opcion.fecha, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
                 Text(

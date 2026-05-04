@@ -80,13 +80,11 @@ dependencies {
 
     // Iconos básicos y extra
     implementation("androidx.compose.material:material-icons-core")
-
-    // Iconos extra
     implementation("androidx.compose.material:material-icons-extended")
-
-    // Librería para generar códigos QR
-    implementation("com.google.zxing:core:3.5.3")
 
     // Ubicacion a tiempo real
     implementation("com.google.android.gms:play-services-location:21.2.0")
+
+    // Librería para generar códigos QR
+    implementation("com.google.zxing:core:3.5.3")
 }
