@@ -9,9 +9,14 @@ import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
 import com.s25am.todotransporte.database.data.RespuestaParada
 import com.s25am.todotransporte.database.data.RutaGeometria
+import com.s25am.todotransporte.database.data.BusPosition
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -21,6 +26,7 @@ import java.util.TimeZone
 
 class MapsViewModel : ViewModel() {
     private val supabase = SupabaseClient.client
+    private val httpClient = HttpClient()
 
     private val _lineas = MutableStateFlow<List<Linea>>(emptyList())
     val lineas: StateFlow<List<Linea>> = _lineas
@@ -49,12 +55,65 @@ class MapsViewModel : ViewModel() {
     private val _destino = MutableStateFlow<String?>(null)
     val destino: StateFlow<String?> = _destino
 
-
+    private val _busesEnTiempoReal = MutableStateFlow<List<BusPosition>>(emptyList()) // Tiempo real: Almacena la ubicación de los buses
+    val busesEnTiempoReal: StateFlow<List<BusPosition>> = _busesEnTiempoReal
 
     init {
         cargarLineas()
+        iniciarSeguimientoBuses()
     }
 
+    /**
+     * Tiempo real: Inicia un bucle que descarga la ubicación de los buses cada minuto
+     */
+    private fun iniciarSeguimientoBuses() {
+        viewModelScope.launch {
+            while (true) {
+                actualizarPosicionesBuses()
+                delay(60000) // 1 minuto
+            }
+        }
+    }
+
+    /**
+     * Tiempo real- Descarga el CSV de OpenData Málaga y filtra los buses por línea y sentido
+     */
+    private suspend fun actualizarPosicionesBuses() {
+        try {
+            val url = "https://datosabiertos.malaga.eu/recursos/transporte/EMT/EMTlineasUbicaciones/lineasyubicaciones.csv"
+            val response = httpClient.get(url)
+            val csvText = response.bodyAsText()
+            
+            val lineasCsv = csvText.lines().drop(1) // Quitamos la cabecera
+            val todosLosBuses = lineasCsv.mapNotNull { linea ->
+                val datos = linea.replace("\"", "").split(",")
+                if (datos.size >= 7) {
+                    BusPosition(
+                        codBus = datos[0],
+                        codLinea = datos[1],
+                        sentido = datos[2].toIntOrNull() ?: 1,
+                        lon = datos[3].toDoubleOrNull() ?: 0.0,
+                        lat = datos[4].toDoubleOrNull() ?: 0.0,
+                        lastUpdate = datos[6]
+                    )
+                } else null
+            }
+
+            // Normalización para comparar: "41" -> "41.0"
+            val codigoLineaSeleccionada = _selectedLinea.value?.codigo ?: ""
+            val codigoNormalizado = if (codigoLineaSeleccionada.toDoubleOrNull() != null) {
+                codigoLineaSeleccionada.toDouble().toString()
+            } else {
+                codigoLineaSeleccionada
+            }
+            
+            _busesEnTiempoReal.value = todosLosBuses.filter { 
+                it.codLinea == codigoNormalizado && it.sentido == (_direccionActual.value + 1)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
     /**
      * Función que carga todas las líneas disponibles desde la base de datos.
@@ -89,7 +148,7 @@ class MapsViewModel : ViewModel() {
         actualizarNombreDestino(linea.id, 0)
         cerrarDialogo()
         cargarDatosPorSentido(linea.id, 0)
-
+        viewModelScope.launch { actualizarPosicionesBuses() }
     }
 
 
@@ -104,6 +163,7 @@ class MapsViewModel : ViewModel() {
 
         cerrarDialogo()
         cargarDatosPorSentido(lineaActual.id, nuevaDireccion)
+        viewModelScope.launch { actualizarPosicionesBuses() }
     }
 
 

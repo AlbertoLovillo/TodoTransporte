@@ -13,6 +13,7 @@ import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotation
+import com.s25am.todotransporte.database.data.BusPosition
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
 import com.s25am.todotransporte.ui.screens.bus_map.MapsViewModel
@@ -24,6 +25,7 @@ fun BusMap(
     estadoCamara: MapViewportState,
     lineaSeleccionada: Linea?,
     paradas: List<Parada>,
+    busesEnTiempoReal: List<BusPosition>,
     viewModel: MapsViewModel,
     ubicacionUsuario: Location?
 ) {
@@ -79,6 +81,17 @@ fun BusMap(
                 circleColorInt = AndroidColor.BLUE,
                 circleStrokeWidth = 2.0,
                 circleStrokeColorInt = AndroidColor.WHITE
+            )
+        }
+
+        // TIEMPO REAL: Dibujamos los buses detectados en el CSV
+        busesEnTiempoReal.forEach { bus ->
+            CircleAnnotation(
+                point = Point.fromLngLat(bus.lon, bus.lat),
+                circleRadius = 7.0,
+                circleColorInt = AndroidColor.parseColor("#FFD700"), // Dorado/Amarillo para Tiempo Real
+                circleStrokeWidth = 2.0,
+                circleStrokeColorInt = AndroidColor.BLACK
             )
         }
     }

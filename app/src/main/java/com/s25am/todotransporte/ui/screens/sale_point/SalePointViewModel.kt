@@ -24,7 +24,6 @@ class SalePointViewModel : ViewModel() {
         cargarPuntosVenta()
     }
 
-
     /**
      * Descarga todos los puntos de venta de Supabase de una vez.
      */

@@ -53,6 +53,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.s25am.todotransporte.database.data.Horario
+import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
 import com.s25am.todotransporte.ui.screens.bus_map.components.LineListButtom
 import com.s25am.todotransporte.ui.theme.TodoTransporteTheme
@@ -64,6 +65,7 @@ import com.s25am.todotransporte.ui.theme.TodoTransporteTheme
 fun ItemParada(
     parada: Parada,
     proximoBusHora: String?,
+    tieneBusCerca: Boolean,
     onClick: () -> Unit
 ) {
     var esFavorito by remember { mutableStateOf(false) }
@@ -87,13 +89,18 @@ fun ItemParada(
                 modifier = Modifier
                     .size(52.dp)
                     .clip(CircleShape)
-                    .background(colorPrimario.copy(alpha = 0.1f)),
+                    .background(
+                        // TIEMPO REAL: Si hay bus cerca, resaltamos en dorado
+                        if (tieneBusCerca) Color(0xFFFFD700).copy(alpha = 0.2f) 
+                        else colorPrimario.copy(alpha = 0.1f)
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = Icons.Default.LocationOn,
+                    // TIEMPO REAL: Cambiamos icono si hay un bus en directo
+                    imageVector = if (tieneBusCerca) Icons.Default.DirectionsBus else Icons.Default.LocationOn,
                     contentDescription = null,
-                    tint = colorPrimario,
+                    tint = if (tieneBusCerca) Color(0xFFB8860B) else colorPrimario,
                     modifier = Modifier.size(26.dp)
                 )
             }
@@ -105,11 +112,22 @@ fun ItemParada(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
-                Text(
-                    text = "Próximo bus: ${proximoBusHora ?: "Consultando..."}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (tieneBusCerca) {
+                        // TIEMPO REAL: Etiqueta de aviso en directo
+                        Text(
+                            text = "● EN DIRECTO ",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color(0xFFB8860B),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    Text(
+                        text = "Próximo bus: ${proximoBusHora ?: "Consultando..."}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
 
             IconButton(
@@ -181,8 +199,7 @@ fun AlertDialogParada(
                             }
                             Text(
                                 text = horario.hora_llegada,
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }
@@ -204,7 +221,6 @@ fun AlertDialogParada(
 /**
  * 3. PANTALLA PRINCIPAL
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScheduleScreen(
     viewModel: ScheduleViewModel = viewModel()
@@ -216,15 +232,46 @@ fun ScheduleScreen(
     val paradaSeleccionada by viewModel.paradaSeleccionada.collectAsState()
     val horariosParada by viewModel.horariosParada.collectAsState()
     val direccionActual by viewModel.direccionActual.collectAsState()
+    val paradasConBus by viewModel.paradasConBusEnTiempoReal.collectAsState()
 
+    ScheduleContent(
+        lineas = lineas,
+        lineaSeleccionada = lineaSeleccionada,
+        paradas = paradas,
+        proximosBuses = proximosBuses,
+        paradaSeleccionada = paradaSeleccionada,
+        horariosParada = horariosParada,
+        direccionActual = direccionActual,
+        paradasConBus = paradasConBus,
+        onAlternarDireccion = { viewModel.alternarDireccion() },
+        onSeleccionarLinea = { viewModel.seleccionarLinea(it) },
+        onMostrarInfoParada = { viewModel.mostrarInfoParada(it) },
+        onCerrarDialogo = { viewModel.cerrarDialogo() }
+    )
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ScheduleContent(
+    lineas: List<Linea>,
+    lineaSeleccionada: Linea?,
+    paradas: List<Parada>,
+    proximosBuses: Map<Int, String>,
+    paradaSeleccionada: Parada?,
+    horariosParada: List<Horario>,
+    direccionActual: Int,
+    paradasConBus: Set<Int>,
+    onAlternarDireccion: () -> Unit,
+    onSeleccionarLinea: (Linea) -> Unit,
+    onMostrarInfoParada: (Parada) -> Unit,
+    onCerrarDialogo: () -> Unit
+) {
     if (paradaSeleccionada != null) {
         AlertDialogParada(
-            parada = paradaSeleccionada!!,
+            parada = paradaSeleccionada,
             horarios = horariosParada,
-            onDismiss = { viewModel.cerrarDialogo() }
+            onDismiss = onCerrarDialogo
         )
     }
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -262,7 +309,7 @@ fun ScheduleScreen(
             ) {
 
                 IconButton(
-                    onClick = { viewModel.alternarDireccion() },
+                    onClick = onAlternarDireccion,
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .clip(CircleShape)
@@ -284,12 +331,11 @@ fun ScheduleScreen(
                         LineListButtom(
                             linea = linea,
                             estaSeleccionada = linea.id == lineaSeleccionada?.id,
-                            onClick = { viewModel.seleccionarLinea(linea) }
+                            onClick = { onSeleccionarLinea(linea) }
                         )
                     }
                 }
             }
-
             LazyColumn(
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -299,18 +345,34 @@ fun ScheduleScreen(
                     ItemParada(
                         parada = parada,
                         proximoBusHora = proximosBuses[parada.id],
-                        onClick = { viewModel.mostrarInfoParada(parada) }
+                        tieneBusCerca = paradasConBus.contains(parada.id),
+                        onClick = { onMostrarInfoParada(parada) }
                     )
                 }
             }
         }
     }
 }
-
 @Preview(showBackground = true)
 @Composable
 fun SchedulePreview() {
     TodoTransporteTheme {
-        ScheduleScreen()
+        val dummyLinea = Linea(id = 1, codigo = "L1", nombre = "Línea 1", color = "#FF0000", rutaGeojson = null)
+        val dummyParada = Parada(id = 1, nombre = "Parada Central", latitud = 0.0, longitud = 0.0)
+
+        ScheduleContent(
+            lineas = listOf(dummyLinea),
+            lineaSeleccionada = dummyLinea,
+            paradas = listOf(dummyParada),
+            proximosBuses = mapOf(1 to "10:30"),
+            paradaSeleccionada = null,
+            horariosParada = emptyList(),
+            direccionActual = 0,
+            paradasConBus = emptySet(),
+            onAlternarDireccion = {},
+            onSeleccionarLinea = {},
+            onMostrarInfoParada = {},
+            onCerrarDialogo = {}
+        )
     }
 }
