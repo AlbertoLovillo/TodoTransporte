@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.Route
 import androidx.compose.material.icons.filled.Storefront
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -55,6 +56,18 @@ fun MainNavigationBar(
                 onClick = { onNavigate(Routes.Maps) },
                 icon = { Icon(Icons.Default.Place, contentDescription = "Mapa") },
 //                label = { Text("Mapa") },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = colorResource(id = R.color.RojoP),
+                    unselectedIconColor = Color.Gray,
+                    indicatorColor = colorResource(id = R.color.rojoFlojito).copy(alpha = 0.2f)
+                )
+            )
+
+            // Ítem: RUTA
+            NavigationBarItem(
+                selected = currentRoute == Routes.Route,
+                onClick = { onNavigate(Routes.Route) },
+                icon = { Icon(Icons.Default.Route, contentDescription = "Ruta") },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorResource(id = R.color.RojoP),
                     unselectedIconColor = Color.Gray,

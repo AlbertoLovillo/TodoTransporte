@@ -3,21 +3,12 @@ package com.s25am.todotransporte.ui.screens.wallet
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.s25am.todotransporte.database.SupabaseClient
+import com.s25am.todotransporte.database.data.Ticket
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
-/**
- * Modelo de datos para representar un billete o abono de transporte.
- */
-data class Ticket(
-    val id: String,
-    val type: String,
-    val description: String,
-    val price: Double
-)
 
 /**
  * ViewModel encargado de gestionar la lógica de la cartera y la compra de billetes.

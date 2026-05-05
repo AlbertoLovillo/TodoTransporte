@@ -12,6 +12,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
 import com.s25am.todotransporte.R
 import com.s25am.todotransporte.navigation.Routes
 
@@ -23,11 +24,20 @@ fun MainTopBar(
     onBack: () -> Unit
 ) {
     if (currentRoute != Routes.Login && currentRoute != Routes.Register) {
+        val titleText = when (currentRoute) {
+            is Routes.Maps -> "Mapa de Líneas"
+            is Routes.Schedule -> "Líneas y Horarios"
+            is Routes.Wallet -> "Mi Cartera"
+            is Routes.SalePoint -> "Puntos de Venta"
+            is Routes.Route -> "Planificar Ruta"
+            else -> "TodoTransporte"
+        }
+
         TopAppBar(
             title = {
                 Text(
-                    text = "TodoTransporte",
-                    style = MaterialTheme.typography.titleLarge
+                    text = titleText,
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                 )
             },
             navigationIcon = {
