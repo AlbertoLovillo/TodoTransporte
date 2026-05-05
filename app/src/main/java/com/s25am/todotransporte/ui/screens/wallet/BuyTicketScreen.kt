@@ -25,17 +25,26 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.s25am.todotransporte.R
 import com.s25am.todotransporte.ui.screens.schedule.ScheduleViewModel
 import com.s25am.todotransporte.ui.screens.wallet.componetsBuy.CardCompra
+import com.s25am.todotransporte.ui.screens.wallet.componetsBuy.SaldoInsuficienteDialog
 import com.s25am.todotransporte.ui.screens.wallet.componetsBuy.TicketSearchBar
 import com.s25am.todotransporte.ui.screens.wallet.componetsWallet.Tikets
 import com.s25am.todotransporte.ui.screens.wallet.viewModel.WalletViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BuyTicketScreen(viewModel: WalletViewModel = viewModel(), // Compartimos el mismo ViewModel
+fun BuyTicketScreen(viewModel: WalletViewModel = viewModel(),
                     scheduleViewModel: ScheduleViewModel = viewModel(),
                     onBack: () -> Unit) {
     val lineasReales by scheduleViewModel.lineas.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     var searchText by remember { mutableStateOf("") }
+
+    //Cuando no hay suficiente saldo para comprar
+    if (uiState.mostrarErrorSaldo) {
+        SaldoInsuficienteDialog(
+            onDismiss = { viewModel.dismissErrorSaldo() }
+        )
+    }
 
     //obtener la fecha de hoy formateada
     val sdf = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
@@ -73,9 +82,9 @@ fun BuyTicketScreen(viewModel: WalletViewModel = viewModel(), // Compartimos el 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding) // Aplicamos el padding del Scaffold aquí
+                .padding(padding)
         ) {
-            // 1. LLAMAMOS AL BUSCADOR (Se queda fijo arriba)
+            // BUSCADOR
             TicketSearchBar(
                 query = searchText,
                 onQueryChange = { searchText = it }
@@ -92,7 +101,7 @@ fun BuyTicketScreen(viewModel: WalletViewModel = viewModel(), // Compartimos el 
                         color = Color.Gray
                     )
                 }
-
+                //Los billetes
                 items(opcionesCompra) { opcion ->
                     CardCompra(
                         opcion = opcion,
@@ -100,10 +109,12 @@ fun BuyTicketScreen(viewModel: WalletViewModel = viewModel(), // Compartimos el 
                             val ticketParaGuardar = opcion.copy(
                                 id = java.util.UUID.randomUUID().toString()
                             )
-                            viewModel.addTicket(ticketParaGuardar)
+                            viewModel.addTicket(ticketParaGuardar, 1.50)
                             // TODO: Aquí irá la lógica para insertar en Supabase
                             println("Comprando: ${opcion.titulo}")
-                            onBack()
+                            if (uiState.saldo >= 1.50) {
+                                onBack()
+                            }
                         }
                     )
                 }

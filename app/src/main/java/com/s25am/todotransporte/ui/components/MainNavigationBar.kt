@@ -88,7 +88,7 @@ fun MainNavigationBar(
                     indicatorColor = colorResource(id = R.color.rojoFlojito).copy(alpha = 0.2f)
                 )
             )
-            // Ítem: COMPRAR (NUEVO)
+            // Ítem: COMPRAR
             NavigationBarItem(
                 selected = currentRoute == Routes.ByTickets, // Tu nueva ruta
                 onClick = { onNavigate(Routes.ByTickets) },

@@ -61,44 +61,81 @@ fun WalletScreen(viewModel: WalletViewModel = viewModel()) {
                     color = colorResource(id = R.color.RojoP)
                 )
             }
-
-            // --- SECCIÓN TARJETA FÍSICA
+            //Saldo
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
-                        containerColor = colorResource(id = R.color.rojoFlojito).copy(alpha = 0.1f)
+                        containerColor = colorResource(id = R.color.RojoP)
                     ),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(24.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(24.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            "Tarjeta Física (NFC)",
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black
+                            "Saldo Disponible",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = Color.White.copy(alpha = 0.8f)
                         )
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Button(
-                            onClick = { /* TODO: NFC */ },
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .padding(vertical = 12.dp) // Espaciado arriba y abajo de la línea
+                                .fillMaxWidth(),           // Recorre la caja de izquierda a derecha
+                            thickness = 4.dp,              // Grosor de la línea
+                            color = Color.White
+                        )
+
+                        // USAMOS EL SALDO REAL DEL UI STATE
+                        // String.format("%.2f", ...) sirve para mostrar siempre 2 decimales (0,00)
+                        Text(
+                            text = "${String.format("%.2f", uiState.saldo)} €",
+                            style = MaterialTheme.typography.headlineLarge,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = Color.White,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Row(
                             modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.RojoP))
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            Text("Leer Tarjeta")
-                        }
-                        Button(
-                            onClick = { /* TODO: NFC */ },
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.RojoP))
-                        ) {
-                            Text("Recargar saldo")
+                            // BOTÓN RECARGAR CONECTADO
+                            Button(
+                                onClick = {
+                                    // Aquí llamamos a la función del ViewModel que creamos antes
+                                    viewModel.recargarSaldo(10.0)
+                                },
+                                modifier = Modifier.weight(1f),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.White,
+                                    contentColor = colorResource(id = R.color.RojoP)
+                                ),
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                Text("Recargar 10€", fontWeight = FontWeight.Bold)
+                            }
+
+                            Button(
+                                onClick = { /* TODO: Historial */ },
+                                modifier = Modifier.weight(1f),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.White,
+                                    contentColor = colorResource(id = R.color.RojoP)
+                                ),
+                                border = androidx.compose.foundation.BorderStroke(1.dp, Color.White),
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                Text("Historial")
+                            }
                         }
                     }
                 }
             }
-
             // --- SECCIÓN MIS BILLETES (La lista dinámica) ---
             item {
                 Text(
