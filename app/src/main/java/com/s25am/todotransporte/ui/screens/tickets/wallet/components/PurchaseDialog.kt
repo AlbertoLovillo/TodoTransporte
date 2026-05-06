@@ -20,15 +20,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.s25am.todotransporte.database.data.Ticket
+import com.s25am.todotransporte.database.data.Billete
 
 /**
  * Componente UI: Diálogo de confirmación de compra.
  * Se muestra cuando el usuario hace clic en un billete para comprarlo.
  */
+/*
 @Composable
 fun PurchaseDialog(
-    ticket: Ticket,         // El billete que se ha seleccionado para comprar
+    ticket: Billete,         // El billete que se ha seleccionado para comprar
     onConfirm: () -> Unit,  // Función que se ejecuta al confirmar el pago
     onDismiss: () -> Unit   // Función que se ejecuta al cancelar o cerrar el diálogo
 ) {
@@ -91,3 +92,5 @@ fun PurchaseDialog(
         containerColor = MaterialTheme.colorScheme.surface
     )
 }
+
+ */

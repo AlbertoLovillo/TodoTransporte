@@ -3,13 +3,15 @@ package com.s25am.todotransporte.ui.screens.tickets.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.s25am.todotransporte.database.SupabaseClient
+import com.s25am.todotransporte.database.data.Billete
 import com.s25am.todotransporte.database.data.Linea
-import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.Tickets
+import com.s25am.todotransporte.database.data.Usuario
+import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
-import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TicketsViewModel: ViewModel() {
@@ -26,7 +28,15 @@ class TicketsViewModel: ViewModel() {
 
     init {
         cargarLineas()
-        fetchSavedTickets()
+        fetchSavedBilletesYSaldo()
+    }
+
+
+    /**
+     * 1. FUNCIÓN RECUPERADA: Obtiene el email del usuario logueado actualmente
+     */
+    private fun obtenerEmailUsuario(): String? {
+        return supabase.auth.currentUserOrNull()?.email
     }
 
 
@@ -38,12 +48,11 @@ class TicketsViewModel: ViewModel() {
             try {
                 val resultado = supabase.from("Linea")
                     .select {
-                        order("id", order = Order.ASCENDING)
+                        order("id", order = io.github.jan.supabase.postgrest.query.Order.ASCENDING)
                     }
                     .decodeList<Linea>()
 
                 _lineas.value = resultado
-
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -51,34 +60,67 @@ class TicketsViewModel: ViewModel() {
     }
 
 
-
     /**
-     * Carga inicial de tickets
+     * Carga inicial de billetes y saldo filtrando por el email del usuario
      */
-    private fun fetchSavedTickets() {
-        viewModelScope.launch {
-            // TODO:cargar aquí los tickets filtrando por el email del usuario logueado
+    private fun fetchSavedBilletesYSaldo() {
+        val email = obtenerEmailUsuario() ?: return
 
-            _uiState.value = TicketUiState(listaTickets = emptyList())
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isLoading = true) }
+
+                val usuario = supabase.from("Usuario")
+                    .select { filter { eq("email", email) } }
+                    .decodeSingleOrNull<Usuario>()
+
+                val saldoActual = usuario?.saldo ?: 0.0
+
+                val misBilletes = supabase.from("Billete")
+                    .select { filter { eq("email_usuario", email) } }
+                    .decodeList<Billete>()
+
+                _uiState.update {
+                    it.copy(
+                        listaBilletes = misBilletes,
+                        saldo = saldoActual,
+                        isLoading = false
+                    )
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _uiState.update { it.copy(isLoading = false) }
+            }
         }
     }
 
 
     fun dismissErrorSaldo() {
-        _uiState.value = _uiState.value.copy(mostrarErrorSaldo = false)
+        _uiState.update { it.copy(mostrarErrorSaldo = false) }
     }
 
 
     /**
-     * Funcion para recargarSaldo
+     * Funcion para recargar Saldo
      */
     fun recargarSaldo(cantidad: Double) {
+        val email = obtenerEmailUsuario() ?: return
         val nuevoSaldo = _uiState.value.saldo + cantidad
-        _uiState.value = _uiState.value.copy(saldo = nuevoSaldo)
+
+        _uiState.update { it.copy(saldo = nuevoSaldo) }
 
         viewModelScope.launch {
-            // TODO: aquí hay que hacer un UPDATE para el saldo
-            println("Saldo recargado localmente: $nuevoSaldo")
+            try {
+                supabase.from("Usuario").update(
+                    {
+                        set("saldo", nuevoSaldo)
+                    }
+                ) {
+                    filter { eq("email", email) }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -86,27 +128,41 @@ class TicketsViewModel: ViewModel() {
     /**
      * Función para añadir un ticket comprado
      */
-    fun addTicket(nuevoTicket: Tickets, precio: Double) {
-        if (_uiState.value.saldo >= precio) {
+    fun addTicket(nuevoBilleteBase: Billete, precio: Double) {
+        val email = obtenerEmailUsuario() ?: return
 
-            val nuevaLista = _uiState.value.listaTickets + nuevoTicket
+        if (_uiState.value.saldo >= precio) {
+            val billeteParaGuardar = nuevoBilleteBase.copy(email_usuario = email)
+
+            val nuevaLista = _uiState.value.listaBilletes + billeteParaGuardar
             val nuevoSaldo = _uiState.value.saldo - precio
 
-            _uiState.value = _uiState.value.copy(
-                listaTickets = nuevaLista,
-                saldo = nuevoSaldo
-            )
+            _uiState.update {
+                it.copy(
+                    listaBilletes = nuevaLista,
+                    saldo = nuevoSaldo
+                )
+            }
 
             viewModelScope.launch {
                 try {
-                    // TODO: aquí debes restar el 'precio' al saldo del usuario y añadir el 'nuevoTicket' en la base de datos.
-                    println("Compra realizada: ${nuevoTicket.titulo}. Saldo restante: $nuevoSaldo")
+                    supabase.from("Billete").insert(billeteParaGuardar)
+
+                    // Actualizamos solo el saldo en la tabla Usuario
+                    supabase.from("Usuario").update(
+                        {
+                            set("saldo", nuevoSaldo)
+                        }
+                    ) {
+                        filter { eq("email", email) }
+                    }
+
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
         } else {
-            _uiState.value = _uiState.value.copy(mostrarErrorSaldo = true)
+            _uiState.update { it.copy(mostrarErrorSaldo = true) }
         }
     }
 
@@ -114,19 +170,24 @@ class TicketsViewModel: ViewModel() {
     /**
      * Función para eliminar un ticket (Swipe to dismiss)
      */
-    fun deleteTicket(ticketAEliminar: Tickets) {
-        val listaActualizada = _uiState.value.listaTickets.filter { it.id != ticketAEliminar.id }
-        _uiState.value = _uiState.value.copy(listaTickets = listaActualizada)
+    fun deleteTicket(billeteAEliminar: Billete) {
+        val email = obtenerEmailUsuario() ?: return
+
+        val listaActualizada = _uiState.value.listaBilletes.filter { it.id != billeteAEliminar.id }
+        _uiState.update { it.copy(listaBilletes = listaActualizada) }
 
         viewModelScope.launch {
             try {
-                // TODO: eliminar aquí el ticket de Supabase usando el ID
-                // que solo se borre si pertenece al email del usuario actual
-
-                println("Local: Ticket eliminado. Pendiente borrar en DB: ${ticketAEliminar.titulo}")
+                supabase.from("Billete").delete {
+                    filter {
+                        eq("id", billeteAEliminar.id)
+                        eq("email_usuario", email)
+                    }
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
+
 }

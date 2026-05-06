@@ -25,9 +25,10 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.s25am.todotransporte.R
+import com.s25am.todotransporte.database.data.Billete
 
 @Composable
-fun TicketItem(ticket: Tickets, onQrClick: () -> Unit) {
+fun TicketItem(ticket: Billete, onQrClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color.White),

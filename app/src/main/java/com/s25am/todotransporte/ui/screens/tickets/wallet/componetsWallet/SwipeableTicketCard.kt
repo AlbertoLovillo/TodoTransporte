@@ -27,11 +27,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.s25am.todotransporte.R
+import com.s25am.todotransporte.database.data.Billete
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwipeableTicketItem(
-    ticket: Tickets,
+    ticket: Billete,
     onQrClick: () -> Unit,
     onDeleteConfirm: () -> Unit
 ) {

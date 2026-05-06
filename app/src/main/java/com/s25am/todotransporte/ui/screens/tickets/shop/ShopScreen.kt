@@ -40,7 +40,7 @@ import com.s25am.todotransporte.ui.screens.tickets.shop.components.CardCompra
 import com.s25am.todotransporte.ui.screens.tickets.shop.components.SaldoInsuficienteDialog
 import com.s25am.todotransporte.ui.screens.tickets.shop.components.TicketSearchBar
 import com.s25am.todotransporte.ui.screens.tickets.viewModel.TicketsViewModel
-import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.Tickets
+import com.s25am.todotransporte.database.data.Billete
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -70,7 +70,7 @@ fun ShopScreen(
 
     // Transformamos cada "Linea" en un objeto "Tickets" (tu clase de datos)
     val opcionesCompra = lineasList.map { linea ->
-        Tickets(
+        Billete(
             id = linea.id.toString(),
             titulo = "Billete Línea ${linea.codigo}", // Ej: Billete Línea L1
             trayecto = "Trayecto: ${linea.nombre}",   // Aquí colocamos la línea automáticamente
