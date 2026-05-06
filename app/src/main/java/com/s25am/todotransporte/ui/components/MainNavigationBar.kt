@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Storefront
@@ -30,31 +31,18 @@ fun MainNavigationBar(
     onNavigate: (Any) -> Unit
 ) {
 
-    // Solo mostramos la barra si NO estamos en Login o Registro
     if (currentRoute != Routes.Login && currentRoute != Routes.Register) {
         NavigationBar(
             containerColor = Color.White,
             contentColor = colorResource(id = R.color.RojoP),
             modifier = Modifier.height(90.dp)
         ) {
+
             NavigationBarItem(
                 selected = currentRoute == Routes.SalePoint,
                 onClick = { onNavigate(Routes.SalePoint) },
-                icon = { Icon(Icons.Default.Storefront, contentDescription = "Cartera") },
+                icon = { Icon(Icons.Default.Storefront, contentDescription = "Puntos de Venta") },
 //                label = { Text("Puntos venta") },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = colorResource(id = R.color.RojoP),
-                    unselectedIconColor = Color.Gray,
-                    indicatorColor = colorResource(id = R.color.rojoFlojito).copy(alpha = 0.2f)
-                )
-            )
-
-            // Ítem: MAPA
-            NavigationBarItem(
-                selected = currentRoute == Routes.Maps,
-                onClick = { onNavigate(Routes.Maps) },
-                icon = { Icon(Icons.Default.Place, contentDescription = "Mapa") },
-//                label = { Text("Mapa") },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorResource(id = R.color.RojoP),
                     unselectedIconColor = Color.Gray,
@@ -75,12 +63,40 @@ fun MainNavigationBar(
                 )
             )
 
+            // Ítem: MAPA
+            NavigationBarItem(
+                selected = currentRoute == Routes.Maps,
+                onClick = { onNavigate(Routes.Maps) },
+                icon = { Icon(Icons.Default.Place, contentDescription = "Mapa de Buses") },
+//                label = { Text("Mapa") },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = colorResource(id = R.color.RojoP),
+                    unselectedIconColor = Color.Gray,
+                    indicatorColor = colorResource(id = R.color.rojoFlojito).copy(alpha = 0.2f)
+                )
+            )
+
             // Ítem: CARTERA
             NavigationBarItem(
                 selected = currentRoute == Routes.Wallet,
                 onClick = { onNavigate(Routes.Wallet) },
                 icon = { Icon(Icons.Default.AccountBalanceWallet, contentDescription = "Cartera") },
 //                label = { Text("Cartera") },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = colorResource(id = R.color.RojoP),
+                    unselectedIconColor = Color.Gray,
+                    indicatorColor = colorResource(id = R.color.rojoFlojito).copy(alpha = 0.2f)
+                )
+            )
+
+            // Ítem: COMPRAR
+            NavigationBarItem(
+                selected = currentRoute == Routes.Shop, // Tu nueva ruta
+                onClick = { onNavigate(Routes.Shop) },
+                icon = {
+                    Icon(Icons.Default.AddShoppingCart, contentDescription = "Tienda")
+                },
+//                label = { Text("Comprar") },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorResource(id = R.color.RojoP),
                     unselectedIconColor = Color.Gray,
@@ -95,20 +111,15 @@ fun MainNavigationBar(
 @Composable
 fun MainNavigationBarPreview() {
     TodoTransporteTheme {
-        // El Scaffold es necesario para que la barra se posicione abajo
         Scaffold(
             bottomBar = {
-                // Le pasamos Maps para ver cómo queda seleccionada
                 MainNavigationBar(
                     currentRoute = Routes.Maps,
                     onNavigate = {}
                 )
             }
         ) { innerPadding ->
-            // IMPORTANTE: Aquí usamos el padding para que el contenido
-            // no se solape con la barra
             Box(modifier = Modifier.padding(innerPadding)) {
-                // Texto de relleno para el preview
                 Text(text = "El contenido de la pantalla va aquí")
             }
         }

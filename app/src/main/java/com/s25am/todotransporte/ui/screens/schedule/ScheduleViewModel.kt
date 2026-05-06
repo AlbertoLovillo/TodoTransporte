@@ -3,6 +3,7 @@ package com.s25am.todotransporte.ui.screens.schedule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.s25am.todotransporte.database.SupabaseClient
+import com.s25am.todotransporte.database.data.BusPosition
 import com.s25am.todotransporte.database.data.Calendario
 import com.s25am.todotransporte.database.data.Horario
 import com.s25am.todotransporte.database.data.Linea
@@ -11,6 +12,10 @@ import com.s25am.todotransporte.database.data.RespuestaParada
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -20,6 +25,7 @@ import java.util.TimeZone
 
 class ScheduleViewModel : ViewModel() {
     private val supabase = SupabaseClient.client
+    private val httpClient = HttpClient()
 
     private val _lineas = MutableStateFlow<List<Linea>>(emptyList())
     val lineas: StateFlow<List<Linea>> = _lineas
@@ -49,10 +55,106 @@ class ScheduleViewModel : ViewModel() {
     private val _destino = MutableStateFlow<String?>(null)
     val destino: StateFlow<String?> = _destino
 
+    private val _busesEnTiempoReal = MutableStateFlow<List<BusPosition>>(emptyList()) // Tiempo real: Ubicaciones actuales
+    val busesEnTiempoReal: StateFlow<List<BusPosition>> = _busesEnTiempoReal
+
+    private val _paradasConBusEnTiempoReal = MutableStateFlow<Set<Int>>(emptySet()) // Tiempo real: Paradas que tienen un bus cerca
+    val paradasConBusEnTiempoReal: StateFlow<Set<Int>> = _paradasConBusEnTiempoReal
+
+
 
     init {
         cargarLineas()
+        iniciarSeguimientoBuses()
     }
+
+
+    /**
+     * Tiempo real: Hilo infinito para actualizar la posición de los buses cada minuto.
+     */
+    private fun iniciarSeguimientoBuses() {
+        viewModelScope.launch {
+            while (true) {
+                actualizarPosicionesBuses()
+                delay(60000)
+            }
+        }
+    }
+
+
+    /**
+     * Tiempo real: Descarga los datos de Málaga OpenData y filtra por la línea activa.
+     */
+    private suspend fun actualizarPosicionesBuses() {
+        try {
+            val url = "https://datosabiertos.malaga.eu/recursos/transporte/EMT/EMTlineasUbicaciones/lineasyubicaciones.csv"
+            val response = httpClient.get(url)
+            val csvText = response.bodyAsText()
+            val lineasCsv = csvText.lines().drop(1)
+            
+            val todosLosBuses = lineasCsv.mapNotNull { linea ->
+                val datos = linea.replace("\"", "").split(",")
+                if (datos.size >= 7) {
+                    BusPosition(
+                        codBus = datos[0],
+                        codLinea = datos[1],
+                        sentido = datos[2].toIntOrNull() ?: 1,
+                        lon = datos[3].toDoubleOrNull() ?: 0.0,
+                        lat = datos[4].toDoubleOrNull() ?: 0.0,
+                        lastUpdate = datos[6]
+                    )
+                } else null
+            }
+
+            val codigoLineaSeleccionada = _selectedLinea.value?.codigo ?: ""
+            val codigoNormalizado = if (codigoLineaSeleccionada.toDoubleOrNull() != null) {
+                codigoLineaSeleccionada.toDouble().toString()
+            } else {
+                codigoLineaSeleccionada
+            }
+
+            val busesFiltrados = todosLosBuses.filter { 
+                it.codLinea == codigoNormalizado && it.sentido == (_direccionActual.value + 1)
+            }
+            _busesEnTiempoReal.value = busesFiltrados
+            
+            actualizarParadasCercanas(busesFiltrados)
+            
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
+    /**
+     * Tiempo real: Calcula qué paradas tienen un bus a menos de X metros.
+     */
+    private fun actualizarParadasCercanas(buses: List<BusPosition>) {
+        val paradasActuales = _paradas.value
+        val paradasConBus = mutableSetOf<Int>()
+        
+        for (parada in paradasActuales) {
+            for (bus in buses) {
+                val distancia = calcularDistancia(parada.latitud, parada.longitud, bus.lat, bus.lon)
+                if (distancia < 0.3) { // 300 metros
+                    paradasConBus.add(parada.id)
+                    break
+                }
+            }
+        }
+        _paradasConBusEnTiempoReal.value = paradasConBus
+    }
+    private fun calcularDistancia(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        val r = 6371 // km
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+        val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2)
+        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+        return r * c
+    }
+
 
     /**
      * Función que carga todas las líneas disponibles desde la base de datos.
@@ -87,6 +189,7 @@ class ScheduleViewModel : ViewModel() {
         actualizarNombreDestino(linea.id, 0)
         cargarParadasDeLinea(linea.id, 0)
         actualizarProximosBuses(linea.id, 0)
+        viewModelScope.launch { actualizarPosicionesBuses() }
     }
 
 
@@ -102,6 +205,7 @@ class ScheduleViewModel : ViewModel() {
         cerrarDialogo()
         cargarParadasDeLinea(lineaActual.id, nuevaDireccion)
         actualizarProximosBuses(lineaActual.id, nuevaDireccion)
+        viewModelScope.launch { actualizarPosicionesBuses() }
     }
 
 
