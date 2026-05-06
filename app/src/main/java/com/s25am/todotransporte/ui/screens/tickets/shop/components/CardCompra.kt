@@ -1,4 +1,4 @@
-package com.s25am.todotransporte.ui.screens.wallet.componetsBuy
+package com.s25am.todotransporte.ui.screens.tickets.shop.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -30,10 +30,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.s25am.todotransporte.R
-import com.s25am.todotransporte.ui.screens.wallet.componetsWallet.Tikets
+import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.Tickets
 
 @Composable
-fun CardCompra(opcion: Tikets, onBuyClick: () -> Unit) {
+fun CardCompra(opcion: Tickets, onBuyClick: () -> Unit) {
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),

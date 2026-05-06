@@ -16,7 +16,7 @@ import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotation
 import com.s25am.todotransporte.database.data.BusPosition
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
-import com.s25am.todotransporte.ui.screens.bus_map.MapsViewModel
+import com.s25am.todotransporte.ui.screens.bus_map.BusMapsViewModel
 import android.graphics.Color as AndroidColor
 
 @OptIn(MapboxExperimental::class)
@@ -26,7 +26,7 @@ fun BusMap(
     lineaSeleccionada: Linea?,
     paradas: List<Parada>,
     busesEnTiempoReal: List<BusPosition>,
-    viewModel: MapsViewModel,
+    viewModel: BusMapsViewModel,
     ubicacionUsuario: Location?
 ) {
     MapboxMap(

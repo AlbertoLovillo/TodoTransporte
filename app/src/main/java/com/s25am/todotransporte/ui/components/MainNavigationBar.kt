@@ -8,7 +8,6 @@ import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.Route
 import androidx.compose.material.icons.filled.Storefront
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -32,43 +31,18 @@ fun MainNavigationBar(
     onNavigate: (Any) -> Unit
 ) {
 
-    // Solo mostramos la barra si NO estamos en Login o Registro
     if (currentRoute != Routes.Login && currentRoute != Routes.Register) {
         NavigationBar(
             containerColor = Color.White,
             contentColor = colorResource(id = R.color.RojoP),
             modifier = Modifier.height(90.dp)
         ) {
+
             NavigationBarItem(
                 selected = currentRoute == Routes.SalePoint,
                 onClick = { onNavigate(Routes.SalePoint) },
                 icon = { Icon(Icons.Default.Storefront, contentDescription = "Cartera") },
 //                label = { Text("Puntos venta") },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = colorResource(id = R.color.RojoP),
-                    unselectedIconColor = Color.Gray,
-                    indicatorColor = colorResource(id = R.color.rojoFlojito).copy(alpha = 0.2f)
-                )
-            )
-
-            // Ítem: MAPA
-            NavigationBarItem(
-                selected = currentRoute == Routes.Maps,
-                onClick = { onNavigate(Routes.Maps) },
-                icon = { Icon(Icons.Default.Place, contentDescription = "Mapa") },
-//                label = { Text("Mapa") },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = colorResource(id = R.color.RojoP),
-                    unselectedIconColor = Color.Gray,
-                    indicatorColor = colorResource(id = R.color.rojoFlojito).copy(alpha = 0.2f)
-                )
-            )
-
-            // Ítem: RUTA
-            NavigationBarItem(
-                selected = currentRoute == Routes.Route,
-                onClick = { onNavigate(Routes.Route) },
-                icon = { Icon(Icons.Default.Route, contentDescription = "Ruta") },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorResource(id = R.color.RojoP),
                     unselectedIconColor = Color.Gray,
@@ -89,6 +63,19 @@ fun MainNavigationBar(
                 )
             )
 
+            // Ítem: MAPA
+            NavigationBarItem(
+                selected = currentRoute == Routes.Maps,
+                onClick = { onNavigate(Routes.Maps) },
+                icon = { Icon(Icons.Default.Place, contentDescription = "Mapa") },
+//                label = { Text("Mapa") },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = colorResource(id = R.color.RojoP),
+                    unselectedIconColor = Color.Gray,
+                    indicatorColor = colorResource(id = R.color.rojoFlojito).copy(alpha = 0.2f)
+                )
+            )
+
             // Ítem: CARTERA
             NavigationBarItem(
                 selected = currentRoute == Routes.Wallet,
@@ -101,10 +88,11 @@ fun MainNavigationBar(
                     indicatorColor = colorResource(id = R.color.rojoFlojito).copy(alpha = 0.2f)
                 )
             )
+
             // Ítem: COMPRAR
             NavigationBarItem(
-                selected = currentRoute == Routes.ByTickets, // Tu nueva ruta
-                onClick = { onNavigate(Routes.ByTickets) },
+                selected = currentRoute == Routes.Shop, // Tu nueva ruta
+                onClick = { onNavigate(Routes.Shop) },
                 icon = {
                     Icon(Icons.Default.AddShoppingCart, contentDescription = "Comprar")
                 },

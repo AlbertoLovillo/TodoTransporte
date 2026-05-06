@@ -1,4 +1,4 @@
-package com.s25am.todotransporte.ui.screens.wallet.components
+package com.s25am.todotransporte.ui.screens.tickets.wallet.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

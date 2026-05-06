@@ -1,21 +1,56 @@
-package com.s25am.todotransporte.ui.screens.wallet.viewModel
+package com.s25am.todotransporte.ui.screens.tickets.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.s25am.todotransporte.ui.screens.wallet.componetsWallet.Tikets
+import com.s25am.todotransporte.database.SupabaseClient
+import com.s25am.todotransporte.database.data.Linea
+import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.Tickets
+import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class WalletViewModel: ViewModel() {
-    private val _uiState = MutableStateFlow(WalletUiState())
-    val uiState: StateFlow<WalletUiState> = _uiState.asStateFlow()
+class TicketsViewModel: ViewModel() {
+    private val supabase = SupabaseClient.client
+
+    private val _uiState = MutableStateFlow(TicketUiState())
+    val uiState: StateFlow<TicketUiState> = _uiState.asStateFlow()
+
+    private val _lineas = MutableStateFlow<List<Linea>>(emptyList())
+    val lineas: StateFlow<List<Linea>> = _lineas
+
+
+
 
     init {
+        cargarLineas()
         fetchSavedTickets()
     }
+
+
+    /**
+     * Función que carga todas las líneas disponibles desde la base de datos.
+     */
+    private fun cargarLineas() {
+        viewModelScope.launch {
+            try {
+                val resultado = supabase.from("Linea")
+                    .select {
+                        order("id", order = Order.ASCENDING)
+                    }
+                    .decodeList<Linea>()
+
+                _lineas.value = resultado
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+
 
     /**
      * Carga inicial de tickets
@@ -24,13 +59,15 @@ class WalletViewModel: ViewModel() {
         viewModelScope.launch {
             // TODO:cargar aquí los tickets filtrando por el email del usuario logueado
 
-            _uiState.value = WalletUiState(listaTikets = emptyList())
+            _uiState.value = TicketUiState(listaTickets = emptyList())
         }
     }
+
 
     fun dismissErrorSaldo() {
         _uiState.value = _uiState.value.copy(mostrarErrorSaldo = false)
     }
+
 
     /**
      * Funcion para recargarSaldo
@@ -45,17 +82,18 @@ class WalletViewModel: ViewModel() {
         }
     }
 
+
     /**
      * Función para añadir un ticket comprado
      */
-    fun addTicket(nuevoTicket: Tikets, precio: Double) {
+    fun addTicket(nuevoTicket: Tickets, precio: Double) {
         if (_uiState.value.saldo >= precio) {
 
-            val nuevaLista = _uiState.value.listaTikets + nuevoTicket
+            val nuevaLista = _uiState.value.listaTickets + nuevoTicket
             val nuevoSaldo = _uiState.value.saldo - precio
 
             _uiState.value = _uiState.value.copy(
-                listaTikets = nuevaLista,
+                listaTickets = nuevaLista,
                 saldo = nuevoSaldo
             )
 
@@ -72,12 +110,13 @@ class WalletViewModel: ViewModel() {
         }
     }
 
+
     /**
      * Función para eliminar un ticket (Swipe to dismiss)
      */
-    fun deleteTicket(ticketAEliminar: Tikets) {
-        val listaActualizada = _uiState.value.listaTikets.filter { it.id != ticketAEliminar.id }
-        _uiState.value = _uiState.value.copy(listaTikets = listaActualizada)
+    fun deleteTicket(ticketAEliminar: Tickets) {
+        val listaActualizada = _uiState.value.listaTickets.filter { it.id != ticketAEliminar.id }
+        _uiState.value = _uiState.value.copy(listaTickets = listaActualizada)
 
         viewModelScope.launch {
             try {

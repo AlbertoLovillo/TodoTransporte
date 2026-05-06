@@ -1,6 +1,6 @@
-package com.s25am.todotransporte.ui.screens.wallet.componetsWallet
+package com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet
 
-data class Tikets(
+data class Tickets(
     val id: String ="",
     val titulo: String = "",
     val trayecto: String = "",

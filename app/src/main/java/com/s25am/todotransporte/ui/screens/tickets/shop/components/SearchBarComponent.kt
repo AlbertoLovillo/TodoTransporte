@@ -1,4 +1,4 @@
-package com.s25am.todotransporte.ui.screens.wallet.componetsBuy
+package com.s25am.todotransporte.ui.screens.tickets.shop.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

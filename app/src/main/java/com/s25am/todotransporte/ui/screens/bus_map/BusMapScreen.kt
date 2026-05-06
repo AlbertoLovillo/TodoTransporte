@@ -44,7 +44,7 @@ import com.s25am.todotransporte.ui.screens.bus_map.components.StopsList
 @OptIn(MapboxExperimental::class)
 @Composable
 fun MapsScreen(
-    viewModel: MapsViewModel = viewModel()
+    viewModel: BusMapsViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }

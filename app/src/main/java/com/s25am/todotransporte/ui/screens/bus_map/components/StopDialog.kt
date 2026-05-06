@@ -13,14 +13,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
-import com.s25am.todotransporte.ui.screens.bus_map.MapsViewModel
+import com.s25am.todotransporte.ui.screens.bus_map.BusMapsViewModel
 
 @Composable
 fun StopDialog(
     paradaSeleccionada: Parada?,
     lineaSeleccionada: Linea?,
     proximoBusHora: String?,
-    viewModel: MapsViewModel
+    viewModel: BusMapsViewModel
 ) {
     paradaSeleccionada?.let { parada ->
         AlertDialog(

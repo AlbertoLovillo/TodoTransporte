@@ -21,5 +21,6 @@ sealed class Routes : NavKey {
     @Serializable
     data object SalePoint : Routes()
     @Serializable
-    data object ByTickets : Routes()
+    data object Shop : Routes()
+
 }

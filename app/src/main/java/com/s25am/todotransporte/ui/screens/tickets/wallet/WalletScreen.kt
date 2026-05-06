@@ -1,5 +1,6 @@
-package com.s25am.todotransporte.ui.screens.wallet
+package com.s25am.todotransporte.ui.screens.tickets.wallet
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,17 +22,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.s25am.todotransporte.R
-import com.s25am.todotransporte.ui.screens.wallet.componetsWallet.TicketItem
-import com.s25am.todotransporte.ui.screens.wallet.viewModel.WalletViewModel
-import com.s25am.todotransporte.ui.screens.wallet.componetsWallet.QrDialog
-import com.s25am.todotransporte.ui.screens.wallet.componetsWallet.SwipeableTicketItem
+import com.s25am.todotransporte.ui.screens.tickets.viewModel.TicketsViewModel
+import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.QrDialog
+import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.SwipeableTicketItem
+import com.s25am.todotransporte.ui.theme.TodoTransporteTheme
 
 /**
  * Pantalla principal de la Cartera (Wallet).
  * NOTA: El Scaffold y la TopBar se gestionan de forma global en MainActivity.
  */
 @Composable
-fun WalletScreen(viewModel: WalletViewModel = viewModel()) {
+fun WalletScreen(
+    viewModel: TicketsViewModel = viewModel()
+) {
+
     val uiState by viewModel.uiState.collectAsState()
     //Guardar el id del billete para generar QR
     var billeteSeleccionadoId by remember { mutableStateOf<String?>(null) }
@@ -131,7 +135,7 @@ fun WalletScreen(viewModel: WalletViewModel = viewModel()) {
                                     containerColor = Color.White,
                                     contentColor = colorResource(id = R.color.RojoP)
                                 ),
-                                border = androidx.compose.foundation.BorderStroke(1.dp, Color.White),
+                                border = BorderStroke(1.dp, Color.White),
                                 shape = RoundedCornerShape(12.dp)
                             ) {
                                 Text("Historial")
@@ -151,7 +155,7 @@ fun WalletScreen(viewModel: WalletViewModel = viewModel()) {
             }
 
             // Aquí dibujamos cada billete de la lista
-            items(uiState.listaTikets, key = { it.id }) { billete -> // Usar key mejora las animaciones
+            items(uiState.listaTickets, key = { it.id }) { billete -> // Usar key mejora las animaciones
                 SwipeableTicketItem(
                     ticket = billete,
                     onQrClick = { billeteSeleccionadoId = billete.id },

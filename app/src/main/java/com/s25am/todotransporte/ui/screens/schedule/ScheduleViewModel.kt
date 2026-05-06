@@ -61,10 +61,13 @@ class ScheduleViewModel : ViewModel() {
     private val _paradasConBusEnTiempoReal = MutableStateFlow<Set<Int>>(emptySet()) // Tiempo real: Paradas que tienen un bus cerca
     val paradasConBusEnTiempoReal: StateFlow<Set<Int>> = _paradasConBusEnTiempoReal
 
+
+
     init {
         cargarLineas()
         iniciarSeguimientoBuses()
     }
+
 
     /**
      * Tiempo real: Hilo infinito para actualizar la posición de los buses cada minuto.
@@ -77,6 +80,7 @@ class ScheduleViewModel : ViewModel() {
             }
         }
     }
+
 
     /**
      * Tiempo real: Descarga los datos de Málaga OpenData y filtra por la línea activa.
@@ -120,6 +124,8 @@ class ScheduleViewModel : ViewModel() {
             e.printStackTrace()
         }
     }
+
+
     /**
      * Tiempo real: Calcula qué paradas tienen un bus a menos de X metros.
      */
@@ -148,6 +154,8 @@ class ScheduleViewModel : ViewModel() {
         val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
         return r * c
     }
+
+
     /**
      * Función que carga todas las líneas disponibles desde la base de datos.
      */
@@ -199,6 +207,8 @@ class ScheduleViewModel : ViewModel() {
         actualizarProximosBuses(lineaActual.id, nuevaDireccion)
         viewModelScope.launch { actualizarPosicionesBuses() }
     }
+
+
     /**
      * Función interna para actualizar el nombre del destino
      */
@@ -404,6 +414,8 @@ class ScheduleViewModel : ViewModel() {
             }
         }
     }
+
+
     /**
      * Función que corrige el formato de las horas GTFS para que se ajusten al rango de 24 horas.
      */
@@ -429,6 +441,7 @@ class ScheduleViewModel : ViewModel() {
 //            return if (horaGtfs.length >= 5) horaGtfs.substring(0, 5) else horaGtfs
 //        }
 //    }
+
 
     /**
      * Limpia los estados de la parada seleccionada.

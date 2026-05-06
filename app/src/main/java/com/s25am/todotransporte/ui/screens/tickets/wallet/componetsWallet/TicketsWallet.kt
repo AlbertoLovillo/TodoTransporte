@@ -1,4 +1,4 @@
-package com.s25am.todotransporte.ui.screens.wallet.componetsWallet
+package com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.s25am.todotransporte.R
 
 @Composable
-fun TicketItem(ticket: Tikets, onQrClick: () -> Unit) {
+fun TicketItem(ticket: Tickets, onQrClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color.White),

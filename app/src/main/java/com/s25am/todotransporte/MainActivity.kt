@@ -15,7 +15,7 @@ import com.s25am.todotransporte.navigation.AppNavigation
 import com.s25am.todotransporte.navigation.Routes
 import com.s25am.todotransporte.ui.components.MainNavigationBar
 import com.s25am.todotransporte.ui.components.MainTopBar
-import com.s25am.todotransporte.ui.screens.wallet.viewModel.WalletViewModel
+import com.s25am.todotransporte.ui.screens.tickets.viewModel.TicketsViewModel
 import com.s25am.todotransporte.ui.theme.TodoTransporteTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,11 +24,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TodoTransporteTheme {
+
                 //Para colocar el saldo en el topbar
-                val walletViewModel: WalletViewModel = viewModel()
+                val walletViewModel: TicketsViewModel = viewModel()
                 val walletUiState by walletViewModel.uiState.collectAsState()
 
-                val backStack = rememberNavBackStack(Routes.Login)
+                val backStack = rememberNavBackStack(Routes.Maps)
                 val currentRoute = backStack.lastOrNull()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -56,7 +57,7 @@ class MainActivity : ComponentActivity() {
                     AppNavigation(
                         padding = innerPadding,
                         backStack = backStack,
-                        walletViewModel = walletViewModel
+                        ticketsViewModel = walletViewModel
                     )
                 }
             }

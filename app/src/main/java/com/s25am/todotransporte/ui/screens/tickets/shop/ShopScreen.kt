@@ -1,4 +1,4 @@
-package com.s25am.todotransporte.ui.screens.wallet
+package com.s25am.todotransporte.ui.screens.tickets.shop
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,22 +20,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.s25am.todotransporte.R
-import com.s25am.todotransporte.ui.screens.schedule.ScheduleViewModel
-import com.s25am.todotransporte.ui.screens.wallet.componetsBuy.CardCompra
-import com.s25am.todotransporte.ui.screens.wallet.componetsBuy.SaldoInsuficienteDialog
-import com.s25am.todotransporte.ui.screens.wallet.componetsBuy.TicketSearchBar
-import com.s25am.todotransporte.ui.screens.wallet.componetsWallet.Tikets
-import com.s25am.todotransporte.ui.screens.wallet.viewModel.WalletViewModel
+import com.s25am.todotransporte.ui.screens.tickets.shop.components.CardCompra
+import com.s25am.todotransporte.ui.screens.tickets.shop.components.SaldoInsuficienteDialog
+import com.s25am.todotransporte.ui.screens.tickets.shop.components.TicketSearchBar
+import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.Tickets
+import com.s25am.todotransporte.ui.screens.tickets.viewModel.TicketsViewModel
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BuyTicketScreen(viewModel: WalletViewModel = viewModel(),
-                    scheduleViewModel: ScheduleViewModel = viewModel(),
-                    onBack: () -> Unit) {
-    val lineasReales by scheduleViewModel.lineas.collectAsState()
+fun ShopScreen(
+    viewModel: TicketsViewModel = viewModel(),
+    onBack: () -> Unit
+) {
+
+    val lineasList by viewModel.lineas.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     var searchText by remember { mutableStateOf("") }
 
@@ -47,14 +51,14 @@ fun BuyTicketScreen(viewModel: WalletViewModel = viewModel(),
     }
 
     //obtener la fecha de hoy formateada
-    val sdf = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
-    val fechaHoy = sdf.format(java.util.Calendar.getInstance().time)
+    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    val fechaHoy = sdf.format(Calendar.getInstance().time)
 
-    // Transformamos cada "Linea" en un objeto "Tikets" (tu clase de datos)
-    val opcionesCompra = lineasReales.map { linea ->
-        Tikets(
+    // Transformamos cada "Linea" en un objeto "Tickets" (tu clase de datos)
+    val opcionesCompra = lineasList.map { linea ->
+        Tickets(
             id = linea.id.toString(),
-            titulo = "Billete Línea ${linea.nombre}", // Ej: Billete Línea L1
+            titulo = "Billete Línea ${linea.codigo}", // Ej: Billete Línea L1
             trayecto = "Trayecto: ${linea.nombre}",   // Aquí colocamos la línea automáticamente
             fecha = fechaHoy,                   // Fecha fija o calculada
             precio = "1.50€"                         // Precio (podrías añadirlo a la tabla Linea)
@@ -107,7 +111,7 @@ fun BuyTicketScreen(viewModel: WalletViewModel = viewModel(),
                         opcion = opcion,
                         onBuyClick = {
                             val ticketParaGuardar = opcion.copy(
-                                id = java.util.UUID.randomUUID().toString()
+                                id = UUID.randomUUID().toString()
                             )
                             viewModel.addTicket(ticketParaGuardar, 1.50)
                             // TODO: Aquí irá la lógica para insertar en Supabase

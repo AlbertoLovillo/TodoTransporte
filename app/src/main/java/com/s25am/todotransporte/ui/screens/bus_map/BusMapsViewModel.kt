@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.TimeZone
 
-class MapsViewModel : ViewModel() {
+class BusMapsViewModel : ViewModel() {
     private val supabase = SupabaseClient.client
     private val httpClient = HttpClient()
 
@@ -75,6 +75,7 @@ class MapsViewModel : ViewModel() {
         }
     }
 
+
     /**
      * Tiempo real- Descarga el CSV de OpenData Málaga y filtra los buses por línea y sentido
      */
@@ -114,6 +115,7 @@ class MapsViewModel : ViewModel() {
             e.printStackTrace()
         }
     }
+
 
     /**
      * Función que carga todas las líneas disponibles desde la base de datos.

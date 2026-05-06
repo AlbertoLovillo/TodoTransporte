@@ -1,6 +1,7 @@
-package com.s25am.todotransporte.ui.screens.wallet.componetsWallet
+package com.s25am.todotransporte.ui.components
 
 import android.graphics.Bitmap
+import android.graphics.Color
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 
@@ -16,7 +17,7 @@ fun generarQR(datos: String): Bitmap? {
         for (x in 0 until width) {
             for (y in 0 until height) {
                 // Si el punto debe estar pintado, lo ponemos negro, si no, blanco
-                bitmap.setPixel(x, y, if (bitMatrix.get(x, y)) android.graphics.Color.BLACK else android.graphics.Color.WHITE)
+                bitmap.setPixel(x, y, if (bitMatrix.get(x, y)) Color.BLACK else Color.WHITE)
             }
         }
         bitmap

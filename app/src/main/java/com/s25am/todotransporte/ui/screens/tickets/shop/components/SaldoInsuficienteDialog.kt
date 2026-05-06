@@ -1,4 +1,4 @@
-package com.s25am.todotransporte.ui.screens.wallet.componetsBuy
+package com.s25am.todotransporte.ui.screens.tickets.shop.components
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text

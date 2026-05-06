@@ -1,4 +1,4 @@
-package com.s25am.todotransporte.ui.screens.wallet.componetsWallet
+package com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,7 +16,7 @@ import com.s25am.todotransporte.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwipeableTicketItem(
-    ticket: Tikets,
+    ticket: Tickets,
     onQrClick: () -> Unit,
     onDeleteConfirm: () -> Unit
 ) {

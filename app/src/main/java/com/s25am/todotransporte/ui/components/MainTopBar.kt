@@ -27,24 +27,14 @@ fun MainTopBar(
     saldo: Double,
     onBack: () -> Unit
 ) {
-    // título dinámico según la ruta
-    val titleText = when (currentRoute) {
-        Routes.Maps -> "Mapa de Líneas"
-        Routes.Schedule -> "Horarios"
-        Routes.Wallet -> "Mi Cartera"
-        Routes.SalePoint -> "Puntos de Venta"
-        Routes.ByTickets -> "Comprar Billetes"
-        else -> "TodoTransporte"
-    }
 
-    // Solo mostramos la TopBar si no estamos en Login o Register
     if (currentRoute != Routes.Login && currentRoute != Routes.Register) {
         val titleText = when (currentRoute) {
-            is Routes.Maps -> "Mapa de Líneas"
-            is Routes.Schedule -> "Líneas y Horarios"
-            is Routes.Wallet -> "Mi Cartera"
             is Routes.SalePoint -> "Puntos de Venta"
-            is Routes.Route -> "Planificar Ruta"
+            is Routes.Schedule -> "Horarios"
+            is Routes.Maps -> "Mapa de Líneas"
+            is Routes.Wallet -> "Mi Cartera"
+            is Routes.Shop -> "Compra de Billetes"
             else -> "TodoTransporte"
         }
 
@@ -68,8 +58,7 @@ fun MainTopBar(
                 }
             },
             actions = {
-                // El saldo SOLO aparece si el usuario está en la pantalla de compra
-                if (currentRoute == Routes.ByTickets) {
+                if (currentRoute == Routes.Shop) {
                     Text(
                         text = "${String.format("%.2f", saldo)} €",
                         modifier = Modifier.padding(end = 16.dp),

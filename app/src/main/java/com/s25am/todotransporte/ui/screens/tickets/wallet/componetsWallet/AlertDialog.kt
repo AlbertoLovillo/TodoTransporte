@@ -1,5 +1,6 @@
-package com.s25am.todotransporte.ui.screens.wallet.componetsWallet
+package com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.s25am.todotransporte.R
+import com.s25am.todotransporte.ui.components.generarQR
 
 @Composable
 fun QrDialog(
@@ -53,7 +55,7 @@ fun QrDialog(
                 val qrBitmap = remember(ticketId) { generarQR(ticketId) }
 
                 qrBitmap?.let {
-                    androidx.compose.foundation.Image(
+                    Image(
                         bitmap = it.asImageBitmap(),
                         contentDescription = "Código QR",
                         modifier = Modifier.size(220.dp)
