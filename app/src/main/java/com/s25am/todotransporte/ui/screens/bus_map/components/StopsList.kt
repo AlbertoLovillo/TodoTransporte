@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
-import com.s25am.todotransporte.ui.screens.bus_map.MapsViewModel
+import com.s25am.todotransporte.ui.screens.bus_map.BusMapsViewModel
 
 @Composable
 fun StopsList(
@@ -32,7 +32,7 @@ fun StopsList(
     paradas: List<Parada>,
     lineaSeleccionada: Linea?,
     direccionActual: Int,
-    viewModel: MapsViewModel
+    viewModel: BusMapsViewModel
 ) {
 
 
