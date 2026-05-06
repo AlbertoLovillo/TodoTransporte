@@ -78,7 +78,7 @@ fun RegisterScreen(
             ) {
 
                 Image(
-                    painter = painterResource(id = R.drawable.logo_sinfondo),
+                    painter = painterResource(id = R.drawable.logo_sin_fondo),
                     contentDescription = "Logo TodoTransporte",
                     modifier = Modifier
                         .size(150.dp)

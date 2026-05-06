@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
                 val walletViewModel: TicketsViewModel = viewModel()
                 val walletUiState by walletViewModel.uiState.collectAsState()
 
-                val backStack = rememberNavBackStack(Routes.Maps)
+                val backStack = rememberNavBackStack(Routes.Login)
                 val currentRoute = backStack.lastOrNull()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),

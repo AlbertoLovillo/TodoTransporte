@@ -1,6 +1,5 @@
 package com.s25am.todotransporte.ui.screens.tickets.wallet
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -158,7 +157,7 @@ fun WalletScreen(
             }
 
             // Aquí dibujamos cada billete de la lista
-            items(uiState.listaTickets, key = { it.id }) { billete -> // Usar key mejora las animaciones
+            items(uiState.listaBilletes, key = { it.id }) { billete -> // Usar key mejora las animaciones
                 SwipeableTicketItem(
                     ticket = billete,
                     onQrClick = { billeteSeleccionadoId = billete.id },

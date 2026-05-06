@@ -30,11 +30,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.s25am.todotransporte.R
-import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.Tickets
+import com.s25am.todotransporte.database.data.Billete
 
 @Composable
 fun CardCompra(
-    opcion: Tickets,
+    opcion: Billete,
     onBuyClick: () -> Unit
 ) {
     ElevatedCard(
