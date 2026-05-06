@@ -41,7 +41,7 @@ fun MainNavigationBar(
             NavigationBarItem(
                 selected = currentRoute == Routes.SalePoint,
                 onClick = { onNavigate(Routes.SalePoint) },
-                icon = { Icon(Icons.Default.Storefront, contentDescription = "Cartera") },
+                icon = { Icon(Icons.Default.Storefront, contentDescription = "Puntos de Venta") },
 //                label = { Text("Puntos venta") },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorResource(id = R.color.RojoP),
@@ -67,7 +67,7 @@ fun MainNavigationBar(
             NavigationBarItem(
                 selected = currentRoute == Routes.Maps,
                 onClick = { onNavigate(Routes.Maps) },
-                icon = { Icon(Icons.Default.Place, contentDescription = "Mapa") },
+                icon = { Icon(Icons.Default.Place, contentDescription = "Mapa de Buses") },
 //                label = { Text("Mapa") },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorResource(id = R.color.RojoP),
@@ -94,7 +94,7 @@ fun MainNavigationBar(
                 selected = currentRoute == Routes.Shop, // Tu nueva ruta
                 onClick = { onNavigate(Routes.Shop) },
                 icon = {
-                    Icon(Icons.Default.AddShoppingCart, contentDescription = "Comprar")
+                    Icon(Icons.Default.AddShoppingCart, contentDescription = "Tienda")
                 },
 //                label = { Text("Comprar") },
                 colors = NavigationBarItemDefaults.colors(
