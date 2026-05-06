@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+
+    // Nav3
     alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 

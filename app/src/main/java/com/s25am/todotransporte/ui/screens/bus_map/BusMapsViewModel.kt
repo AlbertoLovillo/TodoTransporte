@@ -3,13 +3,13 @@ package com.s25am.todotransporte.ui.screens.bus_map
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.s25am.todotransporte.database.SupabaseClient
+import com.s25am.todotransporte.database.data.BusPosition
 import com.s25am.todotransporte.database.data.Calendario
 import com.s25am.todotransporte.database.data.Horario
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
 import com.s25am.todotransporte.database.data.RespuestaParada
 import com.s25am.todotransporte.database.data.RutaGeometria
-import com.s25am.todotransporte.database.data.BusPosition
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order

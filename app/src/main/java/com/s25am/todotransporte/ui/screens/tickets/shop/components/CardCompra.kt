@@ -33,13 +33,17 @@ import com.s25am.todotransporte.R
 import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.Tickets
 
 @Composable
-fun CardCompra(opcion: Tickets, onBuyClick: () -> Unit) {
+fun CardCompra(
+    opcion: Tickets,
+    onBuyClick: () -> Unit
+) {
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.elevatedCardColors(containerColor = Color.White),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp)
     ) {
+
         Row(
             modifier = Modifier
                 .padding(16.dp)

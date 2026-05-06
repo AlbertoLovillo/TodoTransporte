@@ -90,7 +90,7 @@ fun BusMap(
                 point = Point.fromLngLat(bus.lon, bus.lat),
                 circleRadius = 7.0,
                 circleColorInt = AndroidColor.parseColor("#FFD700"), // Dorado/Amarillo para Tiempo Real
-                circleStrokeWidth = 2.0,
+                circleStrokeWidth = 1.0,
                 circleStrokeColorInt = AndroidColor.BLACK
             )
         }
