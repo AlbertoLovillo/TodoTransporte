@@ -39,6 +39,15 @@ fun MainTopBar(
 
     // Solo mostramos la TopBar si no estamos en Login o Register
     if (currentRoute != Routes.Login && currentRoute != Routes.Register) {
+        val titleText = when (currentRoute) {
+            is Routes.Maps -> "Mapa de Líneas"
+            is Routes.Schedule -> "Líneas y Horarios"
+            is Routes.Wallet -> "Mi Cartera"
+            is Routes.SalePoint -> "Puntos de Venta"
+            is Routes.Route -> "Planificar Ruta"
+            else -> "TodoTransporte"
+        }
+
         TopAppBar(
             title = {
                 Text(

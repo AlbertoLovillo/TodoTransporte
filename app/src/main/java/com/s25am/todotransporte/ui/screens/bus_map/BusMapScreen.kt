@@ -137,6 +137,7 @@ fun MapsScreen(
     val paradaSeleccionada by viewModel.paradaSeleccionada.collectAsState()
     val proximoBusHora by viewModel.proximoBusHora.collectAsState()
     val direccionActual by viewModel.direccionActual.collectAsState()
+    val busesEnTiempoReal by viewModel.busesEnTiempoReal.collectAsState()
 
     val estadoCamara = rememberMapViewportState {
         setCameraOptions {
@@ -162,6 +163,7 @@ fun MapsScreen(
                     estadoCamara = estadoCamara,
                     lineaSeleccionada = lineaSeleccionada,
                     paradas = paradas,
+                    busesEnTiempoReal = busesEnTiempoReal,
                     viewModel = viewModel,
                     ubicacionUsuario = ubicacionUsuario
                 )

@@ -26,6 +26,10 @@ import com.s25am.todotransporte.ui.screens.wallet.viewModel.WalletViewModel
 import com.s25am.todotransporte.ui.screens.wallet.componetsWallet.QrDialog
 import com.s25am.todotransporte.ui.screens.wallet.componetsWallet.SwipeableTicketItem
 
+/**
+ * Pantalla principal de la Cartera (Wallet).
+ * NOTA: El Scaffold y la TopBar se gestionan de forma global en MainActivity.
+ */
 @Composable
 fun WalletScreen(viewModel: WalletViewModel = viewModel()) {
     val uiState by viewModel.uiState.collectAsState()
@@ -163,5 +167,7 @@ fun WalletScreen(viewModel: WalletViewModel = viewModel()) {
 @Preview(showBackground = true)
 @Composable
 fun WalletPreview() {
-    WalletScreen()
+    TodoTransporteTheme {
+        WalletScreen()
+    }
 }
