@@ -15,7 +15,9 @@ import com.s25am.todotransporte.ui.screens.bus_map.MapsScreen
 import com.s25am.todotransporte.ui.screens.route.RouteScreen
 import com.s25am.todotransporte.ui.screens.sale_point.SalePointScreen
 import com.s25am.todotransporte.ui.screens.schedule.ScheduleScreen
+import com.s25am.todotransporte.ui.screens.wallet.BuyTicketScreen
 import com.s25am.todotransporte.ui.screens.wallet.WalletScreen
+import com.s25am.todotransporte.ui.screens.wallet.viewModel.WalletViewModel
 
 /**
  * Gestor de navegación principal de la aplicación.
@@ -24,7 +26,8 @@ import com.s25am.todotransporte.ui.screens.wallet.WalletScreen
 @Composable
 fun AppNavigation(
     padding: PaddingValues,
-    backStack: NavBackStack<NavKey>
+    backStack: NavBackStack<NavKey>,
+    walletViewModel: WalletViewModel
 ) {
 
     Box(modifier = Modifier.padding(padding)) {
@@ -68,13 +71,18 @@ fun AppNavigation(
                 }
 
                 entry<Routes.Wallet> {
-                    WalletScreen()
+                    WalletScreen(viewModel = walletViewModel)
                 }
                 entry<Routes.SalePoint> {
                     SalePointScreen()
                 }
-                entry<Routes.Route> {
-                    RouteScreen()
+                entry<Routes.ByTickets> {
+                    BuyTicketScreen(
+                        viewModel = walletViewModel,
+                        onBack = {
+                            backStack.add(Routes.Wallet)
+                        }
+                    )
                 }
             }
         )

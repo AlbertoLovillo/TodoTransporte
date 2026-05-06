@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Route
@@ -100,6 +101,20 @@ fun MainNavigationBar(
                     indicatorColor = colorResource(id = R.color.rojoFlojito).copy(alpha = 0.2f)
                 )
             )
+            // Ítem: COMPRAR
+            NavigationBarItem(
+                selected = currentRoute == Routes.ByTickets, // Tu nueva ruta
+                onClick = { onNavigate(Routes.ByTickets) },
+                icon = {
+                    Icon(Icons.Default.AddShoppingCart, contentDescription = "Comprar")
+                },
+//                label = { Text("Comprar") },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = colorResource(id = R.color.RojoP),
+                    unselectedIconColor = Color.Gray,
+                    indicatorColor = colorResource(id = R.color.rojoFlojito).copy(alpha = 0.2f)
+                )
+            )
         }
     }
 }
@@ -108,20 +123,15 @@ fun MainNavigationBar(
 @Composable
 fun MainNavigationBarPreview() {
     TodoTransporteTheme {
-        // El Scaffold es necesario para que la barra se posicione abajo
         Scaffold(
             bottomBar = {
-                // Le pasamos Maps para ver cómo queda seleccionada
                 MainNavigationBar(
                     currentRoute = Routes.Maps,
                     onNavigate = {}
                 )
             }
         ) { innerPadding ->
-            // IMPORTANTE: Aquí usamos el padding para que el contenido
-            // no se solape con la barra
             Box(modifier = Modifier.padding(innerPadding)) {
-                // Texto de relleno para el preview
                 Text(text = "El contenido de la pantalla va aquí")
             }
         }
