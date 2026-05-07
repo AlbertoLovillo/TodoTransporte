@@ -41,30 +41,27 @@ import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.QrDial
 import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.SwipeableTicketItem
 import com.s25am.todotransporte.ui.theme.TodoTransporteTheme
 
-/**
- * Pantalla principal de la Cartera (Wallet).
- * NOTA: El Scaffold y la TopBar se gestionan de forma global en MainActivity.
- */
+
+
 @Composable
 fun WalletScreen(
     viewModel: TicketsViewModel = viewModel()
 ) {
-
     val uiState by viewModel.uiState.collectAsState()
-    //Guardar el id del billete para generar QR
+
     var billeteSeleccionadoId by remember { mutableStateOf<String?>(null) }
-    //Si el ID no es nulo, mostramos el diálogo
+
     billeteSeleccionadoId?.let { id ->
         QrDialog(
             ticketId = id,
             onDismiss = { billeteSeleccionadoId = null }
         )
     }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color.White // Aquí fuerzas el fondo blanco
+        color = Color.White
     ) {
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -72,7 +69,6 @@ fun WalletScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(bottom = 32.dp)
         ) {
-            // --- CABECERA ---
             item {
                 Text(
                     "Mi Cartera de Transporte",
@@ -83,7 +79,6 @@ fun WalletScreen(
                     color = colorResource(id = R.color.RojoP)
                 )
             }
-            //Saldo
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -104,14 +99,12 @@ fun WalletScreen(
                         )
                         HorizontalDivider(
                             modifier = Modifier
-                                .padding(vertical = 12.dp) // Espaciado arriba y abajo de la línea
-                                .fillMaxWidth(),           // Recorre la caja de izquierda a derecha
-                            thickness = 4.dp,              // Grosor de la línea
+                                .padding(vertical = 12.dp)
+                                .fillMaxWidth(),
+                            thickness = 4.dp,
                             color = Color.White
                         )
 
-                        // USAMOS EL SALDO REAL DEL UI STATE
-                        // String.format("%.2f", ...) sirve para mostrar siempre 2 decimales (0,00)
                         Text(
                             text = "${String.format("%.2f", uiState.saldo)} €",
                             style = MaterialTheme.typography.headlineLarge,
@@ -126,10 +119,8 @@ fun WalletScreen(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            // BOTÓN RECARGAR CONECTADO
                             Button(
                                 onClick = {
-                                    // Aquí llamamos a la función del ViewModel que creamos antes
                                     viewModel.recargarSaldo(10.0)
                                 },
                                 modifier = Modifier.weight(1f),
@@ -141,12 +132,10 @@ fun WalletScreen(
                             ) {
                                 Text("Recargar 10€", fontWeight = FontWeight.Bold)
                             }
-
                         }
                     }
                 }
             }
-            // --- SECCIÓN MIS BILLETES (La lista dinámica) ---
             item {
                 Text(
                     "Mis Billetes Activos",
@@ -156,13 +145,12 @@ fun WalletScreen(
                 )
             }
 
-            // Aquí dibujamos cada billete de la lista
-            items(uiState.listaBilletes, key = { it.id }) { billete -> // Usar key mejora las animaciones
+            items(uiState.listaBilletes, key = { it.id }) { billete ->
                 SwipeableTicketItem(
                     ticket = billete,
                     onQrClick = { billeteSeleccionadoId = billete.id },
                     onDeleteConfirm = {
-                        viewModel.deleteTicket(billete) // Llamamos a la función de borrado
+                        viewModel.deleteTicket(billete)
                     }
                 )
             }

@@ -16,7 +16,6 @@ import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotation
 import com.s25am.todotransporte.database.data.BusPosition
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
-import com.s25am.todotransporte.ui.screens.bus_map.BusMapsViewModel
 import android.graphics.Color as AndroidColor
 
 @OptIn(MapboxExperimental::class)
@@ -24,17 +23,19 @@ import android.graphics.Color as AndroidColor
 fun BusMap(
     estadoCamara: MapViewportState,
     lineaSeleccionada: Linea?,
+    rutaGeojson: String?,
     paradas: List<Parada>,
     busesEnTiempoReal: List<BusPosition>,
-    viewModel: BusMapsViewModel,
-    ubicacionUsuario: Location?
+    ubicacionUsuario: Location?,
+    onParadaClick: (Parada) -> Unit // Recibimos el evento en lugar del ViewModel
 ) {
     MapboxMap(
         modifier = Modifier.fillMaxSize(),
         mapViewportState = estadoCamara
     ) {
         lineaSeleccionada?.let { linea ->
-            linea.rutaGeojson?.let { stringDelJson ->
+            // Usamos la ruta que nos viene del estado
+            rutaGeojson?.let { stringDelJson ->
                 val puntosDeLaRuta = remember(stringDelJson) {
                     try {
                         val feature = Feature.fromJson(stringDelJson)
@@ -53,7 +54,7 @@ fun BusMap(
                     }
                     PolylineAnnotation(
                         points = puntosDeLaRuta,
-                        lineColorInt = colorLinea, // TODO: poner el color correcto
+                        lineColorInt = colorLinea,
                         lineWidth = 4.0
                     )
                 }
@@ -64,11 +65,11 @@ fun BusMap(
             CircleAnnotation(
                 point = Point.fromLngLat(parada.longitud, parada.latitud),
                 circleRadius = 5.0,
-                circleColorInt = AndroidColor.RED, // TODO: poner el color correcto
+                circleColorInt = AndroidColor.RED,
                 circleStrokeWidth = 1.0,
                 circleStrokeColorInt = AndroidColor.WHITE,
                 onClick = {
-                    viewModel.mostrarInfoParada(parada)
+                    onParadaClick(parada) // Disparamos el evento
                     true
                 }
             )
@@ -84,12 +85,11 @@ fun BusMap(
             )
         }
 
-        // TIEMPO REAL: Dibujamos los buses detectados en el CSV
         busesEnTiempoReal.forEach { bus ->
             CircleAnnotation(
                 point = Point.fromLngLat(bus.lon, bus.lat),
                 circleRadius = 7.0,
-                circleColorInt = AndroidColor.parseColor("#FFD700"), // Dorado/Amarillo para Tiempo Real
+                circleColorInt = AndroidColor.parseColor("#FFD700"),
                 circleStrokeWidth = 1.0,
                 circleStrokeColorInt = AndroidColor.BLACK
             )

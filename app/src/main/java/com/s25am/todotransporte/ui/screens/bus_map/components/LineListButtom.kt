@@ -23,7 +23,6 @@ fun LineListButtom(
     estaSeleccionada: Boolean,
     onClick: () -> Unit
 ) {
-
     val colorBase = try {
         Color(linea.color.toColorInt())
     } catch (e: Exception) {

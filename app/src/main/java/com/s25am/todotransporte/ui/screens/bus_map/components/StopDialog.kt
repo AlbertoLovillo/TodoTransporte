@@ -13,18 +13,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
-import com.s25am.todotransporte.ui.screens.bus_map.BusMapsViewModel
 
 @Composable
 fun StopDialog(
     paradaSeleccionada: Parada?,
     lineaSeleccionada: Linea?,
     proximoBusHora: String?,
-    viewModel: BusMapsViewModel
+    onDismiss: () -> Unit // Recibimos el evento para cerrar
 ) {
     paradaSeleccionada?.let { parada ->
         AlertDialog(
-            onDismissRequest = { viewModel.cerrarDialogo() },
+            onDismissRequest = { onDismiss() },
             title = { Text(text = parada.nombre) },
             text = {
                 Column {
@@ -38,7 +37,7 @@ fun StopDialog(
                 }
             },
             confirmButton = {
-                Button(onClick = { viewModel.cerrarDialogo() }) {
+                Button(onClick = { onDismiss() }) {
                     Text("Cerrar")
                 }
             }

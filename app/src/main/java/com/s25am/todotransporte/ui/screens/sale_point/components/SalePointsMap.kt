@@ -10,7 +10,6 @@ import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotation
 import com.s25am.todotransporte.database.data.PuntoVenta
-import com.s25am.todotransporte.ui.screens.sale_point.SalePointViewModel
 import android.graphics.Color as AndroidColor
 
 @OptIn(MapboxExperimental::class)
@@ -18,10 +17,9 @@ import android.graphics.Color as AndroidColor
 fun SalePointsMap(
     estadoCamara: MapViewportState,
     puntosVenta: List<PuntoVenta>,
-    viewModel: SalePointViewModel,
-    ubicacionUsuario: Location?
+    ubicacionUsuario: Location?,
+    onPuntoClick: (PuntoVenta) -> Unit
 ) {
-
     MapboxMap(
         modifier = Modifier.fillMaxSize(),
         mapViewportState = estadoCamara
@@ -34,7 +32,7 @@ fun SalePointsMap(
                 circleStrokeWidth = 1.5,
                 circleStrokeColorInt = AndroidColor.WHITE,
                 onClick = {
-                    viewModel.seleccionarPunto(punto)
+                    onPuntoClick(punto)
                     true
                 }
             )

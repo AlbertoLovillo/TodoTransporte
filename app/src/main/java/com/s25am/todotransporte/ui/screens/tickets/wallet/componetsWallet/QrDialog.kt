@@ -51,7 +51,6 @@ fun QrDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Usamos remember para que no regenere el QR cada segundo
                 val qrBitmap = remember(ticketId) { generarQR(ticketId) }
 
                 qrBitmap?.let {
