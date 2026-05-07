@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
-import com.s25am.todotransporte.ui.screens.bus_map.BusMapsViewModel
 
 @Composable
 fun StopsList(
@@ -32,11 +31,10 @@ fun StopsList(
     paradas: List<Parada>,
     lineaSeleccionada: Linea?,
     direccionActual: Int,
-    viewModel: BusMapsViewModel
+    onAlternarDireccion: () -> Unit, // Eventos
+    onSeleccionarLinea: (Linea) -> Unit
 ) {
-
-
-    Column() {
+    Column {
         if (lineas.isEmpty()) {
             Text(
                 text = "Cargando líneas...",
@@ -57,9 +55,8 @@ fun StopsList(
                     .padding(bottom = 30.dp, start = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 IconButton(
-                    onClick = { viewModel.alternarDireccion() },
+                    onClick = { onAlternarDireccion() },
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .clip(CircleShape)
@@ -81,7 +78,7 @@ fun StopsList(
                         LineListButtom(
                             linea = linea,
                             estaSeleccionada = (linea.id == lineaSeleccionada?.id),
-                            onClick = { viewModel.seleccionarLinea(linea) }
+                            onClick = { onSeleccionarLinea(linea) }
                         )
                     }
                 }

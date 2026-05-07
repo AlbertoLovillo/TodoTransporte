@@ -20,10 +20,6 @@ class TicketsViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(TicketUiState())
     val uiState: StateFlow<TicketUiState> = _uiState.asStateFlow()
 
-    private val _lineas = MutableStateFlow<List<Linea>>(emptyList())
-    val lineas: StateFlow<List<Linea>> = _lineas
-
-
 
 
     init {
@@ -52,7 +48,7 @@ class TicketsViewModel: ViewModel() {
                     }
                     .decodeList<Linea>()
 
-                _lineas.value = resultado
+                _uiState.update { it.copy(lineas = resultado) }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -112,9 +108,7 @@ class TicketsViewModel: ViewModel() {
         viewModelScope.launch {
             try {
                 supabase.from("Usuario").update(
-                    {
-                        set("saldo", nuevoSaldo)
-                    }
+                    { set("saldo", nuevoSaldo) }
                 ) {
                     filter { eq("email", email) }
                 }
@@ -130,12 +124,12 @@ class TicketsViewModel: ViewModel() {
      */
     fun addTicket(nuevoBilleteBase: Billete, precio: Double) {
         val email = obtenerEmailUsuario() ?: return
+        val currentState = _uiState.value
 
-        if (_uiState.value.saldo >= precio) {
+        if (currentState.saldo >= precio) {
             val billeteParaGuardar = nuevoBilleteBase.copy(email_usuario = email)
-
-            val nuevaLista = _uiState.value.listaBilletes + billeteParaGuardar
-            val nuevoSaldo = _uiState.value.saldo - precio
+            val nuevaLista = currentState.listaBilletes + billeteParaGuardar
+            val nuevoSaldo = currentState.saldo - precio
 
             _uiState.update {
                 it.copy(
@@ -147,16 +141,11 @@ class TicketsViewModel: ViewModel() {
             viewModelScope.launch {
                 try {
                     supabase.from("Billete").insert(billeteParaGuardar)
-
-                    // Actualizamos solo el saldo en la tabla Usuario
                     supabase.from("Usuario").update(
-                        {
-                            set("saldo", nuevoSaldo)
-                        }
+                        { set("saldo", nuevoSaldo) }
                     ) {
                         filter { eq("email", email) }
                     }
-
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -172,8 +161,9 @@ class TicketsViewModel: ViewModel() {
      */
     fun deleteTicket(billeteAEliminar: Billete) {
         val email = obtenerEmailUsuario() ?: return
+        val currentState = _uiState.value
 
-        val listaActualizada = _uiState.value.listaBilletes.filter { it.id != billeteAEliminar.id }
+        val listaActualizada = currentState.listaBilletes.filter { it.id != billeteAEliminar.id }
         _uiState.update { it.copy(listaBilletes = listaActualizada) }
 
         viewModelScope.launch {

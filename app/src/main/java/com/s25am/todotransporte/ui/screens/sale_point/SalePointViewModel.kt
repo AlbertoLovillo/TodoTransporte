@@ -7,16 +7,15 @@ import com.s25am.todotransporte.database.data.PuntoVenta
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SalePointViewModel : ViewModel() {
     private val supabase = SupabaseClient.client
 
-    private val _puntosVenta = MutableStateFlow<List<PuntoVenta>>(emptyList())
-    val puntosVenta: StateFlow<List<PuntoVenta>> = _puntosVenta
-
-    private val _puntoSeleccionado = MutableStateFlow<PuntoVenta?>(null)
-    val puntoSeleccionado: StateFlow<PuntoVenta?> = _puntoSeleccionado
+    private val _uiState = MutableStateFlow(SalePointUiState())
+    val uiState: StateFlow<SalePointUiState> = _uiState.asStateFlow()
 
 
 
@@ -35,10 +34,10 @@ class SalePointViewModel : ViewModel() {
                     .select()
                     .decodeList<PuntoVenta>()
 
-                _puntosVenta.value = resultados
+                _uiState.update { it.copy(puntosVenta = resultados) }
             } catch (e: Exception) {
                 e.printStackTrace()
-                _puntosVenta.value = emptyList()
+                _uiState.update { it.copy(puntosVenta = emptyList()) }
             }
         }
     }
@@ -48,7 +47,7 @@ class SalePointViewModel : ViewModel() {
      * Guarda el punto que el usuario ha tocado en el mapa.
      */
     fun seleccionarPunto(punto: PuntoVenta) {
-        _puntoSeleccionado.value = punto
+        _uiState.update { it.copy(puntoSeleccionado = punto) }
     }
 
 
@@ -56,6 +55,6 @@ class SalePointViewModel : ViewModel() {
      * Limpia la selección, lo que hará que se cierre el diálogo.
      */
     fun cerrarDialogo() {
-        _puntoSeleccionado.value = null
+        _uiState.update { it.copy(puntoSeleccionado = null) }
     }
 }

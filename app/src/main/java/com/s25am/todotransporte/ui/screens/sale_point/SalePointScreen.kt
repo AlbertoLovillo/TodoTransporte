@@ -52,7 +52,6 @@ import com.s25am.todotransporte.ui.screens.sale_point.components.SalePointsMap
 fun SalePointScreen(
     viewModel: SalePointViewModel = viewModel()
 ) {
-
     val context = LocalContext.current
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
     var ubicacionUsuario by remember { mutableStateOf<Location?>(null) }
@@ -122,9 +121,7 @@ fun SalePointScreen(
         )
     }
 
-
-    val puntosVenta by viewModel.puntosVenta.collectAsState()
-    val puntoSeleccionado by viewModel.puntoSeleccionado.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     val estadoCamara = rememberMapViewportState {
         setCameraOptions {
@@ -134,7 +131,6 @@ fun SalePointScreen(
         }
     }
 
-
     var mapaListo by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -142,14 +138,14 @@ fun SalePointScreen(
         mapaListo = true
     }
 
-
     Box(modifier = Modifier.fillMaxSize()) {
         if (mapaListo) {
+            // Le pasamos solo los datos necesarios y el evento click
             SalePointsMap(
                 estadoCamara = estadoCamara,
-                puntosVenta = puntosVenta,
-                viewModel = viewModel,
-                ubicacionUsuario = ubicacionUsuario
+                puntosVenta = uiState.puntosVenta,
+                ubicacionUsuario = ubicacionUsuario,
+                onPuntoClick = { punto -> viewModel.seleccionarPunto(punto) }
             )
         } else {
             Box(
@@ -172,7 +168,7 @@ fun SalePointScreen(
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
             Text(
-                text = "Mostrando ${puntosVenta.size} puntos de venta",
+                text = "Mostrando ${uiState.puntosVenta.size} puntos de venta",
                 modifier = Modifier.padding(12.dp),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Medium
@@ -180,7 +176,7 @@ fun SalePointScreen(
         }
 
         SalePointsDialog(
-            puntoSeleccionado = puntoSeleccionado,
+            puntoSeleccionado = uiState.puntoSeleccionado,
             onDismiss = { viewModel.cerrarDialogo() }
         )
     }

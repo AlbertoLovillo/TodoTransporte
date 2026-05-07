@@ -68,14 +68,12 @@ fun ItemParada(
                     .size(52.dp)
                     .clip(CircleShape)
                     .background(
-                        // TIEMPO REAL: Si hay bus cerca, resaltamos en dorado
-                        if (tieneBusCerca) Color(0xFFFFD700).copy(alpha = 0.2f) 
+                        if (tieneBusCerca) Color(0xFFFFD700).copy(alpha = 0.2f)
                         else colorPrimario.copy(alpha = 0.1f)
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    // TIEMPO REAL: Cambiamos icono si hay un bus en directo
                     imageVector = if (tieneBusCerca) Icons.Default.DirectionsBus else Icons.Default.LocationOn,
                     contentDescription = null,
                     tint = if (tieneBusCerca) Color(0xFFB8860B) else colorPrimario,
@@ -92,7 +90,6 @@ fun ItemParada(
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (tieneBusCerca) {
-                        // TIEMPO REAL: Etiqueta de aviso en directo
                         Text(
                             text = "● EN DIRECTO ",
                             style = MaterialTheme.typography.bodySmall,
