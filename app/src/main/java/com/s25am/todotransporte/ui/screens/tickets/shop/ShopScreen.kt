@@ -37,11 +37,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.s25am.todotransporte.R
+import com.s25am.todotransporte.database.data.Billete
 import com.s25am.todotransporte.ui.screens.tickets.shop.components.CardCompra
 import com.s25am.todotransporte.ui.screens.tickets.shop.components.SaldoInsuficienteDialog
 import com.s25am.todotransporte.ui.screens.tickets.shop.components.TicketSearchBar
 import com.s25am.todotransporte.ui.screens.tickets.viewModel.TicketsViewModel
-import com.s25am.todotransporte.database.data.Billete
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -53,12 +53,9 @@ fun ShopScreen(
     viewModel: TicketsViewModel = viewModel(),
     onBack: () -> Unit
 ) {
-
-    val lineasList by viewModel.lineas.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     var searchText by remember { mutableStateOf("") }
 
-    //Cuando no hay suficiente saldo para comprar
     if (uiState.mostrarErrorSaldo) {
         SaldoInsuficienteDialog(
             onDismiss = { viewModel.dismissErrorSaldo() }
@@ -72,14 +69,14 @@ fun ShopScreen(
         sdf.format(Calendar.getInstance().time)
     }
 
-    // Transformamos cada "Linea" en un objeto "Tickets" (tu clase de datos)
-    val opcionesCompra = lineasList.map { linea ->
+    // Leemos las líneas directamente desde el uiState
+    val opcionesCompra = uiState.lineas.map { linea ->
         Billete(
             id = linea.id.toString(),
-            titulo = "Billete Línea ${linea.codigo}", // Ej: Billete Línea L1
-            trayecto = "Trayecto: ${linea.nombre}",   // Aquí colocamos la línea automáticamente
-            fecha = fechaHoy,                   // Fecha fija o calculada
-            precio = "1.50€"                         // Precio (podrías añadirlo a la tabla Linea)
+            titulo = "Billete Línea ${linea.codigo}",
+            trayecto = "Trayecto: ${linea.nombre}",
+            fecha = fechaHoy,
+            precio = "1.50€"
         )
     }.filter { it.titulo.contains(searchText, ignoreCase = true) }
 
@@ -135,8 +132,6 @@ fun ShopScreen(
                                 id = UUID.randomUUID().toString()
                             )
                             viewModel.addTicket(ticketParaGuardar, 1.50)
-                            // TODO: Aquí irá la lógica para insertar en Supabase
-                            println("Comprando: ${opcion.titulo}")
                             if (uiState.saldo >= 1.50) {
                                 onBack()
                             }

@@ -32,29 +32,17 @@ import com.s25am.todotransporte.ui.screens.schedule.components.AlertDialogParada
 import com.s25am.todotransporte.ui.screens.schedule.components.ItemParada
 import com.s25am.todotransporte.ui.theme.TodoTransporteTheme
 
-/**
- * Pantalla principal de Horarios.
- * NOTA: El Scaffold y la TopBar se gestionan de forma global en MainActivity.
- */
+
 @Composable
 fun ScheduleScreen(
     viewModel: ScheduleViewModel = viewModel()
 ) {
-    // Observamos los datos desde el ViewModel
-    val lineas by viewModel.lineas.collectAsState()
-    val lineaSeleccionada by viewModel.selectedLinea.collectAsState()
-    val paradas by viewModel.paradas.collectAsState()
-    val proximosBuses by viewModel.proximosBusesParadas.collectAsState()
-    val paradaSeleccionada by viewModel.paradaSeleccionada.collectAsState()
-    val horariosParada by viewModel.horariosParada.collectAsState()
-    val direccionActual by viewModel.direccionActual.collectAsState()
-    val paradasConBus by viewModel.paradasConBusEnTiempoReal.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
-    // Diálogo de detalles de parada (se muestra si hay una parada seleccionada)
-    if (paradaSeleccionada != null) {
+    if (uiState.paradaSeleccionada != null) {
         AlertDialogParada(
-            parada = paradaSeleccionada!!,
-            horarios = horariosParada,
+            parada = uiState.paradaSeleccionada!!,
+            horarios = uiState.horariosParada,
             onDismiss = { viewModel.cerrarDialogo() }
         )
     }
@@ -64,8 +52,7 @@ fun ScheduleScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Indicador de sentido (Ida/Vuelta)
-        val textoSentido = if (direccionActual == 0) "Ida" else "Vuelta"
+        val textoSentido = if (uiState.direccionActual == 0) "Ida" else "Vuelta"
         Text(
             text = "Sentido: $textoSentido",
             modifier = Modifier.padding(start = 16.dp, top = 12.dp),
@@ -94,33 +81,31 @@ fun ScheduleScreen(
                 )
             }
 
-            // Selector horizontal de líneas
             LazyRow(
                 modifier = Modifier.weight(1f),
                 contentPadding = PaddingValues(end = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(lineas) { linea ->
+                items(uiState.lineas) { linea ->
                     LineListButtom(
                         linea = linea,
-                        estaSeleccionada = linea.id == lineaSeleccionada?.id,
+                        estaSeleccionada = linea.id == uiState.selectedLinea?.id,
                         onClick = { viewModel.seleccionarLinea(linea) }
                     )
                 }
             }
         }
 
-        // Listado vertical de paradas
         LazyColumn(
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.weight(1f)
         ) {
-            items(paradas) { parada ->
+            items(uiState.paradas) { parada ->
                 ItemParada(
                     parada = parada,
-                    proximoBusHora = proximosBuses[parada.id],
-                    tieneBusCerca = paradasConBus.contains(parada.id),
+                    proximoBusHora = uiState.proximosBusesParadas[parada.id],
+                    tieneBusCerca = uiState.paradasConBusEnTiempoReal.contains(parada.id),
                     onClick = { viewModel.mostrarInfoParada(parada) }
                 )
             }

@@ -18,6 +18,8 @@ import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -27,39 +29,8 @@ class ScheduleViewModel : ViewModel() {
     private val supabase = SupabaseClient.client
     private val httpClient = HttpClient()
 
-    private val _lineas = MutableStateFlow<List<Linea>>(emptyList())
-    val lineas: StateFlow<List<Linea>> = _lineas
-
-    private var _selectedLinea = MutableStateFlow<Linea?>(null)
-    var selectedLinea: StateFlow<Linea?> = _selectedLinea
-
-    private val _paradas = MutableStateFlow<List<Parada>>(emptyList())
-    val paradas: StateFlow<List<Parada>> = _paradas
-
-
-    private val _paradaSeleccionada = MutableStateFlow<Parada?>(null)
-    val paradaSeleccionada: StateFlow<Parada?> = _paradaSeleccionada
-
-    private val _proximoBusHora = MutableStateFlow<String?>(null)
-    val proximoBusHora: StateFlow<String?> = _proximoBusHora
-
-    private val _horariosParada = MutableStateFlow<List<Horario>>(emptyList())
-    val horariosParada: StateFlow<List<Horario>> = _horariosParada
-
-    private val _proximosBusesParadas = MutableStateFlow<Map<Int, String>>(emptyMap())
-    val proximosBusesParadas: StateFlow<Map<Int, String>> = _proximosBusesParadas
-
-    private val _direccionActual = MutableStateFlow<Int>(0)
-    val direccionActual: StateFlow<Int> = _direccionActual
-
-    private val _destino = MutableStateFlow<String?>(null)
-    val destino: StateFlow<String?> = _destino
-
-    private val _busesEnTiempoReal = MutableStateFlow<List<BusPosition>>(emptyList()) // Tiempo real: Ubicaciones actuales
-    val busesEnTiempoReal: StateFlow<List<BusPosition>> = _busesEnTiempoReal
-
-    private val _paradasConBusEnTiempoReal = MutableStateFlow<Set<Int>>(emptySet()) // Tiempo real: Paradas que tienen un bus cerca
-    val paradasConBusEnTiempoReal: StateFlow<Set<Int>> = _paradasConBusEnTiempoReal
+    private val _uiState = MutableStateFlow(ScheduleUiState())
+    val uiState: StateFlow<ScheduleUiState> = _uiState.asStateFlow()
 
 
 
@@ -106,20 +77,22 @@ class ScheduleViewModel : ViewModel() {
                 } else null
             }
 
-            val codigoLineaSeleccionada = _selectedLinea.value?.codigo ?: ""
+            val currentState = _uiState.value
+            val codigoLineaSeleccionada = currentState.selectedLinea?.codigo ?: ""
             val codigoNormalizado = if (codigoLineaSeleccionada.toDoubleOrNull() != null) {
                 codigoLineaSeleccionada.toDouble().toString()
             } else {
                 codigoLineaSeleccionada
             }
 
-            val busesFiltrados = todosLosBuses.filter { 
-                it.codLinea == codigoNormalizado && it.sentido == (_direccionActual.value + 1)
+            val busesFiltrados = todosLosBuses.filter {
+                it.codLinea == codigoNormalizado && it.sentido == (currentState.direccionActual + 1)
             }
-            _busesEnTiempoReal.value = busesFiltrados
-            
+
+            _uiState.update { it.copy(busesEnTiempoReal = busesFiltrados) }
+
             actualizarParadasCercanas(busesFiltrados)
-            
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -130,9 +103,9 @@ class ScheduleViewModel : ViewModel() {
      * Tiempo real: Calcula qué paradas tienen un bus a menos de X metros.
      */
     private fun actualizarParadasCercanas(buses: List<BusPosition>) {
-        val paradasActuales = _paradas.value
+        val paradasActuales = _uiState.value.paradas
         val paradasConBus = mutableSetOf<Int>()
-        
+
         for (parada in paradasActuales) {
             for (bus in buses) {
                 val distancia = calcularDistancia(parada.latitud, parada.longitud, bus.lat, bus.lon)
@@ -142,8 +115,10 @@ class ScheduleViewModel : ViewModel() {
                 }
             }
         }
-        _paradasConBusEnTiempoReal.value = paradasConBus
+        _uiState.update { it.copy(paradasConBusEnTiempoReal = paradasConBus) }
     }
+
+
     private fun calcularDistancia(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
         val r = 6371 // km
         val dLat = Math.toRadians(lat2 - lat1)
@@ -168,7 +143,7 @@ class ScheduleViewModel : ViewModel() {
                     }
                     .decodeList<Linea>()
 
-                _lineas.value = resultado
+                _uiState.update { it.copy(lineas = resultado) }
 
                 if (resultado.isNotEmpty()) {
                     seleccionarLinea(resultado.first())
@@ -184,8 +159,7 @@ class ScheduleViewModel : ViewModel() {
      * Función que se llama al seleccionar línea y resetear dirección.
      */
     fun seleccionarLinea(linea: Linea) {
-        _selectedLinea.value = linea
-        _direccionActual.value = 0
+        _uiState.update { it.copy(selectedLinea = linea, direccionActual = 0) }
         actualizarNombreDestino(linea.id, 0)
         cargarParadasDeLinea(linea.id, 0)
         actualizarProximosBuses(linea.id, 0)
@@ -197,11 +171,13 @@ class ScheduleViewModel : ViewModel() {
      * NUEVO: Función para alternar entre Ida y Vuelta.
      */
     fun alternarDireccion() {
-        val lineaActual = _selectedLinea.value ?: return
-        val nuevaDireccion = if (_direccionActual.value == 0) 1 else 0
-        _direccionActual.value = nuevaDireccion
-        actualizarNombreDestino(lineaActual.id, nuevaDireccion)
+        val currentState = _uiState.value
+        val lineaActual = currentState.selectedLinea ?: return
+        val nuevaDireccion = if (currentState.direccionActual == 0) 1 else 0
 
+        _uiState.update { it.copy(direccionActual = nuevaDireccion) }
+
+        actualizarNombreDestino(lineaActual.id, nuevaDireccion)
         cerrarDialogo()
         cargarParadasDeLinea(lineaActual.id, nuevaDireccion)
         actualizarProximosBuses(lineaActual.id, nuevaDireccion)
@@ -224,9 +200,9 @@ class ScheduleViewModel : ViewModel() {
                         limit(1)
                     }.decodeSingleOrNull<Horario>()
 
-                _destino.value = resultado?.destino ?: "Desconocido"
+                _uiState.update { it.copy(destino = resultado?.destino ?: "Desconocido") }
             } catch (e: Exception) {
-                _destino.value = "Error al cargar destino"
+                _uiState.update { it.copy(destino = "Error al cargar destino") }
             }
         }
     }
@@ -248,10 +224,11 @@ class ScheduleViewModel : ViewModel() {
                     }
                     .decodeList<RespuestaParada>()
 
-                _paradas.value = cajas.mapNotNull { it.parada }
+                val paradasLimpio = cajas.mapNotNull { it.parada }
+                _uiState.update { it.copy(paradas = paradasLimpio) }
             } catch (e: Exception) {
                 e.printStackTrace()
-                _paradas.value = emptyList()
+                _uiState.update { it.copy(paradas = emptyList()) }
             }
         }
     }
@@ -261,8 +238,7 @@ class ScheduleViewModel : ViewModel() {
      * Función que actualiza la parada seleccionada y consulta sus horarios.
      */
     fun mostrarInfoParada(parada: Parada) {
-        _paradaSeleccionada.value = parada
-        obtenerHorario(parada.id)
+        _uiState.update { it.copy(paradaSeleccionada = parada) }
         obtenerHorariosDeParada(parada.id)
     }
 
@@ -271,8 +247,9 @@ class ScheduleViewModel : ViewModel() {
      * Función que según la parada seleccionada obtiene la lista de todos los horarios.
      */
     private fun obtenerHorariosDeParada(paradaId: Int) {
-        val lineaId = selectedLinea.value?.id ?: return
-        val direccion = _direccionActual.value
+        val currentState = _uiState.value
+        val lineaId = currentState.selectedLinea?.id ?: return
+        val direccion = currentState.direccionActual
 
         viewModelScope.launch {
             try {
@@ -307,63 +284,10 @@ class ScheduleViewModel : ViewModel() {
                     .distinctBy { it.hora_llegada }
                     .sortedBy { it.hora_llegada }
 
-                _horariosParada.value = listaLimpia
+                _uiState.update { it.copy(horariosParada = listaLimpia) }
             } catch (e: Exception) {
                 e.printStackTrace()
-                _horariosParada.value = emptyList()
-            }
-        }
-    }
-
-
-    /**
-     * Función que busca el próximo autobús que pasará por la parada según la hora actual.
-     */
-    private fun obtenerHorario(paradaId: Int) {
-        val lineaId = selectedLinea.value?.id ?: return
-        val direccion = _direccionActual.value
-
-        viewModelScope.launch {
-            try {
-                _proximoBusHora.value = "Calculando..."
-
-                val zonaEspanya = TimeZone.getTimeZone("Europe/Madrid")
-                val formatoFecha = SimpleDateFormat("yyyyMMdd")
-                formatoFecha.timeZone = zonaEspanya
-                val formatoHora = SimpleDateFormat("HH:mm:ss")
-                formatoHora.timeZone = zonaEspanya
-                val fechaActualStr = formatoFecha.format(Calendar.getInstance().time)
-                val horaActualStr = formatoHora.format(Calendar.getInstance().time)
-
-                val calendario =
-                    supabase.from("Calendario").select(columns = Columns.list("service_id")) {
-                        filter { eq("fecha", fechaActualStr) }
-                    }.decodeSingleOrNull<Calendario>()
-                val serviceIdHoy = calendario?.service_id ?: return@launch
-
-                val resultados = supabase.from("Horario").select {
-                    filter {
-                        eq("id_linea", lineaId)
-                        eq("id_parada", paradaId)
-                        eq("service_id", serviceIdHoy)
-                        eq("direccion", direccion) // Filtro mágico
-                        gte("hora_llegada", horaActualStr)
-                    }
-                    order("hora_llegada", order = Order.ASCENDING)
-                    limit(1)
-                }.decodeList<Horario>()
-
-                if (resultados.isNotEmpty()) {
-                    val primerBus = resultados.first()
-                    val proximaHoraLimpia = corregirHoraGtfs(primerBus.hora_llegada)
-                    val destinoInfo = primerBus.destino?.let { " a $it" } ?: ""
-                    _proximoBusHora.value = "$proximaHoraLimpia$destinoInfo"
-                } else {
-                    _proximoBusHora.value = "No hay más rutas hoy"
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                _proximoBusHora.value = "Error al consultar"
+                _uiState.update { it.copy(horariosParada = emptyList()) }
             }
         }
     }
@@ -408,7 +332,7 @@ class ScheduleViewModel : ViewModel() {
                         corregirHoraGtfs(entry.value.first().hora_llegada)
                     }
 
-                _proximosBusesParadas.value = proximos
+                _uiState.update { it.copy(proximosBusesParadas = proximos) }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -429,26 +353,16 @@ class ScheduleViewModel : ViewModel() {
         }
     }
 
-//    private fun corregirHoraGtfs(horaGtfs: String): String {
-//        try {
-//            val partes = horaGtfs.split(":")
-//            val horasOriginales = partes[0].toInt()
-//            val minutos = partes[1]
-//            val horasCorregidas = horasOriginales % 24
-//            val horasStr = horasCorregidas.toString().padStart(2, '0')
-//            return "$horasStr:$minutos"
-//        } catch (e: Exception) {
-//            return if (horaGtfs.length >= 5) horaGtfs.substring(0, 5) else horaGtfs
-//        }
-//    }
-
 
     /**
      * Limpia los estados de la parada seleccionada.
      */
     fun cerrarDialogo() {
-        _paradaSeleccionada.value = null
-        _proximoBusHora.value = null
-        _horariosParada.value = emptyList()
+        _uiState.update {
+            it.copy(
+                paradaSeleccionada = null,
+                horariosParada = emptyList()
+            )
+        }
     }
 }

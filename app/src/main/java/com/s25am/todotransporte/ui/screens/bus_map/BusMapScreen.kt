@@ -37,7 +37,6 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.s25am.todotransporte.ui.screens.bus_map.components.BusMap
-import com.s25am.todotransporte.ui.screens.bus_map.components.MapHeader
 import com.s25am.todotransporte.ui.screens.bus_map.components.StopDialog
 import com.s25am.todotransporte.ui.screens.bus_map.components.StopsList
 
@@ -131,15 +130,7 @@ fun MapsScreen(
         )
     }
 
-
-    val lineas by viewModel.lineas.collectAsState()
-    val lineaSeleccionada by viewModel.selectedLinea.collectAsState()
-    val paradas by viewModel.paradas.collectAsState()
-    val paradaSeleccionada by viewModel.paradaSeleccionada.collectAsState()
-    val proximoBusHora by viewModel.proximoBusHora.collectAsState()
-    val direccionActual by viewModel.direccionActual.collectAsState()
-    val busesEnTiempoReal by viewModel.busesEnTiempoReal.collectAsState()
-    val destinoActual by viewModel.destino.collectAsState() // Para decir la linea arriba
+    val uiState by viewModel.uiState.collectAsState()
 
     val estadoCamara = rememberMapViewportState {
         setCameraOptions {
@@ -149,7 +140,6 @@ fun MapsScreen(
         }
     }
 
-
     var mapaListo by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -157,23 +147,17 @@ fun MapsScreen(
         mapaListo = true
     }
 
-
     Column(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.weight(1f)) {
             if (mapaListo) {
                 BusMap(
                     estadoCamara = estadoCamara,
-                    lineaSeleccionada = lineaSeleccionada,
-                    paradas = paradas,
-                    busesEnTiempoReal = busesEnTiempoReal,
-                    viewModel = viewModel,
-                    ubicacionUsuario = ubicacionUsuario
-
-                )
-                MapHeader(
-                    linea = lineaSeleccionada,
-                    destino = destinoActual,
-                    modifier = Modifier.align(Alignment.TopCenter)
+                    lineaSeleccionada = uiState.selectedLinea,
+                    rutaGeojson = uiState.rutaGeojsonActual,
+                    paradas = uiState.paradas,
+                    busesEnTiempoReal = uiState.busesEnTiempoReal,
+                    ubicacionUsuario = ubicacionUsuario,
+                    onParadaClick = { parada -> viewModel.mostrarInfoParada(parada) }
                 )
             } else {
                 Box(
@@ -186,18 +170,19 @@ fun MapsScreen(
         }
 
         StopsList(
-            lineas = lineas,
-            paradas = paradas,
-            lineaSeleccionada = lineaSeleccionada,
-            viewModel = viewModel,
-            direccionActual = direccionActual
+            lineas = uiState.lineas,
+            paradas = uiState.paradas,
+            lineaSeleccionada = uiState.selectedLinea,
+            direccionActual = uiState.direccionActual,
+            onAlternarDireccion = { viewModel.alternarDireccion() },
+            onSeleccionarLinea = { linea -> viewModel.seleccionarLinea(linea) }
         )
 
         StopDialog(
-            paradaSeleccionada = paradaSeleccionada,
-            lineaSeleccionada = lineaSeleccionada,
-            proximoBusHora = proximoBusHora,
-            viewModel = viewModel
+            paradaSeleccionada = uiState.paradaSeleccionada,
+            lineaSeleccionada = uiState.selectedLinea,
+            proximoBusHora = uiState.proximoBusHora,
+            onDismiss = { viewModel.cerrarDialogo() }
         )
     }
 }

@@ -19,6 +19,8 @@ import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -28,35 +30,10 @@ class BusMapsViewModel : ViewModel() {
     private val supabase = SupabaseClient.client
     private val httpClient = HttpClient()
 
-    private val _lineas = MutableStateFlow<List<Linea>>(emptyList())
-    val lineas: StateFlow<List<Linea>> = _lineas
+    // Un único estado para toda la pantalla
+    private val _uiState = MutableStateFlow(BusMapsUiState())
+    val uiState: StateFlow<BusMapsUiState> = _uiState.asStateFlow()
 
-    private var _selectedLinea = MutableStateFlow<Linea?>(null)
-    var selectedLinea: StateFlow<Linea?> = _selectedLinea
-
-    private val _paradas = MutableStateFlow<List<Parada>>(emptyList())
-    val paradas: StateFlow<List<Parada>> = _paradas
-
-    private val _paradaSeleccionada = MutableStateFlow<Parada?>(null)
-    val paradaSeleccionada: StateFlow<Parada?> = _paradaSeleccionada
-
-    private val _proximoBusHora = MutableStateFlow<String?>(null)
-    val proximoBusHora: StateFlow<String?> = _proximoBusHora
-
-    private val _horariosParada = MutableStateFlow<List<Horario>>(emptyList())
-    val horariosParada: StateFlow<List<Horario>> = _horariosParada
-
-    private val _direccionActual = MutableStateFlow<Int>(0)
-    val direccionActual: StateFlow<Int> = _direccionActual
-
-    private val _rutaGeojsonActual = MutableStateFlow<String?>(null)
-    val rutaGeojsonActual: StateFlow<String?> = _rutaGeojsonActual
-
-    private val _destino = MutableStateFlow<String?>(null)
-    val destino: StateFlow<String?> = _destino
-
-    private val _busesEnTiempoReal = MutableStateFlow<List<BusPosition>>(emptyList()) // Tiempo real: Almacena la ubicación de los buses
-    val busesEnTiempoReal: StateFlow<List<BusPosition>> = _busesEnTiempoReal
 
     init {
         cargarLineas()
@@ -81,10 +58,11 @@ class BusMapsViewModel : ViewModel() {
      */
     private suspend fun actualizarPosicionesBuses() {
         try {
-            val url = "https://datosabiertos.malaga.eu/recursos/transporte/EMT/EMTlineasUbicaciones/lineasyubicaciones.csv"
+            val url =
+                "https://datosabiertos.malaga.eu/recursos/transporte/EMT/EMTlineasUbicaciones/lineasyubicaciones.csv"
             val response = httpClient.get(url)
             val csvText = response.bodyAsText()
-            
+
             val lineasCsv = csvText.lines().drop(1) // Quitamos la cabecera
             val todosLosBuses = lineasCsv.mapNotNull { linea ->
                 val datos = linea.replace("\"", "").split(",")
@@ -100,16 +78,15 @@ class BusMapsViewModel : ViewModel() {
                 } else null
             }
 
-            // Normalización para comparar: "41" -> "41.0"
-            val codigoLineaSeleccionada = _selectedLinea.value?.codigo ?: ""
-            val codigoNormalizado = if (codigoLineaSeleccionada.toDoubleOrNull() != null) {
-                codigoLineaSeleccionada.toDouble().toString()
-            } else {
-                codigoLineaSeleccionada
-            }
-            
-            _busesEnTiempoReal.value = todosLosBuses.filter { 
-                it.codLinea == codigoNormalizado && it.sentido == (_direccionActual.value + 1)
+            val currentState = _uiState.value
+            val codigoLineaSeleccionada = currentState.selectedLinea?.codigo ?: ""
+
+            _uiState.update { state ->
+                state.copy(
+                    busesEnTiempoReal = todosLosBuses.filter {
+                        it.codLinea == codigoLineaSeleccionada && it.sentido == (state.direccionActual + 1)
+                    }
+                )
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -129,7 +106,7 @@ class BusMapsViewModel : ViewModel() {
                     }
                     .decodeList<Linea>()
 
-                _lineas.value = resultado
+                _uiState.update { it.copy(lineas = resultado) }
 
                 if (resultado.isNotEmpty()) {
                     seleccionarLinea(resultado.first())
@@ -145,8 +122,7 @@ class BusMapsViewModel : ViewModel() {
      * Función que según la línea seleccionada actualiza la lista de paradas y resetea el sentido.
      */
     fun seleccionarLinea(linea: Linea) {
-        _selectedLinea.value = linea
-        _direccionActual.value = 0
+        _uiState.update { it.copy(selectedLinea = linea, direccionActual = 0) }
         actualizarNombreDestino(linea.id, 0)
         cerrarDialogo()
         cargarDatosPorSentido(linea.id, 0)
@@ -158,11 +134,13 @@ class BusMapsViewModel : ViewModel() {
      * Función para cambiar entre Ida y Vuelta.
      */
     fun alternarDireccion() {
-        val lineaActual = _selectedLinea.value ?: return
-        val nuevaDireccion = if (_direccionActual.value == 0) 1 else 0
-        _direccionActual.value = nuevaDireccion
-        actualizarNombreDestino(lineaActual.id, nuevaDireccion)
+        val currentState = _uiState.value
+        val lineaActual = currentState.selectedLinea ?: return
+        val nuevaDireccion = if (currentState.direccionActual == 0) 1 else 0
 
+        _uiState.update { it.copy(direccionActual = nuevaDireccion) }
+
+        actualizarNombreDestino(lineaActual.id, nuevaDireccion)
         cerrarDialogo()
         cargarDatosPorSentido(lineaActual.id, nuevaDireccion)
         viewModelScope.launch { actualizarPosicionesBuses() }
@@ -186,10 +164,11 @@ class BusMapsViewModel : ViewModel() {
                     }
                     .decodeList<RespuestaParada>()
 
-                _paradas.value = cajas.mapNotNull { it.parada }
+                val paradasNuevas = cajas.mapNotNull { it.parada }
+                _uiState.update { it.copy(paradas = paradasNuevas) }
             } catch (e: Exception) {
                 e.printStackTrace()
-                _paradas.value = emptyList()
+                _uiState.update { it.copy(paradas = emptyList()) }
             }
 
             try {
@@ -201,10 +180,10 @@ class BusMapsViewModel : ViewModel() {
                         }
                     }.decodeSingleOrNull<RutaGeometria>()
 
-                _rutaGeojsonActual.value = ruta?.geojson
+                _uiState.update { it.copy(rutaGeojsonActual = ruta?.geojson) }
             } catch (e: Exception) {
                 e.printStackTrace()
-                _rutaGeojsonActual.value = null
+                _uiState.update { it.copy(rutaGeojsonActual = null) }
             }
         }
     }
@@ -225,30 +204,9 @@ class BusMapsViewModel : ViewModel() {
                         limit(1)
                     }.decodeSingleOrNull<Horario>()
 
-                _destino.value = resultado?.destino ?: "Desconocido"
+                _uiState.update { it.copy(destino = resultado?.destino ?: "Desconocido") }
             } catch (e: Exception) {
-                _destino.value = "Error al cargar destino"
-            }
-        }
-    }
-
-
-    /**
-     * Función que carga las paradas asociadas a una línea específica.
-     */
-    private fun cargarParadasDeLinea(lineaId: Int) {
-        viewModelScope.launch {
-            try {
-                val cajas = supabase.from("Linea_Parada")
-                    .select(Columns.Companion.raw("Parada(*)")) {
-                        filter { eq("id_linea", lineaId) }
-                    }
-                    .decodeList<RespuestaParada>()
-
-                _paradas.value = cajas.mapNotNull { it.parada }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                _paradas.value = emptyList()
+                _uiState.update { it.copy(destino = "Error al cargar destino") }
             }
         }
     }
@@ -258,52 +216,8 @@ class BusMapsViewModel : ViewModel() {
      * Función que actualiza la parada seleccionada y consulta sus horarios.
      */
     fun mostrarInfoParada(parada: Parada) {
-        _paradaSeleccionada.value = parada
+        _uiState.update { it.copy(paradaSeleccionada = parada) }
         obtenerHorario(parada.id)
-        obtenerHorariosDeParada(parada.id)
-    }
-
-
-    /**
-     * Función que según la parada seleccionada obtiene la lista de todos los horarios.
-     */
-    private fun obtenerHorariosDeParada(paradaId: Int) {
-        val lineaId = selectedLinea.value?.id ?: return
-
-        viewModelScope.launch {
-            try {
-                val zonaEspanya = TimeZone.getTimeZone("Europe/Madrid")
-                val formatoFecha = SimpleDateFormat("yyyyMMdd")
-                formatoFecha.timeZone = zonaEspanya
-                val fechaActualStr = formatoFecha.format(Calendar.getInstance().time)
-
-                val calendario =
-                    supabase.from("Calendario").select(columns = Columns.list("service_id")) {
-                        filter { eq("fecha", fechaActualStr) }
-                    }.decodeSingleOrNull<Calendario>()
-
-                val serviceIdHoy = calendario?.service_id ?: return@launch
-
-                val resultados = supabase.from("Horario")
-                    .select {
-                        filter {
-                            eq("id_linea", lineaId)
-                            eq("id_parada", paradaId)
-                            eq("service_id", serviceIdHoy)
-                            eq("direccion", _direccionActual.value)
-                        }
-                        order("hora_llegada", order = Order.ASCENDING)
-                    }.decodeList<Horario>()
-
-                _horariosParada.value = resultados
-                    .map { it.copy(hora_llegada = corregirHoraGtfs(it.hora_llegada)) }
-                    .distinctBy { it.hora_llegada }
-                    .sortedBy { it.hora_llegada }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                _horariosParada.value = emptyList()
-            }
-        }
     }
 
 
@@ -311,11 +225,12 @@ class BusMapsViewModel : ViewModel() {
      * Función que busca el próximo autobús que pasará por la parada según la hora actual.
      */
     private fun obtenerHorario(paradaId: Int) {
-        val lineaId = selectedLinea.value?.id ?: return
+        val currentState = _uiState.value
+        val lineaId = currentState.selectedLinea?.id ?: return
 
         viewModelScope.launch {
             try {
-                _proximoBusHora.value = "Calculando..."
+                _uiState.update { it.copy(proximoBusHora = "Calculando...") }
 
                 val zonaEspanya = TimeZone.getTimeZone("Europe/Madrid")
                 val formatoFecha = SimpleDateFormat("yyyyMMdd")
@@ -334,7 +249,7 @@ class BusMapsViewModel : ViewModel() {
                 val serviceIdHoy = calendario?.service_id
 
                 if (serviceIdHoy == null) {
-                    _proximoBusHora.value = "No hay servicio hoy"
+                    _uiState.update { it.copy(proximoBusHora = "No hay servicio hoy") }
                     return@launch
                 }
 
@@ -344,7 +259,7 @@ class BusMapsViewModel : ViewModel() {
                             eq("id_linea", lineaId)
                             eq("id_parada", paradaId)
                             eq("service_id", serviceIdHoy)
-                            eq("direccion", _direccionActual.value)
+                            eq("direccion", currentState.direccionActual)
                             gte("hora_llegada", horaActualStr)
                         }
                         order("hora_llegada", order = Order.ASCENDING)
@@ -354,16 +269,16 @@ class BusMapsViewModel : ViewModel() {
                 if (resultados.isNotEmpty()) {
                     val primerBus = resultados.first()
                     val proximaHoraLimpia = corregirHoraGtfs(primerBus.hora_llegada)
-
                     val destino = primerBus.destino ?: "Fin de trayecto"
-                    _proximoBusHora.value = "$proximaHoraLimpia hacia $destino"
+
+                    _uiState.update { it.copy(proximoBusHora = "$proximaHoraLimpia hacia $destino") }
                 } else {
-                    _proximoBusHora.value = "No hay más buses en este sentido"
+                    _uiState.update { it.copy(proximoBusHora = "No hay más buses en este sentido") }
                 }
 
             } catch (e: Exception) {
                 e.printStackTrace()
-                _proximoBusHora.value = "Error al consultar"
+                _uiState.update { it.copy(proximoBusHora = "Error al consultar") }
             }
         }
     }
@@ -382,36 +297,35 @@ class BusMapsViewModel : ViewModel() {
         }
     }
 
-//    private fun corregirHoraGtfs(horaGtfs: String): String {
-//        try {
-//            val partes = horaGtfs.split(":")
-//            val horasOriginales = partes[0].toInt()
-//            val minutos = partes[1]
-//            val horasCorregidas = horasOriginales % 24
-//            val horasStr = horasCorregidas.toString().padStart(2, '0')
-//            return "$horasStr:$minutos"
-//        } catch (e: Exception) {
-//            return if (horaGtfs.length >= 5) horaGtfs.substring(0, 5) else horaGtfs
-//        }
-//    }
-
 
     /**
      * Limpia los estados de la parada seleccionada.
      */
     fun cerrarDialogo() {
-        _paradaSeleccionada.value = null
-        _proximoBusHora.value = null
-        _horariosParada.value = emptyList()
+        _uiState.update {
+            it.copy(
+                paradaSeleccionada = null,
+                proximoBusHora = null,
+                horariosParada = emptyList()
+            )
+        }
     }
 
     fun NombreLinea(linea: Linea) {
-        _selectedLinea.value = linea
-        _direccionActual.value = 0
-        _destino.value = "Cargando destino..."
+        _uiState.update {
+            it.copy(
+                selectedLinea = linea,
+                direccionActual = 0,
+                destino = "Cargando destino..."
+            )
+        }
+
         actualizarNombreDestino(linea.id, 0)
         cerrarDialogo()
         cargarDatosPorSentido(linea.id, 0)
-        viewModelScope.launch { actualizarPosicionesBuses() }
+
+        viewModelScope.launch {
+            actualizarPosicionesBuses()
+        }
     }
 }
