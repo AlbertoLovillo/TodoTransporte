@@ -37,6 +37,7 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.s25am.todotransporte.ui.screens.bus_map.components.BusMap
+import com.s25am.todotransporte.ui.screens.bus_map.components.MapHeader
 import com.s25am.todotransporte.ui.screens.bus_map.components.StopDialog
 import com.s25am.todotransporte.ui.screens.bus_map.components.StopsList
 
@@ -158,6 +159,11 @@ fun MapsScreen(
                     busesEnTiempoReal = uiState.busesEnTiempoReal,
                     ubicacionUsuario = ubicacionUsuario,
                     onParadaClick = { parada -> viewModel.mostrarInfoParada(parada) }
+                )
+                MapHeader(//cabecera
+                    linea = uiState.selectedLinea,
+                    destino = uiState.destino,
+                    modifier = Modifier.align(Alignment.TopCenter)
                 )
             } else {
                 Box(
