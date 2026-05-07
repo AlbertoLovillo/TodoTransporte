@@ -22,6 +22,7 @@ supabase = "3.5.0"
 ktor = "3.0.1"
 media3Ui = "1.10.0"
 material3 = "1.4.0"
+runtime = "1.11.1"
 
 
 
@@ -61,6 +62,7 @@ supabase-postgrest = { group = "io.github.jan-tennert.supabase", name = "postgre
 ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 androidx-media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3Ui" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
 
 
 [plugins]

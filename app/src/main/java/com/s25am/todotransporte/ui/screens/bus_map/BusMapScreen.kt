@@ -37,6 +37,7 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.s25am.todotransporte.ui.screens.bus_map.components.BusMap
+import com.s25am.todotransporte.ui.screens.bus_map.components.MapHeader
 import com.s25am.todotransporte.ui.screens.bus_map.components.StopDialog
 import com.s25am.todotransporte.ui.screens.bus_map.components.StopsList
 
@@ -138,6 +139,7 @@ fun MapsScreen(
     val proximoBusHora by viewModel.proximoBusHora.collectAsState()
     val direccionActual by viewModel.direccionActual.collectAsState()
     val busesEnTiempoReal by viewModel.busesEnTiempoReal.collectAsState()
+    val destinoActual by viewModel.destino.collectAsState() // Para decir la linea arriba
 
     val estadoCamara = rememberMapViewportState {
         setCameraOptions {
@@ -166,6 +168,12 @@ fun MapsScreen(
                     busesEnTiempoReal = busesEnTiempoReal,
                     viewModel = viewModel,
                     ubicacionUsuario = ubicacionUsuario
+
+                )
+                MapHeader(
+                    linea = lineaSeleccionada,
+                    destino = destinoActual,
+                    modifier = Modifier.align(Alignment.TopCenter)
                 )
             } else {
                 Box(

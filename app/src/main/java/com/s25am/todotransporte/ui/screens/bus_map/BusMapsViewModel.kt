@@ -404,4 +404,14 @@ class BusMapsViewModel : ViewModel() {
         _proximoBusHora.value = null
         _horariosParada.value = emptyList()
     }
+
+    fun NombreLinea(linea: Linea) {
+        _selectedLinea.value = linea
+        _direccionActual.value = 0
+        _destino.value = "Cargando destino..."
+        actualizarNombreDestino(linea.id, 0)
+        cerrarDialogo()
+        cargarDatosPorSentido(linea.id, 0)
+        viewModelScope.launch { actualizarPosicionesBuses() }
+    }
 }
