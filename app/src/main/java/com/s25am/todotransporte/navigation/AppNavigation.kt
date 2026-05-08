@@ -62,7 +62,7 @@ fun AppNavigation(
                 }
 
                 entry<Routes.Maps> {
-                    MapsScreen()
+                    MapsScreen(ticketsViewModel = ticketsViewModel)
                 }
 
                 entry<Routes.Schedule> {
@@ -80,7 +80,8 @@ fun AppNavigation(
                         viewModel = ticketsViewModel,
                         onBack = {
                             backStack.add(Routes.Wallet)
-                        }
+                        },
+                        onNavigateToMaps = {backStack.add(Routes.Maps)}
                     )
                 }
             }

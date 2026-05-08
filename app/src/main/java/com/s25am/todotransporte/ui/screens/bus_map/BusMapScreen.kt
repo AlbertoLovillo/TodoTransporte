@@ -40,12 +40,14 @@ import com.s25am.todotransporte.ui.screens.bus_map.components.BusMap
 import com.s25am.todotransporte.ui.screens.bus_map.components.MapHeader
 import com.s25am.todotransporte.ui.screens.bus_map.components.StopDialog
 import com.s25am.todotransporte.ui.screens.bus_map.components.StopsList
+import com.s25am.todotransporte.ui.screens.tickets.viewModel.TicketsViewModel
 
 @SuppressLint("MissingPermission")
 @OptIn(MapboxExperimental::class)
 @Composable
 fun MapsScreen(
-    viewModel: BusMapsViewModel = viewModel()
+    viewModel: BusMapsViewModel = viewModel(),
+    ticketsViewModel: TicketsViewModel
 ) {
     val context = LocalContext.current
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
@@ -190,5 +192,19 @@ fun MapsScreen(
             proximoBusHora = uiState.proximoBusHora,
             onDismiss = { viewModel.cerrarDialogo() }
         )
+    }
+    // --- Esto de aqui es para Animacion Los tickets ---
+    LaunchedEffect(uiState.lineas) {
+        if (ticketsViewModel.lineaParaVerEnMapa != null && uiState.lineas.isNotEmpty()) {
+            val idBuscado = ticketsViewModel.lineaParaVerEnMapa
+
+
+            val lineaEncontrada = uiState.lineas.find { it.id.toString() == idBuscado }
+
+            lineaEncontrada?.let { linea ->
+                viewModel.seleccionarLinea(linea) // Selecciona y pinta la ruta
+                ticketsViewModel.lineaParaVerEnMapa = null
+            }
+        }
     }
 }

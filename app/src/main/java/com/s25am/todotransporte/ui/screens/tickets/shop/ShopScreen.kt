@@ -51,7 +51,8 @@ import java.util.UUID
 @Composable
 fun ShopScreen(
     viewModel: TicketsViewModel = viewModel(),
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNavigateToMaps: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var searchText by remember { mutableStateOf("") }
@@ -135,6 +136,10 @@ fun ShopScreen(
                             if (uiState.saldo >= 1.50) {
                                 onBack()
                             }
+                        },
+                        onVerMapa = { idDeLaLinea: String ->
+                            viewModel.lineaParaVerEnMapa = idDeLaLinea
+                            onNavigateToMaps() // <--- Llamas a esta función
                         }
                     )
                 }
@@ -169,4 +174,3 @@ fun ShopScreen(
         }
     }
 }
-
