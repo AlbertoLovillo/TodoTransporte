@@ -30,15 +30,16 @@ class BusMapsViewModel : ViewModel() {
     private val supabase = SupabaseClient.client
     private val httpClient = HttpClient()
 
-    // Un único estado para toda la pantalla
     private val _uiState = MutableStateFlow(BusMapsUiState())
     val uiState: StateFlow<BusMapsUiState> = _uiState.asStateFlow()
+
 
 
     init {
         cargarLineas()
         iniciarSeguimientoBuses()
     }
+
 
     /**
      * Tiempo real: Inicia un bucle que descarga la ubicación de los buses cada minuto
@@ -311,7 +312,8 @@ class BusMapsViewModel : ViewModel() {
         }
     }
 
-    fun NombreLinea(linea: Linea) {
+
+    fun nombreLinea(linea: Linea) {
         _uiState.update {
             it.copy(
                 selectedLinea = linea,

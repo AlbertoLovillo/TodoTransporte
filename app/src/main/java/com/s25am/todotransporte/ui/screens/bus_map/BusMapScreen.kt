@@ -40,7 +40,7 @@ import com.s25am.todotransporte.ui.screens.bus_map.components.BusMap
 import com.s25am.todotransporte.ui.screens.bus_map.components.MapHeader
 import com.s25am.todotransporte.ui.screens.bus_map.components.StopDialog
 import com.s25am.todotransporte.ui.screens.bus_map.components.StopsList
-import com.s25am.todotransporte.ui.screens.tickets.viewModel.TicketsViewModel
+import com.s25am.todotransporte.ui.screens.tickets.TicketsViewModel
 
 @SuppressLint("MissingPermission")
 @OptIn(MapboxExperimental::class)
@@ -195,15 +195,15 @@ fun MapsScreen(
     }
     // --- Esto de aqui es para Animacion Los tickets ---
     LaunchedEffect(uiState.lineas) {
-        if (ticketsViewModel.lineaParaVerEnMapa != null && uiState.lineas.isNotEmpty()) {
-            val idBuscado = ticketsViewModel.lineaParaVerEnMapa
+        if (ticketsViewModel.uiState.value.lineaParaVerEnMapa != null && uiState.lineas.isNotEmpty()) {
+            val idBuscado = ticketsViewModel.uiState.value.lineaParaVerEnMapa
 
 
             val lineaEncontrada = uiState.lineas.find { it.id.toString() == idBuscado }
 
             lineaEncontrada?.let { linea ->
-                viewModel.seleccionarLinea(linea) // Selecciona y pinta la ruta
-                ticketsViewModel.lineaParaVerEnMapa = null
+                viewModel.seleccionarLinea(linea)
+                ticketsViewModel.updateLineaParaVerEnMapa(null)
             }
         }
     }

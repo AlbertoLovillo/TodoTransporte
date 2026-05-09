@@ -1,8 +1,5 @@
-package com.s25am.todotransporte.ui.screens.tickets.viewModel
+package com.s25am.todotransporte.ui.screens.tickets
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.s25am.todotransporte.database.SupabaseClient
@@ -23,7 +20,7 @@ class TicketsViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(TicketUiState())
     val uiState: StateFlow<TicketUiState> = _uiState.asStateFlow()
 
-    var lineaParaVerEnMapa by mutableStateOf<String?>(null)
+
 
     init {
         cargarLineas()
@@ -32,7 +29,7 @@ class TicketsViewModel: ViewModel() {
 
 
     /**
-     * 1. FUNCIÓN RECUPERADA: Obtiene el email del usuario logueado actualmente
+     * Obtiene el email del usuario logueado actualmente
      */
     private fun obtenerEmailUsuario(): String? {
         return supabase.auth.currentUserOrNull()?.email
@@ -181,6 +178,11 @@ class TicketsViewModel: ViewModel() {
                 e.printStackTrace()
             }
         }
+    }
+
+
+    fun updateLineaParaVerEnMapa(linea: String?) {
+        _uiState.update { it.copy(lineaParaVerEnMapa = linea) }
     }
 
 }

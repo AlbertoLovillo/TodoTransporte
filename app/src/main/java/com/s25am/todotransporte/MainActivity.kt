@@ -15,7 +15,7 @@ import com.s25am.todotransporte.navigation.AppNavigation
 import com.s25am.todotransporte.navigation.Routes
 import com.s25am.todotransporte.ui.components.MainNavigationBar
 import com.s25am.todotransporte.ui.components.MainTopBar
-import com.s25am.todotransporte.ui.screens.tickets.viewModel.TicketsViewModel
+import com.s25am.todotransporte.ui.screens.tickets.TicketsViewModel
 import com.s25am.todotransporte.ui.theme.TodoTransporteTheme
 
 class MainActivity : ComponentActivity() {

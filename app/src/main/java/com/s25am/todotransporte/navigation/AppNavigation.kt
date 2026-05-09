@@ -14,14 +14,11 @@ import com.s25am.todotransporte.ui.screens.authentication.RegisterScreen
 import com.s25am.todotransporte.ui.screens.bus_map.MapsScreen
 import com.s25am.todotransporte.ui.screens.sale_point.SalePointScreen
 import com.s25am.todotransporte.ui.screens.schedule.ScheduleScreen
+import com.s25am.todotransporte.ui.screens.tickets.TicketsViewModel
 import com.s25am.todotransporte.ui.screens.tickets.shop.ShopScreen
-import com.s25am.todotransporte.ui.screens.tickets.viewModel.TicketsViewModel
 import com.s25am.todotransporte.ui.screens.tickets.wallet.WalletScreen
 
-/**
- * Gestor de navegación principal de la aplicación.
- * Define qué pantalla se muestra en cada momento.
- */
+
 @Composable
 fun AppNavigation(
     padding: PaddingValues,

@@ -20,8 +20,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -31,17 +29,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.s25am.todotransporte.R
 import com.s25am.todotransporte.database.data.Billete
+import com.s25am.todotransporte.ui.screens.tickets.TicketsViewModel
 import com.s25am.todotransporte.ui.screens.tickets.shop.components.CardCompra
 import com.s25am.todotransporte.ui.screens.tickets.shop.components.SaldoInsuficienteDialog
 import com.s25am.todotransporte.ui.screens.tickets.shop.components.TicketSearchBar
-import com.s25am.todotransporte.ui.screens.tickets.viewModel.TicketsViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -138,7 +135,7 @@ fun ShopScreen(
                             }
                         },
                         onVerMapa = { idDeLaLinea: String ->
-                            viewModel.lineaParaVerEnMapa = idDeLaLinea
+                            viewModel.updateLineaParaVerEnMapa(idDeLaLinea)
                             onNavigateToMaps() // <--- Llamas a esta función
                         }
                     )
