@@ -35,12 +35,10 @@ class BusMapsViewModel : ViewModel() {
     val uiState: StateFlow<BusMapsUiState> = _uiState.asStateFlow()
 
 
-
-        init {
+    init {
         cargarLineas()
         iniciarSeguimientoBuses()
     }
-
 
     /**
      * Tiempo real: Inicia un bucle que descarga la ubicación de los buses cada minuto
@@ -60,7 +58,8 @@ class BusMapsViewModel : ViewModel() {
      */
     private suspend fun actualizarPosicionesBuses() {
         try {
-            val url = "https://datosabiertos.malaga.eu/recursos/transporte/EMT/EMTlineasUbicaciones/lineasyubicaciones.csv"
+            val url =
+                "https://datosabiertos.malaga.eu/recursos/transporte/EMT/EMTlineasUbicaciones/lineasyubicaciones.csv"
             val response = httpClient.get(url)
             val csvText = response.bodyAsText()
 
@@ -309,6 +308,24 @@ class BusMapsViewModel : ViewModel() {
                 proximoBusHora = null,
                 horariosParada = emptyList()
             )
+        }
+    }
+
+    fun NombreLinea(linea: Linea) {
+        _uiState.update {
+            it.copy(
+                selectedLinea = linea,
+                direccionActual = 0,
+                destino = "Cargando destino..."
+            )
+        }
+
+        actualizarNombreDestino(linea.id, 0)
+        cerrarDialogo()
+        cargarDatosPorSentido(linea.id, 0)
+
+        viewModelScope.launch {
+            actualizarPosicionesBuses()
         }
     }
 }

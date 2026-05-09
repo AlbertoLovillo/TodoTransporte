@@ -37,14 +37,17 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import com.s25am.todotransporte.ui.screens.bus_map.components.BusMap
+import com.s25am.todotransporte.ui.screens.bus_map.components.MapHeader
 import com.s25am.todotransporte.ui.screens.bus_map.components.StopDialog
 import com.s25am.todotransporte.ui.screens.bus_map.components.StopsList
+import com.s25am.todotransporte.ui.screens.tickets.viewModel.TicketsViewModel
 
 @SuppressLint("MissingPermission")
 @OptIn(MapboxExperimental::class)
 @Composable
 fun MapsScreen(
-    viewModel: BusMapsViewModel = viewModel()
+    viewModel: BusMapsViewModel = viewModel(),
+    ticketsViewModel: TicketsViewModel
 ) {
     val context = LocalContext.current
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
@@ -159,6 +162,11 @@ fun MapsScreen(
                     ubicacionUsuario = ubicacionUsuario,
                     onParadaClick = { parada -> viewModel.mostrarInfoParada(parada) }
                 )
+                MapHeader(//cabecera
+                    linea = uiState.selectedLinea,
+                    destino = uiState.destino,
+                    modifier = Modifier.align(Alignment.TopCenter)
+                )
             } else {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -184,5 +192,19 @@ fun MapsScreen(
             proximoBusHora = uiState.proximoBusHora,
             onDismiss = { viewModel.cerrarDialogo() }
         )
+    }
+    // --- Esto de aqui es para Animacion Los tickets ---
+    LaunchedEffect(uiState.lineas) {
+        if (ticketsViewModel.lineaParaVerEnMapa != null && uiState.lineas.isNotEmpty()) {
+            val idBuscado = ticketsViewModel.lineaParaVerEnMapa
+
+
+            val lineaEncontrada = uiState.lineas.find { it.id.toString() == idBuscado }
+
+            lineaEncontrada?.let { linea ->
+                viewModel.seleccionarLinea(linea) // Selecciona y pinta la ruta
+                ticketsViewModel.lineaParaVerEnMapa = null
+            }
+        }
     }
 }

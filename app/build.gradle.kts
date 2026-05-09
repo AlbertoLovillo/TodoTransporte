@@ -87,4 +87,8 @@ dependencies {
 
     // Librería para generar códigos QR
     implementation("com.google.zxing:core:3.5.3")
+
+    //Video
+    implementation("androidx.media3:media3-exoplayer:1.2.0")
+    implementation("androidx.media3:media3-ui:1.2.0")
 }

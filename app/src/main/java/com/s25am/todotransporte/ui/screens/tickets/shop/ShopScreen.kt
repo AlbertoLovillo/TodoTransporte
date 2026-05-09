@@ -31,7 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLocale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -44,13 +44,15 @@ import com.s25am.todotransporte.ui.screens.tickets.shop.components.TicketSearchB
 import com.s25am.todotransporte.ui.screens.tickets.viewModel.TicketsViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShopScreen(
     viewModel: TicketsViewModel = viewModel(),
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNavigateToMaps: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var searchText by remember { mutableStateOf("") }
@@ -61,8 +63,12 @@ fun ShopScreen(
         )
     }
 
-    val sdf = SimpleDateFormat("dd/MM/yyyy", LocalLocale.current.platformLocale)
-    val fechaHoy = sdf.format(Calendar.getInstance().time)
+    //para sacar la fecha de hoy la anterior saltaba error
+    val fechaHoy = remember {
+        val localeSpain = Locale("es", "ES")
+        val sdf = SimpleDateFormat("dd/MM/yyyy", localeSpain)
+        sdf.format(Calendar.getInstance().time)
+    }
 
     // Leemos las líneas directamente desde el uiState
     val opcionesCompra = uiState.lineas.map { linea ->
@@ -76,28 +82,32 @@ fun ShopScreen(
     }.filter { it.titulo.contains(searchText, ignoreCase = true) }
 
     Scaffold(
-        containerColor = Color.White,
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        "Comprar Billetes",
-                        fontWeight = FontWeight.Bold,
-                        color = colorResource(id = R.color.RojoP)
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White,
-                    titleContentColor = Color.Black
-                )
-            )
-        }
+        containerColor = Color(0xFFF8F9FA),
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(top = 8.dp)
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    "Pase de Viaje",
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = Color.Black
+                    )
+                )
+                Text(
+                    "Málaga, $fechaHoy",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
+            }
+            // BUSCADOR
             TicketSearchBar(
                 query = searchText,
                 onQueryChange = { searchText = it }
@@ -114,6 +124,7 @@ fun ShopScreen(
                         color = Color.Gray
                     )
                 }
+                //Los billetes
                 items(opcionesCompra) { opcion ->
                     CardCompra(
                         opcion = opcion,
@@ -125,11 +136,16 @@ fun ShopScreen(
                             if (uiState.saldo >= 1.50) {
                                 onBack()
                             }
+                        },
+                        onVerMapa = { idDeLaLinea: String ->
+                            viewModel.lineaParaVerEnMapa = idDeLaLinea
+                            onNavigateToMaps() // <--- Llamas a esta función
                         }
                     )
                 }
 
                 item {
+                    // Aviso informativo al final
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -158,4 +174,3 @@ fun ShopScreen(
         }
     }
 }
-
