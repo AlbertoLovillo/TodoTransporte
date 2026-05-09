@@ -65,6 +65,10 @@ import androidx.media3.ui.PlayerView
 import com.s25am.todotransporte.R
 import com.s25am.todotransporte.ui.screens.authentication.viewmodel.AuthenticationViewModel
 
+/**
+ * Pantalla de Registro.
+ * Dalton: Se ha unificado el diseño con Login Screen
+ */
 @OptIn(UnstableApi::class)
 @Composable
 fun RegisterScreen(
@@ -74,11 +78,9 @@ fun RegisterScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-
     var passwordVisible by remember { mutableStateOf(false) }
     var repeatedPasswordVisible by remember { mutableStateOf(false) }
 
-    // Configuración del ExoPlayer
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
             val videoUri = Uri.parse("android.resource://${context.packageName}/${R.raw.video_fondo_auth}")
@@ -95,14 +97,10 @@ fun RegisterScreen(
     }
 
     LaunchedEffect(uiState.isSuccess) {
-        if (uiState.isSuccess) {
-            onRegisterSuccess()
-        }
+        if (uiState.isSuccess) onRegisterSuccess()
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-
-        // --- FONDO DE VIDEO ---
         AndroidView(
             factory = { ctx ->
                 PlayerView(ctx).apply {
@@ -118,14 +116,12 @@ fun RegisterScreen(
             modifier = Modifier.fillMaxSize()
         )
 
-        // Capa oscura para legibilidad
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.4f))
+                .background(Color.Black.copy(alpha = 0.4f)) // Opacidad
         )
 
-        // --- CONTENIDO DE REGISTRO ---
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -136,18 +132,18 @@ fun RegisterScreen(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = MaterialTheme.shapes.large,
-                elevation = CardDefaults.cardElevation(8.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.9f))
+                elevation = CardDefaults.cardElevation(12.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.95f))
             ) {
                 Column(
-                    modifier = Modifier.padding(24.dp),
+                    modifier = Modifier.padding(28.dp), // Padding
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.logo_sin_fondo),
                         contentDescription = "Logo TodoTransporte",
                         modifier = Modifier
-                            .size(120.dp)
+                            .size(140.dp) // Tamaño unificado
                             .clip(CircleShape)
                             .padding(bottom = 8.dp),
                         contentScale = ContentScale.Fit
@@ -155,14 +151,14 @@ fun RegisterScreen(
 
                     Text(
                         "Registro",
-                        fontSize = 28.sp,
+                        fontSize = 32.sp, // Tamaño unificado
                         fontWeight = FontWeight.Bold,
                         color = colorResource(id = R.color.RojoP)
                     )
 
                     Text(
-                        "Crea tu cuenta de transporte",
-                        fontSize = 14.sp,
+                        "Crea tu cuenta para empezar",
+                        fontSize = 15.sp,
                         color = colorResource(id = R.color.rojoFlojito)
                     )
 
@@ -176,7 +172,9 @@ fun RegisterScreen(
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.Black,
-                            unfocusedTextColor = Color.Black
+                            unfocusedTextColor = Color.Black,
+                            focusedBorderColor = colorResource(id = R.color.RojoP),
+                            unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f)
                         )
                     )
 
@@ -197,7 +195,9 @@ fun RegisterScreen(
                         },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.Black,
-                            unfocusedTextColor = Color.Black
+                            unfocusedTextColor = Color.Black,
+                            focusedBorderColor = colorResource(id = R.color.RojoP),
+                            unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f)
                         )
                     )
 
@@ -218,7 +218,9 @@ fun RegisterScreen(
                         },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.Black,
-                            unfocusedTextColor = Color.Black
+                            unfocusedTextColor = Color.Black,
+                            focusedBorderColor = colorResource(id = R.color.RojoP),
+                            unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f)
                         )
                     )
 
@@ -235,22 +237,26 @@ fun RegisterScreen(
 
                     Button(
                         onClick = { viewModel.register() },
-                        modifier = Modifier.fillMaxWidth().height(50.dp),
+                        modifier = Modifier.fillMaxWidth().height(52.dp),
                         enabled = !uiState.isLoading,
+                        shape = MaterialTheme.shapes.medium,
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.RojoP))
                     ) {
                         if (uiState.isLoading) {
-                            CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White, strokeWidth = 2.dp)
                         } else {
-                            Text("Crear Cuenta")
+                            Text("Crear Cuenta", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                         }
                     }
+
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     TextButton(onClick = onNavigateToLogin) {
                         Text(
                             text = "¿Ya tienes cuenta? Inicia sesión",
                             style = TextStyle(textDecoration = TextDecoration.Underline),
-                            color = colorResource(id = R.color.rojoFlojito)
+                            color = colorResource(id = R.color.rojoFlojito),
+                            fontSize = 14.sp
                         )
                     }
                 }
