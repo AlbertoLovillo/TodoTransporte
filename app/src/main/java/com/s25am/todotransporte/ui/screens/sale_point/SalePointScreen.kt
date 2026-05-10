@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -161,11 +162,9 @@ fun SalePointScreen(
                 .align(Alignment.TopCenter)
                 .padding(top = 48.dp, start = 16.dp, end = 16.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface.copy(
-                    alpha = 0.9f
-                )
+                containerColor = Color.White
             ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
         ) {
             Text(
                 text = "Mostrando ${uiState.puntosVenta.size} puntos de venta",
