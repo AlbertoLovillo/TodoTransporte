@@ -1,6 +1,5 @@
 package com.s25am.todotransporte.ui.screens.bus_map.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
