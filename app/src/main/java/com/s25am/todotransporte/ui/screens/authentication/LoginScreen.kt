@@ -1,5 +1,6 @@
 package com.s25am.todotransporte.ui.screens.authentication
 
+
 import android.net.Uri
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -65,6 +66,7 @@ import androidx.media3.ui.PlayerView
 import com.s25am.todotransporte.R
 import com.s25am.todotransporte.ui.screens.authentication.viewmodel.AuthenticationViewModel
 
+
 @OptIn(UnstableApi::class)
 @Composable
 fun LoginScreen(
@@ -76,7 +78,7 @@ fun LoginScreen(
     var passwordVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-    // Inicializamos ExoPlayer para el video de fondo
+
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
             val videoUri = Uri.parse("android.resource://${context.packageName}/${R.raw.video_fondo_auth}")
@@ -88,18 +90,17 @@ fun LoginScreen(
         }
     }
 
-    // Gestionamos el ciclo de vida del reproductor
+
     DisposableEffect(Unit) {
         onDispose { exoPlayer.release() }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
 
-        // --- 1. CAPA DEL VIDEO DE FONDO ---
+    Box(modifier = Modifier.fillMaxSize()) {
         AndroidView(
             factory = { ctx ->
                 PlayerView(ctx).apply {
-                    useController = false // Escondemos los controles (play, pause, etc)
+                    useController = false
                     resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                     player = exoPlayer
                     layoutParams = FrameLayout.LayoutParams(
@@ -111,41 +112,37 @@ fun LoginScreen(
             modifier = Modifier.fillMaxSize()
         )
 
-        // Capa de oscurecimiento opcional para que el formulario se lea mejor
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.3f))
-        )
 
-        // --- 2. CAPA DEL FORMULARIO
+        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
+
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top // Dalton: Alineado arriba para evitar saltos
         ) {
+            Spacer(modifier = Modifier.height(100.dp)) // Espacio fijo al techo
+
+
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = MaterialTheme.shapes.large,
-                elevation = CardDefaults.cardElevation(8.dp),
-                // un poco de transparencia a la tarjeta para que luzca más moderno
-                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.9f))
+                elevation = CardDefaults.cardElevation(12.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.95f))
             ) {
                 Column(
-                    modifier = Modifier.padding(24.dp),
+                    modifier = Modifier.padding(28.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.logo_sin_fondo),
                         contentDescription = "Logo TodoTransporte",
-                        modifier = Modifier
-                            .size(150.dp)
-                            .clip(CircleShape)
-                            .padding(bottom = 16.dp),
+                        modifier = Modifier.size(140.dp).clip(CircleShape).padding(bottom = 8.dp),
                         contentScale = ContentScale.Fit
                     )
+
 
                     Text(
                         "TodoTransporte",
@@ -154,13 +151,16 @@ fun LoginScreen(
                         color = colorResource(id = R.color.RojoP)
                     )
 
+
                     Text(
                         "Inicia sesión para continuar",
-                        fontSize = 16.sp,
+                        fontSize = 15.sp,
                         color = colorResource(id = R.color.rojoFlojito)
                     )
 
+
                     Spacer(modifier = Modifier.height(32.dp))
+
 
                     OutlinedTextField(
                         value = uiState.email,
@@ -171,12 +171,13 @@ fun LoginScreen(
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.Black,
                             unfocusedTextColor = Color.Black,
-                            focusedLabelColor = Color.Black,
-                            cursorColor = Color.Black
+                            focusedBorderColor = colorResource(id = R.color.RojoP)
                         )
                     )
 
+
                     Spacer(modifier = Modifier.height(16.dp))
+
 
                     OutlinedTextField(
                         value = uiState.password,
@@ -194,25 +195,30 @@ fun LoginScreen(
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.Black,
                             unfocusedTextColor = Color.Black,
-                            focusedLabelColor = Color.Black,
-                            cursorColor = Color.Black
+                            focusedBorderColor = colorResource(id = R.color.RojoP)
                         )
                     )
 
+
                     Spacer(modifier = Modifier.height(32.dp))
+
 
                     Button(
                         onClick = { viewModel.login() },
-                        modifier = Modifier.fillMaxWidth().height(50.dp),
+                        modifier = Modifier.fillMaxWidth().height(52.dp),
                         enabled = !uiState.isLoading,
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.RojoP))
                     ) {
                         if (uiState.isLoading) {
                             CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
                         } else {
-                            Text("Entrar")
+                            Text("Entrar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                         }
                     }
+
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
 
                     TextButton(onClick = onNavigateToRegister) {
                         Text(
@@ -225,6 +231,7 @@ fun LoginScreen(
             }
         }
     }
+
 
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) onLoginSuccess()
