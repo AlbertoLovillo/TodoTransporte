@@ -65,10 +65,6 @@ import androidx.media3.ui.PlayerView
 import com.s25am.todotransporte.R
 import com.s25am.todotransporte.ui.screens.authentication.viewmodel.AuthenticationViewModel
 
-/**
- * Pantalla de Login.
- * Dalton: He unificado el diseño con RegisterScreen.
- */
 @OptIn(UnstableApi::class)
 @Composable
 fun LoginScreen(
@@ -111,19 +107,17 @@ fun LoginScreen(
             modifier = Modifier.fillMaxSize()
         )
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.4f)) // Opacidad
-        )
+        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top // Dalton: Alineado arriba para evitar saltos
         ) {
+            Spacer(modifier = Modifier.height(100.dp)) // Espacio fijo al techo
+
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = MaterialTheme.shapes.large,
@@ -131,16 +125,13 @@ fun LoginScreen(
                 colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.95f))
             ) {
                 Column(
-                    modifier = Modifier.padding(28.dp), // Padding aumentado
+                    modifier = Modifier.padding(28.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.logo_sin_fondo),
                         contentDescription = "Logo TodoTransporte",
-                        modifier = Modifier
-                            .size(140.dp) // Tamaño unificado
-                            .clip(CircleShape)
-                            .padding(bottom = 8.dp),
+                        modifier = Modifier.size(140.dp).clip(CircleShape).padding(bottom = 8.dp),
                         contentScale = ContentScale.Fit
                     )
 
@@ -168,8 +159,7 @@ fun LoginScreen(
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.Black,
                             unfocusedTextColor = Color.Black,
-                            focusedBorderColor = colorResource(id = R.color.RojoP),
-                            unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f)
+                            focusedBorderColor = colorResource(id = R.color.RojoP)
                         )
                     )
 
@@ -191,8 +181,7 @@ fun LoginScreen(
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.Black,
                             unfocusedTextColor = Color.Black,
-                            focusedBorderColor = colorResource(id = R.color.RojoP),
-                            unfocusedBorderColor = Color.Gray.copy(alpha = 0.5f)
+                            focusedBorderColor = colorResource(id = R.color.RojoP)
                         )
                     )
 
@@ -202,11 +191,10 @@ fun LoginScreen(
                         onClick = { viewModel.login() },
                         modifier = Modifier.fillMaxWidth().height(52.dp),
                         enabled = !uiState.isLoading,
-                        shape = MaterialTheme.shapes.medium,
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.RojoP))
                     ) {
                         if (uiState.isLoading) {
-                            CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White, strokeWidth = 2.dp)
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
                         } else {
                             Text("Entrar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                         }
@@ -218,8 +206,7 @@ fun LoginScreen(
                         Text(
                             text = "¿No tienes cuenta? Regístrate",
                             style = TextStyle(textDecoration = TextDecoration.Underline),
-                            color = colorResource(id = R.color.rojoFlojito),
-                            fontSize = 14.sp
+                            color = colorResource(id = R.color.rojoFlojito)
                         )
                     }
                 }
