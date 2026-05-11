@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -121,25 +123,31 @@ fun LoginScreen(
                 .fillMaxSize()
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top // Dalton: Alineado arriba para evitar saltos
+            verticalArrangement = Arrangement.Top
         ) {
-            Spacer(modifier = Modifier.height(100.dp)) // Espacio fijo al techo
-
 
             Card(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 10.dp, vertical = 20.dp)
+                    .verticalScroll(rememberScrollState()),
                 shape = MaterialTheme.shapes.large,
                 elevation = CardDefaults.cardElevation(12.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.95f))
             ) {
+
                 Column(
-                    modifier = Modifier.padding(28.dp),
+                    modifier = Modifier.padding(20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+
                     Image(
                         painter = painterResource(id = R.drawable.logo_sin_fondo),
                         contentDescription = "Logo TodoTransporte",
-                        modifier = Modifier.size(140.dp).clip(CircleShape).padding(bottom = 8.dp),
+                        modifier = Modifier
+                            .size(140.dp)
+                            .clip(CircleShape)
+                            .padding(bottom = 8.dp),
                         contentScale = ContentScale.Fit
                     )
 

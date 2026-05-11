@@ -48,6 +48,7 @@ fun AppNavigation(
                     RegisterScreen(
                         onNavigateToLogin = {
                             backStack.removeLastOrNull()
+                            backStack.add(Routes.Login)
                         },
                         onRegisterSuccess = {
                             while (backStack.isNotEmpty()) {
