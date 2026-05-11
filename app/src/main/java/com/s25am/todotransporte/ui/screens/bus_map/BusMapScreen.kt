@@ -162,7 +162,7 @@ fun MapsScreen(
                     ubicacionUsuario = ubicacionUsuario,
                     onParadaClick = { parada -> viewModel.mostrarInfoParada(parada) }
                 )
-                MapHeader(//cabecera
+                MapHeader(
                     linea = uiState.selectedLinea,
                     destino = uiState.destino,
                     modifier = Modifier.align(Alignment.TopCenter)
@@ -183,7 +183,9 @@ fun MapsScreen(
             lineaSeleccionada = uiState.selectedLinea,
             direccionActual = uiState.direccionActual,
             onAlternarDireccion = { viewModel.alternarDireccion() },
-            onSeleccionarLinea = { linea -> viewModel.seleccionarLinea(linea) }
+            onSeleccionarLinea = { linea -> viewModel.seleccionarLinea(linea) },
+            isMap = true,
+            destino = uiState.destino
         )
 
         StopDialog(
@@ -193,7 +195,8 @@ fun MapsScreen(
             onDismiss = { viewModel.cerrarDialogo() }
         )
     }
-    // --- Esto de aqui es para Animacion Los tickets ---
+
+
     LaunchedEffect(uiState.lineas) {
         if (ticketsViewModel.uiState.value.lineaParaVerEnMapa != null && uiState.lineas.isNotEmpty()) {
             val idBuscado = ticketsViewModel.uiState.value.lineaParaVerEnMapa

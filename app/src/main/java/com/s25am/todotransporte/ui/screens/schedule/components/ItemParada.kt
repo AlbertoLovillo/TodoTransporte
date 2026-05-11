@@ -41,13 +41,10 @@ import com.s25am.todotransporte.database.data.Parada
  */
 @Composable
 fun ItemParada(
-    parada: Parada,
-    proximoBusHora: String?,
-    tieneBusCerca: Boolean,
+    parada: Parada, proximoBusHora: String?,
+//    tieneBusCerca: Boolean,
     onClick: () -> Unit
 ) {
-    var esFavorito by remember { mutableStateOf(false) }
-    val colorPrimario = MaterialTheme.colorScheme.primary
 
     ElevatedCard(
         modifier = Modifier
@@ -57,29 +54,40 @@ fun ItemParada(
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
+
         Row(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             Box(
                 modifier = Modifier
                     .size(52.dp)
                     .clip(CircleShape)
                     .background(
-                        if (tieneBusCerca) Color(0xFFFFD700).copy(alpha = 0.2f)
-                        else colorPrimario.copy(alpha = 0.1f)
-                    ),
-                contentAlignment = Alignment.Center
+//                        if
+//                                (tieneBusCerca) Color(0xFFFFD700).copy(alpha = 0.2f)
+//                        else
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                    ), contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = if (tieneBusCerca) Icons.Default.DirectionsBus else Icons.Default.LocationOn,
-                    contentDescription = null,
-                    tint = if (tieneBusCerca) Color(0xFFB8860B) else colorPrimario,
+                    imageVector =
+//                        if (tieneBusCerca)
+//                            Icons.Default.DirectionsBus
+//                        else
+                        Icons.Default.LocationOn,
+                    contentDescription = null, tint =
+//                        if (tieneBusCerca)
+//                            Color(0xFFB8860B)
+//                        else
+                        MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(26.dp)
                 )
             }
+
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(modifier = Modifier.weight(1f)) {
@@ -89,31 +97,20 @@ fun ItemParada(
                     fontWeight = FontWeight.Bold
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (tieneBusCerca) {
-                        Text(
-                            text = "● EN DIRECTO ",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFFB8860B),
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+//                    if (tieneBusCerca) {
+//                        Text(
+//                            text = "● EN DIRECTO ",
+//                            style = MaterialTheme.typography.bodySmall,
+//                            color = Color(0xFFB8860B),
+//                            fontWeight = FontWeight.Bold
+//                        )
+//                    }
                     Text(
                         text = "Próximo bus: ${proximoBusHora ?: "Consultando..."}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-            }
-
-            IconButton(
-                onClick = { esFavorito = !esFavorito }, modifier = Modifier.size(32.dp)
-            ) {
-                Icon(
-                    imageVector = if (esFavorito) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    contentDescription = "Favorito",
-                    tint = if (esFavorito) colorPrimario else MaterialTheme.colorScheme.outlineVariant,
-                    modifier = Modifier.size(20.dp)
-                )
             }
         }
     }
