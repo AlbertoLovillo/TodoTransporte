@@ -74,9 +74,11 @@ fun RegisterScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
     var passwordVisible by remember { mutableStateOf(false) }
     var repeatedPasswordVisible by remember { mutableStateOf(false) }
 
+    // Configuración del ExoPlayer
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
             val videoUri = Uri.parse("android.resource://${context.packageName}/${R.raw.video_fondo_auth}")
@@ -92,7 +94,15 @@ fun RegisterScreen(
         onDispose { exoPlayer.release() }
     }
 
+    LaunchedEffect(uiState.isSuccess) {
+        if (uiState.isSuccess) {
+            onRegisterSuccess()
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
+
+        // --- FONDO DE VIDEO ---
         AndroidView(
             factory = { ctx ->
                 PlayerView(ctx).apply {
@@ -108,48 +118,55 @@ fun RegisterScreen(
             modifier = Modifier.fillMaxSize()
         )
 
-        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
+        // Capa oscura para legibilidad
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.4f))
+        )
 
+        // --- CONTENIDO DE REGISTRO ---
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top // Top igual que login
+            verticalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.height(100.dp)) // Mismo espacio  que Login
-
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = MaterialTheme.shapes.large,
-                elevation = CardDefaults.cardElevation(12.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.95f))
+                elevation = CardDefaults.cardElevation(8.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.9f))
             ) {
                 Column(
-                    modifier = Modifier.padding(28.dp),
+                    modifier = Modifier.padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.logo_sin_fondo),
                         contentDescription = "Logo TodoTransporte",
-                        modifier = Modifier.size(140.dp).clip(CircleShape).padding(bottom = 8.dp),
+                        modifier = Modifier
+                            .size(120.dp)
+                            .clip(CircleShape)
+                            .padding(bottom = 8.dp),
                         contentScale = ContentScale.Fit
                     )
 
                     Text(
                         "Registro",
-                        fontSize = 32.sp,
+                        fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
                         color = colorResource(id = R.color.RojoP)
                     )
 
                     Text(
-                        "Crea tu cuenta para empezar",
-                        fontSize = 15.sp,
+                        "Crea tu cuenta de transporte",
+                        fontSize = 14.sp,
                         color = colorResource(id = R.color.rojoFlojito)
                     )
 
-                    Spacer(modifier = Modifier.height(32.dp)) // Mismo spacer que Login
+                    Spacer(modifier = Modifier.height(24.dp))
 
                     OutlinedTextField(
                         value = uiState.email,
@@ -159,12 +176,11 @@ fun RegisterScreen(
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.Black,
-                            unfocusedTextColor = Color.Black,
-                            focusedBorderColor = colorResource(id = R.color.RojoP)
+                            unfocusedTextColor = Color.Black
                         )
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp)) // Mismo spacer que Login
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     OutlinedTextField(
                         value = uiState.password,
@@ -181,12 +197,11 @@ fun RegisterScreen(
                         },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.Black,
-                            unfocusedTextColor = Color.Black,
-                            focusedBorderColor = colorResource(id = R.color.RojoP)
+                            unfocusedTextColor = Color.Black
                         )
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     OutlinedTextField(
                         value = uiState.repeatedPassword,
@@ -203,27 +218,33 @@ fun RegisterScreen(
                         },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.Black,
-                            unfocusedTextColor = Color.Black,
-                            focusedBorderColor = colorResource(id = R.color.RojoP)
+                            unfocusedTextColor = Color.Black
                         )
                     )
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                    uiState.authError?.let {
+                        Text(
+                            text = it,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(top = 8.dp),
+                            fontSize = 12.sp
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
 
                     Button(
                         onClick = { viewModel.register() },
-                        modifier = Modifier.fillMaxWidth().height(52.dp),
+                        modifier = Modifier.fillMaxWidth().height(50.dp),
                         enabled = !uiState.isLoading,
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.RojoP))
                     ) {
                         if (uiState.isLoading) {
                             CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
                         } else {
-                            Text("Crear Cuenta", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                            Text("Crear Cuenta")
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(8.dp))
 
                     TextButton(onClick = onNavigateToLogin) {
                         Text(
@@ -235,9 +256,5 @@ fun RegisterScreen(
                 }
             }
         }
-    }
-
-    LaunchedEffect(uiState.isSuccess) {
-        if (uiState.isSuccess) onRegisterSuccess()
     }
 }

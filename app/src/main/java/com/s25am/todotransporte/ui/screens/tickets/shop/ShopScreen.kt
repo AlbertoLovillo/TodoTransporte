@@ -84,7 +84,6 @@ fun ShopScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
                 .padding(top = 8.dp)
         ) {
             Column(

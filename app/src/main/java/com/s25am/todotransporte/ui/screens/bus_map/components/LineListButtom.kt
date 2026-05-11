@@ -25,7 +25,7 @@ fun LineListButtom(
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(10.dp),
-        color = if (estaSeleccionada) colorResource(id = R.color.RojoP) else Color(0xFFF0F0F0),
+        color = if (estaSeleccionada) colorResource(id = R.color.RojoP) else Color(0xFFF0F00),
         modifier = Modifier.size(50.dp)
     ) {
         Box(contentAlignment = Alignment.Center) {
