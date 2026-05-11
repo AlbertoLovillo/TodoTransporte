@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.colorResource
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.LineString
 import com.mapbox.geojson.Point
@@ -13,6 +15,7 @@ import com.mapbox.maps.extension.compose.MapboxMap
 import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotation
+import com.s25am.todotransporte.R
 import com.s25am.todotransporte.database.data.BusPosition
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
@@ -27,14 +30,13 @@ fun BusMap(
     paradas: List<Parada>,
     busesEnTiempoReal: List<BusPosition>,
     ubicacionUsuario: Location?,
-    onParadaClick: (Parada) -> Unit // Recibimos el evento en lugar del ViewModel
+    onParadaClick: (Parada) -> Unit
 ) {
     MapboxMap(
         modifier = Modifier.fillMaxSize(),
         mapViewportState = estadoCamara
     ) {
         lineaSeleccionada?.let { linea ->
-            // Usamos la ruta que nos viene del estado
             rutaGeojson?.let { stringDelJson ->
                 val puntosDeLaRuta = remember(stringDelJson) {
                     try {
@@ -47,11 +49,7 @@ fun BusMap(
                 }
 
                 if (puntosDeLaRuta.isNotEmpty()) {
-                    val colorLinea = try {
-                        AndroidColor.parseColor(linea.color)
-                    } catch (e: Exception) {
-                        AndroidColor.RED
-                    }
+                    val colorLinea = colorResource(id = R.color.rojoMuyFlojito).toArgb()
                     PolylineAnnotation(
                         points = puntosDeLaRuta,
                         lineColorInt = colorLinea,
@@ -62,14 +60,15 @@ fun BusMap(
         }
 
         paradas.forEach { parada ->
+            val colorLinea = colorResource(id = R.color.RojoP).toArgb()
             CircleAnnotation(
                 point = Point.fromLngLat(parada.longitud, parada.latitud),
                 circleRadius = 5.0,
-                circleColorInt = AndroidColor.RED,
+                circleColorInt = colorLinea,
                 circleStrokeWidth = 1.0,
                 circleStrokeColorInt = AndroidColor.WHITE,
                 onClick = {
-                    onParadaClick(parada) // Disparamos el evento
+                    onParadaClick(parada)
                     true
                 }
             )

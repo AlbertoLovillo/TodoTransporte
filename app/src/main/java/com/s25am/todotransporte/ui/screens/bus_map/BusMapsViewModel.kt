@@ -34,7 +34,6 @@ class BusMapsViewModel : ViewModel() {
     val uiState: StateFlow<BusMapsUiState> = _uiState.asStateFlow()
 
 
-
     init {
         cargarLineas()
         iniciarSeguimientoBuses()
@@ -123,11 +122,16 @@ class BusMapsViewModel : ViewModel() {
      * Función que según la línea seleccionada actualiza la lista de paradas y resetea el sentido.
      */
     fun seleccionarLinea(linea: Linea) {
-        _uiState.update { it.copy(selectedLinea = linea, direccionActual = 0) }
-        actualizarNombreDestino(linea.id, 0)
+        _uiState.update {
+            it.copy(
+                selectedLinea = linea,
+                direccionActual = 0
+            )
+        }
         cerrarDialogo()
         cargarDatosPorSentido(linea.id, 0)
         viewModelScope.launch { actualizarPosicionesBuses() }
+        actualizarNombreDestino()
     }
 
 
@@ -141,10 +145,10 @@ class BusMapsViewModel : ViewModel() {
 
         _uiState.update { it.copy(direccionActual = nuevaDireccion) }
 
-        actualizarNombreDestino(lineaActual.id, nuevaDireccion)
         cerrarDialogo()
         cargarDatosPorSentido(lineaActual.id, nuevaDireccion)
         viewModelScope.launch { actualizarPosicionesBuses() }
+        actualizarNombreDestino()
     }
 
 
@@ -193,20 +197,39 @@ class BusMapsViewModel : ViewModel() {
     /**
      * Función interna para actualizar el nombre del destino
      */
-    private fun actualizarNombreDestino(lineaId: Int, direccion: Int) {
+    private fun actualizarNombreDestino() {
+        // 1. Obtenemos el estado actual para sacar la línea y la dirección
+        val currentState = _uiState.value
+        val lineaId = currentState.selectedLinea?.id ?: return
+        val direccionActual = currentState.direccionActual
+
         viewModelScope.launch {
             try {
-                val resultado = supabase.from("Horario")
-                    .select(Columns.list("destino")) {
-                        filter {
-                            eq("id_linea", lineaId)
-                            eq("direccion", direccion)
-                        }
-                        limit(1)
-                    }.decodeSingleOrNull<Horario>()
+                // Opcional: Mostramos un pequeño texto de carga en la UI
+                _uiState.update { it.copy(destino = "Cargando...") }
 
-                _uiState.update { it.copy(destino = resultado?.destino ?: "Desconocido") }
+                // 2. Hacemos la consulta a Supabase
+                // Solo necesitamos UN registro que coincida con la línea y dirección
+                // para saber cómo se llama el destino final.
+                val resultado = supabase.from("Horario").select {
+                    filter {
+                        eq("id_linea", lineaId)
+                        eq("direccion", direccionActual)
+                    }
+                    limit(1)
+                }.decodeSingleOrNull<Horario>()
+
+                // 3. Evaluamos el resultado y actualizamos el estado
+                if (resultado != null) {
+                    val destino = resultado.destino ?: "Fin de trayecto"
+                    _uiState.update { it.copy(destino = destino) }
+                } else {
+                    // Si la consulta no devuelve nada (ej. una línea sin horarios registrados)
+                    _uiState.update { it.copy(destino = "Destino desconocido") }
+                }
+
             } catch (e: Exception) {
+                e.printStackTrace() // Muy útil para ver qué falló en el Logcat
                 _uiState.update { it.copy(destino = "Error al cargar destino") }
             }
         }
@@ -272,6 +295,7 @@ class BusMapsViewModel : ViewModel() {
                     val proximaHoraLimpia = corregirHoraGtfs(primerBus.hora_llegada)
                     val destino = primerBus.destino ?: "Fin de trayecto"
 
+
                     _uiState.update { it.copy(proximoBusHora = "$proximaHoraLimpia hacia $destino") }
                 } else {
                     _uiState.update { it.copy(proximoBusHora = "No hay más buses en este sentido") }
@@ -312,22 +336,4 @@ class BusMapsViewModel : ViewModel() {
         }
     }
 
-
-    fun nombreLinea(linea: Linea) {
-        _uiState.update {
-            it.copy(
-                selectedLinea = linea,
-                direccionActual = 0,
-                destino = "Cargando destino..."
-            )
-        }
-
-        actualizarNombreDestino(linea.id, 0)
-        cerrarDialogo()
-        cargarDatosPorSentido(linea.id, 0)
-
-        viewModelScope.launch {
-            actualizarPosicionesBuses()
-        }
-    }
 }

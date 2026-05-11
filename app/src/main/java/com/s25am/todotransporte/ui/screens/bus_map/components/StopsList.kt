@@ -11,16 +11,20 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
+import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +40,9 @@ import androidx.compose.ui.unit.dp
 import com.s25am.todotransporte.R
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
+import com.s25am.todotransporte.ui.theme.GrisFondoCl
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StopsList(
     lineas: List<Linea>,
@@ -44,7 +50,9 @@ fun StopsList(
     lineaSeleccionada: Linea?,
     direccionActual: Int,
     onAlternarDireccion: () -> Unit,
-    onSeleccionarLinea: (Linea) -> Unit
+    onSeleccionarLinea: (Linea) -> Unit,
+    isMap: Boolean,
+    destino: String? = null
 ) {
     var rotacionTarget by remember { mutableStateOf(0f) }
     val anguloAnimado by animateFloatAsState(
@@ -52,30 +60,42 @@ fun StopsList(
         animationSpec = tween(durationMillis = 500)
     )
 
-    val textoSentido = if (direccionActual == 0) "Ida" else "Vuelta"
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White)
+            .background(GrisFondoCl)
     ) {
+
         Surface(
-            color = Color(0xFF1A1A1A),
+            color = GrisFondoCl,
             contentColor = Color.White,
             modifier = Modifier.fillMaxWidth()
         ) {
+
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                val textoSentido =
+                    if (isMap) {
+                        destino
+                    } else {
+                        if (direccionActual == 0) "Ida" else "Vuelta"
+                    }
+
                 if (lineas.isEmpty()) {
-                    Text("Cargando líneas...", style = MaterialTheme.typography.bodySmall, color = Color.Red)
+                    Text(
+                        text = "Cargando líneas...",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
                 } else {
                     Text(
-                        text = "Paradas: ${paradas.size} | $textoSentido",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.LightGray
+                        text = "Sentido: $textoSentido",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             }
@@ -97,7 +117,7 @@ fun StopsList(
                     .padding(end = 12.dp)
                     .rotate(anguloAnimado)
                     .clip(CircleShape)
-                    .background(colorResource(id = R.color.RojoP)) // Tu color rojo
+                    .background(colorResource(id = R.color.RojoP))
             ) {
                 Icon(
                     imageVector = Icons.Default.SwapHoriz,
@@ -106,20 +126,24 @@ fun StopsList(
                 )
             }
 
-            LazyRow(
+
+            HorizontalMultiBrowseCarousel(
+                state = rememberCarouselState { lineas.count() },
                 modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(end = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                items(lineas) { linea ->
-                    LineListButtom(
-                        linea = linea,
-                        estaSeleccionada = (linea.id == lineaSeleccionada?.id),
-                        onClick = { onSeleccionarLinea(linea) }
-                    )
-                }
+                preferredItemWidth = 50.dp,
+                itemSpacing = 10.dp,
+                contentPadding = PaddingValues(end = 16.dp)
+            ) { index ->
+                val linea = lineas[index]
+
+                LineListButtom(
+                    linea = linea,
+                    estaSeleccionada = (linea.id == lineaSeleccionada?.id),
+                    onClick = { onSeleccionarLinea(linea) }
+                )
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
+
     }
+
 }

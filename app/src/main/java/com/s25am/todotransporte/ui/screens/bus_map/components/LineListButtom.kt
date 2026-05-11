@@ -1,5 +1,6 @@
 package com.s25am.todotransporte.ui.screens.bus_map.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,7 +26,7 @@ fun LineListButtom(
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(10.dp),
-        color = if (estaSeleccionada) colorResource(id = R.color.RojoP) else Color(0xFFF0F00),
+        color = if (estaSeleccionada) colorResource(id = R.color.RojoP) else colorResource(id = R.color.rojoMuyFlojito),
         modifier = Modifier.size(50.dp)
     ) {
         Box(contentAlignment = Alignment.Center) {
