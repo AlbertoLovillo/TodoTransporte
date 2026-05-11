@@ -1,5 +1,6 @@
 package com.s25am.todotransporte.ui.screens.tickets.wallet
 
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -49,60 +49,70 @@ import com.s25am.todotransporte.R
 import com.s25am.todotransporte.ui.screens.tickets.TicketsViewModel
 import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.QrDialog
 import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.SwipeableTicketItem
+import com.s25am.todotransporte.ui.theme.GrisFondoCl
+
 
 /**
  * Pantalla principal de la Cartera (Wallet).
- * Dalton: Fondo blanco y algunas mejoras visuales.
+ * NOTA: El Scaffold y la TopBar se gestionan de forma global en MainActivity.
  */
 @Composable
 fun WalletScreen(
     viewModel: TicketsViewModel = viewModel()
 ) {
+
+
     val uiState by viewModel.uiState.collectAsState()
+
+
+    //Guardar el id del billete para generar QR
     var billeteSeleccionadoId by remember { mutableStateOf<String?>(null) }
 
+
+    //Si el ID no es nulo, mostramos el diálogo
     billeteSeleccionadoId?.let { id ->
         QrDialog(
             ticketId = id,
             onDismiss = { billeteSeleccionadoId = null }
         )
     }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White) // Fondo blanco
+            .background(GrisFondoCl)
     ) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize(),
             contentPadding = PaddingValues(
                 start = 16.dp,
                 end = 16.dp,
                 top = 16.dp,
-                bottom = 80.dp
+                bottom = 80.dp //DAMOS ESPACIO EXTRA abajo para que el último billete no se tape con el menú
             ),
-            verticalArrangement = Arrangement.spacedBy(24.dp) // Más espacio entre secciones
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // --- TARJETA DE SALDO ---
+            // --- TARJETA DE SALDO (DISEÑO TIPO WALLET) ---
             item {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(210.dp),
+                        .height(200.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = colorResource(id = R.color.RojoP)
                     ),
-                    shape = RoundedCornerShape(28.dp), // Mejor redondeado
-                    elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
+                    shape = RoundedCornerShape(24.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                 ) {
                     Box(modifier = Modifier.fillMaxSize()) {
                         Image(
                             painter = painterResource(id = R.drawable.tarjeta_sinfondo),
                             contentDescription = null,
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier
+                                .fillMaxSize(),
                             contentScale = ContentScale.Crop,
                             colorFilter = ColorFilter.tint(Color.White.copy(alpha = 0.8f))
-                        )
+                            )
 
                         Column(
                             modifier = Modifier
@@ -134,6 +144,7 @@ fun WalletScreen(
                                 )
                             }
 
+
                             Button(
                                 onClick = { viewModel.recargarSaldo(10.0) },
                                 modifier = Modifier.fillMaxWidth(),
@@ -141,28 +152,29 @@ fun WalletScreen(
                                     containerColor = Color.White,
                                     contentColor = colorResource(id = R.color.RojoP)
                                 ),
-                                shape = RoundedCornerShape(16.dp),
-                                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
+                                shape = RoundedCornerShape(12.dp),
+                                elevation = ButtonDefaults.buttonElevation(4.dp)
                             ) {
                                 Icon(
                                     Icons.Default.Add,
                                     contentDescription = null,
-                                    modifier = Modifier.size(20.dp)
+                                    modifier = Modifier.size(18.dp)
                                 )
                                 Spacer(Modifier.width(8.dp))
-                                Text("Añadir 10,00 €", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                Text("Añadir 10,00 €", fontWeight = FontWeight.Bold)
                             }
                         }
                     }
                 }
             }
 
+
             // --- SECCIÓN MIS BILLETES ---
             item {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.Bottom
                 ) {
                     Text(
                         "Mis Billetes Activos",
@@ -171,20 +183,14 @@ fun WalletScreen(
                             color = Color.Black
                         )
                     )
-                    Surface(
-                        color = colorResource(id = R.color.rojoFlojito).copy(alpha = 0.15f),
-                        shape = CircleShape
-                    ) {
-                        Text(
-                            "${uiState.listaBilletes.size} viajes",
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = colorResource(id = R.color.RojoP),
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+                    Text(
+                        "${uiState.listaBilletes.size} viajes",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Gray
+                    )
                 }
             }
+
 
             // Lista dinámica
             items(uiState.listaBilletes, key = { it.id }) { billete ->

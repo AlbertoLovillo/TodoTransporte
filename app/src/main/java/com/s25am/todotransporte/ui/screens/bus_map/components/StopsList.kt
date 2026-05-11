@@ -1,7 +1,5 @@
 package com.s25am.todotransporte.ui.screens.bus_map.components
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,14 +20,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
@@ -46,12 +39,6 @@ fun StopsList(
     onAlternarDireccion: () -> Unit,
     onSeleccionarLinea: (Linea) -> Unit
 ) {
-    var rotacionTarget by remember { mutableStateOf(0f) }
-    val anguloAnimado by animateFloatAsState(
-        targetValue = rotacionTarget,
-        animationSpec = tween(durationMillis = 500)
-    )
-
     val textoSentido = if (direccionActual == 0) "Ida" else "Vuelta"
 
     Column(
@@ -90,12 +77,10 @@ fun StopsList(
         ) {
             IconButton(
                 onClick = {
-                    rotacionTarget += 360f
                     onAlternarDireccion()
                 },
                 modifier = Modifier
                     .padding(end = 12.dp)
-                    .rotate(anguloAnimado)
                     .clip(CircleShape)
                     .background(colorResource(id = R.color.RojoP)) // Tu color rojo
             ) {

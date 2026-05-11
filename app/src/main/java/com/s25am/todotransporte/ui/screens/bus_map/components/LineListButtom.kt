@@ -2,7 +2,7 @@ package com.s25am.todotransporte.ui.screens.bus_map.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -16,10 +16,6 @@ import androidx.compose.ui.unit.dp
 import com.s25am.todotransporte.R
 import com.s25am.todotransporte.database.data.Linea
 
-/**
- * Botón circular para el filtro de líneas. 
- * Dalton: Se ha usado CircleShape y elevación pa mejorar.
- */
 @Composable
 fun LineListButtom(
     linea: Linea,
@@ -28,21 +24,16 @@ fun LineListButtom(
 ) {
     Surface(
         onClick = onClick,
-        shape = CircleShape,
-        color = if (estaSeleccionada) colorResource(id = R.color.RojoP) else Color.White,
-        tonalElevation = if (estaSeleccionada) 8.dp else 2.dp,
-        shadowElevation = if (estaSeleccionada) 4.dp else 1.dp,
-        modifier = Modifier.size(54.dp), // Un poco más grande para que se vea mejr
-        border = if (!estaSeleccionada) androidx.compose.foundation.BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.5f)) else null
+        shape = RoundedCornerShape(10.dp),
+        color = if (estaSeleccionada) colorResource(id = R.color.RojoP) else Color(0xFFF0F0F0),
+        modifier = Modifier.size(50.dp)
     ) {
         Box(contentAlignment = Alignment.Center) {
             linea.codigo?.let {
                 Text(
                     text = it,
-                    color = if (estaSeleccionada) Color.White else colorResource(id = R.color.RojoP),
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    )
+                    color = if (estaSeleccionada) Color.White else Color.Black,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.ExtraBold)
                 )
             }
         }

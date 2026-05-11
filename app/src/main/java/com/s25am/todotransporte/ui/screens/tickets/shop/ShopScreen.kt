@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +18,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -44,10 +44,6 @@ import java.util.Calendar
 import java.util.Locale
 import java.util.UUID
 
-/**
- * Pantalla de Tienda de Billetes.
- * Dalton: Fuera scafold y fondo blanco agregado
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShopScreen(
@@ -64,12 +60,14 @@ fun ShopScreen(
         )
     }
 
+    //para sacar la fecha de hoy la anterior saltaba error
     val fechaHoy = remember {
         val localeSpain = Locale("es", "ES")
         val sdf = SimpleDateFormat("dd/MM/yyyy", localeSpain)
         sdf.format(Calendar.getInstance().time)
     }
 
+    // Leemos las líneas directamente desde el uiState
     val opcionesCompra = uiState.lineas.map { linea ->
         Billete(
             id = linea.id.toString(),
@@ -80,93 +78,95 @@ fun ShopScreen(
         )
     }.filter { it.titulo.contains(searchText, ignoreCase = true) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White) // fondo blanco
-            .padding(top = 8.dp)
-    ) {
+    Scaffold(
+        containerColor = Color(0xFFF8F9FA),
+    ) { padding ->
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 12.dp)
+                .fillMaxSize()
+                .padding(padding)
+                .padding(top = 8.dp)
         ) {
-            Text(
-                "Pase de Viaje",
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontWeight = FontWeight.ExtraBold,
-                    color = Color.Black
-                )
-            )
-            Text(
-                "Málaga, $fechaHoy",
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
-            )
-        }
-        
-        // BUSCADOR
-        TicketSearchBar(
-            query = searchText,
-            onQueryChange = { searchText = it }
-        )
-        
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 8.dp)
+            ) {
                 Text(
-                    "Selecciona tu tarifa",
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    color = Color.DarkGray,
-                    modifier = Modifier.padding(horizontal = 4.dp)
-                )
-            }
-            
-            items(opcionesCompra) { opcion ->
-                CardCompra(
-                    opcion = opcion,
-                    onBuyClick = {
-                        val ticketParaGuardar = opcion.copy(
-                            id = UUID.randomUUID().toString()
-                        )
-                        viewModel.addTicket(ticketParaGuardar, 1.50)
-                        if (uiState.saldo >= 1.50) {
-                            onBack()
-                        }
-                    },
-                    onVerMapa = { idDeLaLinea ->
-                        viewModel.updateLineaParaVerEnMapa(idDeLaLinea)
-                        onNavigateToMaps()
-                    }
-                )
-            }
-
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 24.dp)
-                        .background(
-                            colorResource(id = R.color.rojoFlojito).copy(alpha = 0.1f),
-                            RoundedCornerShape(12.dp)
-                        )
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        Icons.Default.Info,
-                        contentDescription = null,
-                        tint = colorResource(id = R.color.RojoP)
+                    "Pase de Viaje",
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = Color.Black
                     )
-                    Spacer(modifier = Modifier.width(12.dp))
+                )
+                Text(
+                    "Málaga, $fechaHoy",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
+            }
+            // BUSCADOR
+            TicketSearchBar(
+                query = searchText,
+                onQueryChange = { searchText = it }
+            )
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                item {
                     Text(
-                        "Los billetes comprados aparecerán automáticamente en tu cartera.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.Black.copy(alpha = 0.7f)
+                        "Selecciona tu tarifa",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.Gray
                     )
+                }
+                //Los billetes
+                items(opcionesCompra) { opcion ->
+                    CardCompra(
+                        opcion = opcion,
+                        onBuyClick = {
+                            val ticketParaGuardar = opcion.copy(
+                                id = UUID.randomUUID().toString()
+                            )
+                            viewModel.addTicket(ticketParaGuardar, 1.50)
+                            if (uiState.saldo >= 1.50) {
+                                onBack()
+                            }
+                        },
+                        onVerMapa = { idDeLaLinea: String ->
+                            viewModel.updateLineaParaVerEnMapa(idDeLaLinea)
+                            onNavigateToMaps() // <--- Llamas a esta función
+                        }
+                    )
+                }
+
+                item {
+                    // Aviso informativo al final
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp)
+                            .background(
+                                colorResource(id = R.color.rojoFlojito).copy(alpha = 0.1f),
+                                RoundedCornerShape(8.dp)
+                            )
+                            .padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Default.Info,
+                            contentDescription = null,
+                            tint = colorResource(id = R.color.RojoP)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            "Los billetes comprados aparecerán automáticamente en tu cartera.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Black
+                        )
+                    }
                 }
             }
         }
