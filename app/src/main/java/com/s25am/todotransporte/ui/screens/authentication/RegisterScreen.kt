@@ -235,9 +235,11 @@ fun RegisterScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.RojoP))
                     ) {
                         if (uiState.isLoading) {
-                            CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp), color = colorResource(R.color.rojoFlojito))
                         } else {
-                            Text("Crear Cuenta", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                            Text("Crear Cuenta", fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White)
                         }
                     }
 

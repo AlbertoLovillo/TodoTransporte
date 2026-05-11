@@ -32,6 +32,12 @@ fun QrDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
+        properties = androidx.compose.ui.window.DialogProperties(
+            usePlatformDefaultWidth = false
+        ),
+        modifier = Modifier
+            .fillMaxWidth(0.92f)
+            .padding(16.dp),
         confirmButton = {
             TextButton(onClick = onDismiss) {
                 Text("Cerrar", color = colorResource(id = R.color.RojoP))
@@ -41,6 +47,7 @@ fun QrDialog(
             Text(
                 "Código de Validación",
                 fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 color = colorResource(id = R.color.RojoP)
@@ -49,7 +56,9 @@ fun QrDialog(
         text = {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 20.dp)
             ) {
                 val qrBitmap = remember(ticketId) { generarQR(ticketId) }
 
@@ -57,11 +66,11 @@ fun QrDialog(
                     Image(
                         bitmap = it.asImageBitmap(),
                         contentDescription = "Código QR",
-                        modifier = Modifier.size(220.dp)
+                        modifier = Modifier.size(280.dp)
                     )
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
                     "ID del Billete: $ticketId",
@@ -70,14 +79,14 @@ fun QrDialog(
                 )
                 Text(
                     "Acerca este código al lector del autobús",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 8.dp),
+                    modifier = Modifier.padding(top = 12.dp, start = 8.dp, end = 8.dp),
                     color = colorResource(id = R.color.rojoFlojito)
                 )
             }
         },
         containerColor = Color.White,
-        shape = RoundedCornerShape(24.dp)
+        shape = RoundedCornerShape(28.dp)
     )
 }

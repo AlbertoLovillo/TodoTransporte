@@ -63,6 +63,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
+import com.mapbox.maps.extension.style.expressions.dsl.generated.color
 import com.s25am.todotransporte.R
 import com.s25am.todotransporte.ui.screens.authentication.viewmodel.AuthenticationViewModel
 
@@ -210,9 +211,11 @@ fun LoginScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.RojoP))
                     ) {
                         if (uiState.isLoading) {
-                            CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp), color = colorResource(R.color.rojoFlojito))
                         } else {
-                            Text("Entrar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                            Text("Entrar", fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White)
                         }
                     }
 
