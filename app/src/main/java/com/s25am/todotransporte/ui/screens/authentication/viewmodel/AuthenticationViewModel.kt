@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.s25am.todotransporte.database.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,9 +16,8 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 
-class AuthenticationViewModel : ViewModel(){
+class AuthenticationViewModel : ViewModel() {
 
-    // Etiqueta constante para poder buscar fácilmente en el Logcat de Android Studio
     private val TAG = "AuthViewModel"
 
     private val _uiState = MutableStateFlow(AuthenticationUiState())
@@ -52,12 +52,33 @@ class AuthenticationViewModel : ViewModel(){
             _uiState.update { it.copy(isLoading = true, authError = null) }
 
             try {
-                Log.d(TAG, "register: Llamando a Supabase signUpWith para email: ${_uiState.value.email}")
+
+                val existingUsers = SupabaseClient.client.from("Usuario")
+                    .select {
+                        filter {
+                            eq("email", _uiState.value.email)
+                        }
+                    }.data
+
+                if (existingUsers != "[]") {
+                    Log.w(TAG, "register: El correo ya existe en la base de datos.")
+                    _uiState.update {
+                        it.copy(
+                            authError = "Ya existe una cuenta con este correo electrónico.",
+                            isLoading = false
+                        )
+                    }
+                    return@launch
+                }
+
+                Log.d(
+                    TAG,
+                    "register: Llamando a Supabase signUpWith para email: ${_uiState.value.email}"
+                )
 
                 SupabaseClient.client.auth.signUpWith(Email) {
                     email = _uiState.value.email
                     password = _uiState.value.password
-
                     data = buildJsonObject {
                         put("nombre", _uiState.value.nombre)
                     }
@@ -67,10 +88,33 @@ class AuthenticationViewModel : ViewModel(){
                 _uiState.update { it.copy(isSuccess = true, authError = "¡Registro exitoso!") }
 
             } catch (e: Exception) {
-                // ESTO ES LO MÁS IMPORTANTE: Imprime el error completo en rojo en el Logcat
                 Log.e(TAG, "register: Error crítico al registrar usuario: ${e.message}", e)
 
-                _uiState.update { it.copy(authError = e.message, isSuccess = false) }
+                val errorMsg = e.message ?: ""
+                val errorFriendly = when {
+                    errorMsg.contains("already registered", ignoreCase = true) ||
+                            errorMsg.contains("already exists", ignoreCase = true) ->
+                        "Ya existe una cuenta con este correo electrónico."
+
+                    errorMsg.contains("weak_password", ignoreCase = true) ||
+                            errorMsg.contains("Password should be at least", ignoreCase = true) ->
+                        "La contraseña es demasiado débil (mínimo 6 caracteres)."
+
+                    errorMsg.contains("validation_failed", ignoreCase = true) ->
+                        "Los datos introducidos no son válidos."
+
+                    errorMsg.contains("email_address_invalid", ignoreCase = true) ||
+                            errorMsg.contains("Unable to validate email", ignoreCase = true) ->
+                        "El formato del correo electrónico no es válido."
+
+                    errorMsg.contains("rate_limit", ignoreCase = true) ||
+                            errorMsg.contains("over_email_send", ignoreCase = true) ->
+                        "Demasiados intentos. Espera unos minutos y vuelve a intentarlo."
+
+                    else -> "Ocurrió un error inesperado al registrar la cuenta."
+                }
+
+                _uiState.update { it.copy(authError = errorFriendly, isSuccess = false) }
             } finally {
                 _uiState.update { it.copy(isLoading = false) }
             }
@@ -103,12 +147,17 @@ class AuthenticationViewModel : ViewModel(){
             } catch (e: Exception) {
                 Log.e(TAG, "login: Error crítico al iniciar sesión: ${e.message}", e)
 
+                val errorMsg = e.message ?: ""
                 val errorFriendly = when {
-                    e.message?.contains("email_not_confirmed", ignoreCase = true) == true -> 
-                        "Debes confirmar tu correo electrónico antes de entrar. Revisa tu bandeja de entrada."
-                    e.message?.contains("invalid_credentials", ignoreCase = true) == true -> 
+                    errorMsg.contains("invalid_credentials", ignoreCase = true) ||
+                            errorMsg.contains("Invalid login credentials", ignoreCase = true) ->
                         "Email o contraseña incorrectos."
-                    else -> e.message ?: "Ocurrió un error inesperado"
+
+                    errorMsg.contains("email_not_confirmed", ignoreCase = true) ||
+                            errorMsg.contains("Email not confirmed", ignoreCase = true) ->
+                        "Debes confirmar tu correo electrónico antes de entrar."
+
+                    else -> "Error al iniciar sesión. Comprueba tus datos."
                 }
 
                 _uiState.update { it.copy(authError = errorFriendly, isSuccess = false) }
@@ -116,5 +165,10 @@ class AuthenticationViewModel : ViewModel(){
                 _uiState.update { it.copy(isLoading = false) }
             }
         }
+    }
+
+
+    fun clearError() {
+        _uiState.update { it.copy(authError = null) }
     }
 }

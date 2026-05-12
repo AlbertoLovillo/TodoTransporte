@@ -4,12 +4,15 @@ package com.s25am.todotransporte.ui.screens.authentication
 import android.net.Uri
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -253,12 +256,33 @@ fun RegisterScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
 
-                    TextButton(onClick = onNavigateToLogin) {
+//                    TextButton(onClick = onNavigateToLogin) {
+//                        Text(
+//                            text = "¿Ya tienes cuenta? Inicia sesión",
+//                            style = TextStyle(textDecoration = TextDecoration.Underline),
+//                            color = colorResource(id = R.color.rojoFlojito)
+//                        )
+//                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
-                            text = "¿Ya tienes cuenta? Inicia sesión",
-                            style = TextStyle(textDecoration = TextDecoration.Underline),
-                            color = colorResource(id = R.color.rojoFlojito)
+                            text = "¿Ya tienes cuenta? ",
+                            fontSize = 14.sp,
+                            color = Color.Gray
                         )
+
+                        TextButton(
+                            onClick = onNavigateToLogin,
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Text(
+                                text = "Inicia sesión",
+                                style = TextStyle(textDecoration = TextDecoration.Underline),
+                                color = colorResource(id = R.color.rojoFlojito)
+                            )
+                        }
                     }
                 }
             }
@@ -268,5 +292,13 @@ fun RegisterScreen(
 
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) onRegisterSuccess()
+    }
+
+
+    LaunchedEffect(uiState.authError) {
+        uiState.authError?.let { errorMsg ->
+            Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
+            viewModel.clearError()
+        }
     }
 }
