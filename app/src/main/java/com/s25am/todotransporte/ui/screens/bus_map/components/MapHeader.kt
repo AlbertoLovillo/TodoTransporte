@@ -7,6 +7,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.MarqueeSpacing
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,7 +30,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -48,7 +52,7 @@ fun MapHeader(
 
     LaunchedEffect(linea, destino) {
         visible = true
-        delay(5000)
+        delay(10000)
         visible = false
     }
 
@@ -98,13 +102,29 @@ fun MapHeader(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                Column(modifier = Modifier.weight(1f)) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RectangleShape)
+                ) {
+                    val textoNombre = linea?.nombre ?: "Seleccione una línea"
+
                     Text(
-                        text = linea?.nombre ?: "Seleccione una línea",
+                        text = textoNombre,
                         color = Negro,
                         style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        softWrap = false,
+                        overflow = TextOverflow.Visible, // CAMBIO 1: Importante para que Marquee tome el control
+                        modifier = Modifier
+                            .fillMaxWidth() // CAMBIO 2: Aseguramos que el texto intente ocupar el espacio
+                            .basicMarquee(
+                                iterations = Int.MAX_VALUE,
+                                repeatDelayMillis = 0,
+                                initialDelayMillis = 750,
+                                spacing = MarqueeSpacing(50.dp),
+                                velocity = 50.dp
+                            )
                     )
                 }
             }

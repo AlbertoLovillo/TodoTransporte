@@ -55,21 +55,14 @@ fun SwipeableTicketItem(
         if (!showDialog) dismissState.reset()
     }
 
-    // --- DIÁLOGO DE CONFIRMACIÓN ---
+    // --- LLAMADA AL DIÁLOGO SEPARADO ---
     if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
-            title = { Text("¿Eliminar billete?") },
-            text = { Text("Este billete desaparecerá de tu cartera. Esta acción no se puede deshacer.") },
-            confirmButton = {
-                TextButton(onClick = {
-                    onDeleteConfirm()
-                    showDialog = false
-                }) { Text("Eliminar", color = Color.Red) }
+        DeleteTicketDialog(
+            onConfirm = {
+                onDeleteConfirm()
+                showDialog = false
             },
-            dismissButton = {
-                TextButton(onClick = { showDialog = false }) { Text("Cancelar") }
-            }
+            onDismiss = { showDialog = false }
         )
     }
 
