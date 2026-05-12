@@ -1,4 +1,4 @@
-package com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet
+package com.s25am.todotransporte.ui.screens.tickets.wallet.componets
 
 /**
  * Componente UI: Diálogo de confirmación de compra.

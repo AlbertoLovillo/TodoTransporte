@@ -47,8 +47,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.s25am.todotransporte.R
 import com.s25am.todotransporte.ui.screens.tickets.TicketsViewModel
-import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.QrDialog
-import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.SwipeableTicketItem
+import com.s25am.todotransporte.ui.screens.tickets.wallet.componets.QrDialog
+import com.s25am.todotransporte.ui.screens.tickets.wallet.componets.SwipeableTicketItem
 import com.s25am.todotransporte.ui.theme.GrisFondoCl
 
 
