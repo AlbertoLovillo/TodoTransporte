@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,6 +52,10 @@ fun ShopScreen(
     onBack: () -> Unit,
     onNavigateToMaps: () -> Unit
 ) {
+    LaunchedEffect(Unit) {
+        viewModel.fetchSavedBilletesYSaldo()
+    }
+
     val uiState by viewModel.uiState.collectAsState()
     var searchText by remember { mutableStateOf("") }
 
@@ -60,14 +65,12 @@ fun ShopScreen(
         )
     }
 
-    //para sacar la fecha de hoy la anterior saltaba error
     val fechaHoy = remember {
         val localeSpain = Locale("es", "ES")
         val sdf = SimpleDateFormat("dd/MM/yyyy", localeSpain)
         sdf.format(Calendar.getInstance().time)
     }
 
-    // Leemos las líneas directamente desde el uiState
     val opcionesCompra = uiState.lineas.map { linea ->
         Billete(
             id = linea.id.toString(),
@@ -81,6 +84,7 @@ fun ShopScreen(
     Scaffold(
         containerColor = Color(0xFFF8F9FA),
     ) { padding ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -104,11 +108,12 @@ fun ShopScreen(
                     color = Color.Gray
                 )
             }
-            // BUSCADOR
+
             TicketSearchBar(
                 query = searchText,
                 onQueryChange = { searchText = it }
             )
+
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(16.dp),
@@ -121,7 +126,7 @@ fun ShopScreen(
                         color = Color.Gray
                     )
                 }
-                //Los billetes
+
                 items(opcionesCompra) { opcion ->
                     CardCompra(
                         opcion = opcion,
@@ -136,13 +141,13 @@ fun ShopScreen(
                         },
                         onVerMapa = { idDeLaLinea: String ->
                             viewModel.updateLineaParaVerEnMapa(idDeLaLinea)
-                            onNavigateToMaps() // <--- Llamas a esta función
+                            onNavigateToMaps()
                         }
                     )
                 }
 
                 item {
-                    // Aviso informativo al final
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()

@@ -24,7 +24,6 @@ class TicketsViewModel: ViewModel() {
 
     init {
         cargarLineas()
-        fetchSavedBilletesYSaldo()
     }
 
 
@@ -59,8 +58,16 @@ class TicketsViewModel: ViewModel() {
     /**
      * Carga inicial de billetes y saldo filtrando por el email del usuario
      */
-    private fun fetchSavedBilletesYSaldo() {
-        val email = obtenerEmailUsuario() ?: return
+    fun fetchSavedBilletesYSaldo() {
+        val email = obtenerEmailUsuario()
+
+        if (email == null) {
+            _uiState.update { it.copy(
+                listaBilletes = emptyList(),
+                saldo = 0.0
+            ) }
+            return
+        }
 
         viewModelScope.launch {
             try {

@@ -29,6 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,24 +53,21 @@ import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.Swipea
 import com.s25am.todotransporte.ui.theme.GrisFondoCl
 
 
-/**
- * Pantalla principal de la Cartera (Wallet).
- * NOTA: El Scaffold y la TopBar se gestionan de forma global en MainActivity.
- */
+
 @Composable
 fun WalletScreen(
     viewModel: TicketsViewModel = viewModel()
 ) {
-
+    LaunchedEffect(Unit) {
+        viewModel.fetchSavedBilletesYSaldo()
+    }
 
     val uiState by viewModel.uiState.collectAsState()
 
 
-    //Guardar el id del billete para generar QR
     var billeteSeleccionadoId by remember { mutableStateOf<String?>(null) }
 
 
-    //Si el ID no es nulo, mostramos el diálogo
     billeteSeleccionadoId?.let { id ->
         QrDialog(
             ticketId = id,
@@ -88,11 +86,11 @@ fun WalletScreen(
                 start = 16.dp,
                 end = 16.dp,
                 top = 16.dp,
-                bottom = 80.dp //DAMOS ESPACIO EXTRA abajo para que el último billete no se tape con el menú
+                bottom = 80.dp
             ),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // --- TARJETA DE SALDO (DISEÑO TIPO WALLET) ---
+
             item {
                 Card(
                     modifier = Modifier
@@ -169,7 +167,6 @@ fun WalletScreen(
             }
 
 
-            // --- SECCIÓN MIS BILLETES ---
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -192,7 +189,6 @@ fun WalletScreen(
             }
 
 
-            // Lista dinámica
             items(uiState.listaBilletes, key = { it.id }) { billete ->
                 SwipeableTicketItem(
                     ticket = billete,
