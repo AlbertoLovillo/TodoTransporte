@@ -31,7 +31,8 @@ fun MainNavigationBar(
     onNavigate: (Any) -> Unit
 ) {
 
-    if (currentRoute != Routes.Login && currentRoute != Routes.Register) {
+    if (currentRoute != Routes.Login && currentRoute != Routes.Register &&
+        currentRoute != Routes.SplashScreen) {
         NavigationBar(
             containerColor = Color.White,
             contentColor = colorResource(id = R.color.RojoP),

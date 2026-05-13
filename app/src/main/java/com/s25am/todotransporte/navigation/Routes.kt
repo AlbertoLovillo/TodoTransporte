@@ -22,5 +22,6 @@ sealed class Routes : NavKey {
     data object SalePoint : Routes()
     @Serializable
     data object Shop : Routes()
-
+    @Serializable
+    data object SplashScreen: Routes()
 }
