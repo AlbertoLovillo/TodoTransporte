@@ -34,6 +34,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,16 +52,22 @@ import com.s25am.todotransporte.ui.screens.tickets.TicketsViewModel
 import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.QrDialog
 import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.SwipeableTicketItem
 import com.s25am.todotransporte.ui.theme.GrisFondoCl
-
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun WalletScreen(
     viewModel: TicketsViewModel = viewModel()
 ) {
+    val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
-        viewModel.fetchSavedBilletesYSaldo()
+        coroutineScope.launch {
+            delay(1000)
+            viewModel.fetchSavedBilletesYSaldo()
+        }
     }
+
 
     val uiState by viewModel.uiState.collectAsState()
 

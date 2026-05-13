@@ -10,5 +10,6 @@ data class Linea(
     val nombre: String,
     val color: String,
     @SerialName("ruta_geojson")
-    val rutaGeojson: String?
+    val rutaGeojson: String?,
+    val precio: Double
 )

@@ -71,15 +71,11 @@ fun ShopScreen(
         sdf.format(Calendar.getInstance().time)
     }
 
-    val opcionesCompra = uiState.lineas.map { linea ->
-        Billete(
-            id = linea.id.toString(),
-            titulo = "Billete Línea ${linea.codigo}",
-            trayecto = "Trayecto: ${linea.nombre}",
-            fecha = fechaHoy,
-            precio = "1.50€"
-        )
-    }.filter { it.titulo.contains(searchText, ignoreCase = true) }
+    val lineasFiltradas = uiState.lineas.filter { linea ->
+        val tituloGenerado = "Billete Línea ${linea.codigo}"
+        tituloGenerado.contains(searchText, ignoreCase = true)
+    }
+
 
     Scaffold(
         containerColor = Color(0xFFF8F9FA),
@@ -127,15 +123,28 @@ fun ShopScreen(
                     )
                 }
 
-                items(opcionesCompra) { opcion ->
+                items(lineasFiltradas) { linea ->
+
+                    val precioFormateado = String.format(Locale("es", "ES"), "%.2f€", linea.precio)
+
+                    val opcion = Billete(
+                        id = linea.id.toString(),
+                        titulo = "Billete Línea ${linea.codigo}",
+                        trayecto = "Trayecto: ${linea.nombre}",
+                        fecha = fechaHoy,
+                        precio = precioFormateado
+                    )
+
                     CardCompra(
                         opcion = opcion,
                         onBuyClick = {
                             val ticketParaGuardar = opcion.copy(
                                 id = UUID.randomUUID().toString()
                             )
-                            viewModel.addTicket(ticketParaGuardar, 1.50)
-                            if (uiState.saldo >= 1.50) {
+
+                            viewModel.addTicket(ticketParaGuardar, linea.precio)
+
+                            if (uiState.saldo >= linea.precio) {
                                 onBack()
                             }
                         },
