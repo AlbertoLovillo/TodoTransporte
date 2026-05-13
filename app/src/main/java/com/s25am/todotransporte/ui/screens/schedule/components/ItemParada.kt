@@ -63,24 +63,34 @@ fun ItemParada(
                     text = parada.nombre,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = colorResource(id = R.color.rojoFlojito)
+                    color = Color.Black,
+                    lineHeight = 22.sp
                 )
+            }
 
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.AccessTime,
-                        contentDescription = null,
-                        tint = Color.Gray,
-                        modifier = Modifier.size(14.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "Llegada: ${proximoBusHora ?: "Consultando..."}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray
-                    )
+            if (proximoBusHora != null) {
+                Surface(
+                    color = colorResource(id = R.color.RojoP).copy(alpha = 0.08f),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.AccessTime,
+                            contentDescription = null,
+                            tint = colorResource(id = R.color.RojoP),
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = proximoBusHora,
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(id = R.color.RojoP)
+                        )
+                    }
                 }
             }
         }
