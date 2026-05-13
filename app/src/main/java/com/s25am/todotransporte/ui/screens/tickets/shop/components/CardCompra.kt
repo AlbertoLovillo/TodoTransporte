@@ -93,7 +93,7 @@ fun CardCompra(
                     ) {
                         Icon(Icons.Default.AddShoppingCart, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("Añadir")
+                        Text("Añadir", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }

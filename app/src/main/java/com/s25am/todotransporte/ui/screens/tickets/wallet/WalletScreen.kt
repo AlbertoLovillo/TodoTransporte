@@ -136,7 +136,7 @@ fun WalletScreen(
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
                                     text = "${String.format("%.2f", uiState.saldo)} €",
-                                    style = MaterialTheme.typography.displayMedium.copy(
+                                    style = MaterialTheme.typography.headlineLarge.copy(
                                         fontWeight = FontWeight.ExtraBold,
                                         letterSpacing = (-1).sp
                                     ),
@@ -161,7 +161,7 @@ fun WalletScreen(
                                     modifier = Modifier.size(18.dp)
                                 )
                                 Spacer(Modifier.width(8.dp))
-                                Text("Añadir 10,00 €", fontWeight = FontWeight.Bold)
+                                Text("Añadir 10,00 €", fontWeight = FontWeight.Bold, fontSize = 16.sp)
                             }
                         }
                     }
@@ -178,7 +178,7 @@ fun WalletScreen(
                 ) {
                     Text(
                         "Mis Billetes Activos",
-                        style = MaterialTheme.typography.titleLarge.copy(
+                        style = MaterialTheme.typography.headlineSmall.copy(
                             fontWeight = FontWeight.ExtraBold,
                             color = Color.Black
                         )

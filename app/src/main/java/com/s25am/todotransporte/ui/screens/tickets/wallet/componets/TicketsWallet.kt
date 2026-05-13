@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.s25am.todotransporte.R
 import com.s25am.todotransporte.database.data.Billete
 
@@ -47,9 +48,14 @@ fun TicketItem(ticket: Billete, onQrClick: () -> Unit) {
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = ticket.titulo, fontWeight = FontWeight.Bold, color = Color.Black)
+                Text(
+                    text = ticket.titulo,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = Color.Black
+                )
                 Text(text = ticket.trayecto, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
-                Text(text = ticket.fecha, style = MaterialTheme.typography.bodySmall, color = colorResource(id = R.color.RojoP))
+                Text(text = ticket.fecha, style = MaterialTheme.typography.bodyMedium, color = colorResource(id = R.color.RojoP))
             }
             IconButton(onClick = onQrClick) {
                 Icon(Icons.Default.QrCode, contentDescription = "Ver QR", tint = Color.Black)
