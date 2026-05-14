@@ -1,5 +1,6 @@
 package com.s25am.todotransporte.ui.screens.bus_map
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.s25am.todotransporte.database.SupabaseClient
@@ -57,39 +58,55 @@ class BusMapsViewModel : ViewModel() {
      * Tiempo real- Descarga el CSV de OpenData Málaga y filtra los buses por línea y sentido
      */
     private suspend fun actualizarPosicionesBuses() {
+        Log.d("BusViewModel", "1. ¡Sí he entrado a la función actualizarPosicionesBuses!")
+
         try {
-            val url =
-                "https://datosabiertos.malaga.eu/recursos/transporte/EMT/EMTlineasUbicaciones/lineasyubicaciones.csv"
+            Log.d("BusViewModel", "2. Funcionaaaaa, voy a descargar datos...")
+            val url = "https://datosabiertos.malaga.eu/recursos/transporte/EMT/EMTlineasUbicaciones/lineasyubicaciones.csv"
             val response = httpClient.get(url)
             val csvText = response.bodyAsText()
 
-            val lineasCsv = csvText.lines().drop(1) // Quitamos la cabecera
+            Log.d("BusViewModel", "3. CSV descargado. Tamaño del texto: ${csvText.length} caracteres")
+
+            val lineasCsv = csvText.lines().drop(1)
             val todosLosBuses = lineasCsv.mapNotNull { linea ->
                 val datos = linea.replace("\"", "").split(",")
                 if (datos.size >= 7) {
+                    // Limpiamos la línea aquí mismo quitando espacios y el ".0" final si existe
+                    val lineaLimpia = datos[1].trim().removeSuffix(".0")
+
                     BusPosition(
-                        codBus = datos[0],
-                        codLinea = datos[1],
-                        sentido = datos[2].toIntOrNull() ?: 1,
-                        lon = datos[3].toDoubleOrNull() ?: 0.0,
-                        lat = datos[4].toDoubleOrNull() ?: 0.0,
-                        lastUpdate = datos[6]
+                        codBus = datos[0].trim(),
+                        codLinea = lineaLimpia,  // ¡Usamos la línea ya limpia!
+                        sentido = datos[2].trim().toIntOrNull() ?: 1,
+                        lon = datos[3].trim().toDoubleOrNull() ?: 0.0,
+                        lat = datos[4].trim().toDoubleOrNull() ?: 0.0,
+                        lastUpdate = datos[6].trim()
                     )
                 } else null
             }
 
+            Log.d("BusViewModel", "4. Buses totales procesados del CSV: ${todosLosBuses.size}")
+
             val currentState = _uiState.value
-            val codigoLineaSeleccionada = currentState.selectedLinea?.codigo ?: ""
+            val codigoLineaSeleccionada = currentState.selectedLinea?.codigo?.trim() ?: ""
+            val direccionRequerida = currentState.direccionActual + 1
+
+            Log.d("BusViewModel", "5. Buscando línea: '$codigoLineaSeleccionada' en sentido: $direccionRequerida")
+
+            val busesFiltrados = todosLosBuses.filter {
+                it.codLinea == codigoLineaSeleccionada && it.sentido == direccionRequerida
+            }
+
+            Log.d("BusViewModel", "6. Buses que coinciden y se van a pintar: ${busesFiltrados.size}")
 
             _uiState.update { state ->
-                state.copy(
-                    busesEnTiempoReal = todosLosBuses.filter {
-                        it.codLinea == codigoLineaSeleccionada && it.sentido == (state.direccionActual + 1)
-                    }
-                )
+                state.copy(busesEnTiempoReal = busesFiltrados)
             }
+
         } catch (e: Exception) {
-            e.printStackTrace()
+            _uiState.update { it.copy(destino = "ERR: ${e.javaClass.simpleName} - ${e.message}") }
+            Log.e("BusViewModel", "Error en el catch", e)
         }
     }
 
