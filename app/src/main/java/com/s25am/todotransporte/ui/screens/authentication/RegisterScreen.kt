@@ -4,19 +4,24 @@ package com.s25am.todotransporte.ui.screens.authentication
 import android.net.Uri
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -122,25 +127,31 @@ fun RegisterScreen(
                 .fillMaxSize()
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top // Top igual que login
+            verticalArrangement = Arrangement.Top
         ) {
-            Spacer(modifier = Modifier.height(100.dp)) // Mismo espacio que Login
-
 
             Card(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 10.dp, vertical = 20.dp)
+                    .verticalScroll(rememberScrollState()),
                 shape = MaterialTheme.shapes.large,
                 elevation = CardDefaults.cardElevation(12.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.95f))
             ) {
+
                 Column(
-                    modifier = Modifier.padding(28.dp),
+                    modifier = Modifier.padding(20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+
                     Image(
                         painter = painterResource(id = R.drawable.logo_sin_fondo),
                         contentDescription = "Logo TodoTransporte",
-                        modifier = Modifier.size(140.dp).clip(CircleShape).padding(bottom = 8.dp),
+                        modifier = Modifier
+                            .size(140.dp)
+                            .clip(CircleShape)
+                            .padding(bottom = 8.dp),
                         contentScale = ContentScale.Fit
                     )
 
@@ -160,7 +171,7 @@ fun RegisterScreen(
                     )
 
 
-                    Spacer(modifier = Modifier.height(32.dp)) // Mismo spacer que Login
+                    Spacer(modifier = Modifier.height(30.dp))
 
 
                     OutlinedTextField(
@@ -177,7 +188,7 @@ fun RegisterScreen(
                     )
 
 
-                    Spacer(modifier = Modifier.height(16.dp)) // Mismo spacer que Login
+                    Spacer(modifier = Modifier.height(10.dp))
 
 
                     OutlinedTextField(
@@ -201,7 +212,7 @@ fun RegisterScreen(
                     )
 
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
 
                     OutlinedTextField(
@@ -225,7 +236,7 @@ fun RegisterScreen(
                     )
 
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                    Spacer(modifier = Modifier.height(30.dp))
 
 
                     Button(
@@ -247,12 +258,33 @@ fun RegisterScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
 
-                    TextButton(onClick = onNavigateToLogin) {
+//                    TextButton(onClick = onNavigateToLogin) {
+//                        Text(
+//                            text = "¿Ya tienes cuenta? Inicia sesión",
+//                            style = TextStyle(textDecoration = TextDecoration.Underline),
+//                            color = colorResource(id = R.color.rojoFlojito)
+//                        )
+//                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
-                            text = "¿Ya tienes cuenta? Inicia sesión",
-                            style = TextStyle(textDecoration = TextDecoration.Underline),
-                            color = colorResource(id = R.color.rojoFlojito)
+                            text = "¿Ya tienes cuenta? ",
+                            fontSize = 14.sp,
+                            color = Color.Gray
                         )
+
+                        TextButton(
+                            onClick = onNavigateToLogin,
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Text(
+                                text = "Inicia sesión",
+                                style = TextStyle(textDecoration = TextDecoration.Underline),
+                                color = colorResource(id = R.color.rojoFlojito)
+                            )
+                        }
                     }
                 }
             }
@@ -262,5 +294,13 @@ fun RegisterScreen(
 
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) onRegisterSuccess()
+    }
+
+
+    LaunchedEffect(uiState.authError) {
+        uiState.authError?.let { errorMsg ->
+            Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
+            viewModel.clearError()
+        }
     }
 }

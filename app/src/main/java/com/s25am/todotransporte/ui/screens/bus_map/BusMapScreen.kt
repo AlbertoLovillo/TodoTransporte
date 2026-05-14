@@ -14,7 +14,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -25,7 +31,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.location.LocationAvailability
 import com.google.android.gms.location.LocationCallback
@@ -34,8 +43,11 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.mapbox.geojson.Point
+import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
+import com.mapbox.maps.plugin.animation.MapAnimationOptions
+import com.s25am.todotransporte.R
 import com.s25am.todotransporte.ui.screens.bus_map.components.BusMap
 import com.s25am.todotransporte.ui.screens.bus_map.components.MapHeader
 import com.s25am.todotransporte.ui.screens.bus_map.components.StopDialog
@@ -68,9 +80,6 @@ fun MapsScreen(
             }
 
             override fun onLocationAvailability(availability: LocationAvailability) {
-                if (!availability.isLocationAvailable) {
-                    ubicacionUsuario = null
-                }
             }
         }
     }
@@ -167,6 +176,29 @@ fun MapsScreen(
                     destino = uiState.destino,
                     modifier = Modifier.align(Alignment.TopCenter)
                 )
+
+                // Botón Mi Ubicación
+                FloatingActionButton(
+                    onClick = {
+                        ubicacionUsuario?.let {
+                            estadoCamara.flyTo(
+                                CameraOptions.Builder()
+                                    .center(Point.fromLngLat(it.longitude, it.latitude))
+                                    .zoom(15.0)
+                                    .build(),
+                                MapAnimationOptions.mapAnimationOptions { duration(1000) }
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(bottom = 16.dp, end = 16.dp),
+                    containerColor = Color.White,
+                    contentColor = colorResource(id = R.color.RojoP),
+                    shape = CircleShape
+                ) {
+                    Icon(Icons.Default.MyLocation, contentDescription = "Mi ubicación")
+                }
             } else {
                 Box(
                     modifier = Modifier.fillMaxSize(),

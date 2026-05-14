@@ -338,8 +338,6 @@ class ScheduleViewModel : ViewModel() {
             }
         }
     }
-
-
     /**
      * Función que corrige el formato de las horas GTFS para que se ajusten al rango de 24 horas.
      */

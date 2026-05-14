@@ -29,10 +29,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,29 +49,32 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.s25am.todotransporte.R
 import com.s25am.todotransporte.ui.screens.tickets.TicketsViewModel
-import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.QrDialog
-import com.s25am.todotransporte.ui.screens.tickets.wallet.componetsWallet.SwipeableTicketItem
+import com.s25am.todotransporte.ui.screens.tickets.wallet.componets.QrDialog
+import com.s25am.todotransporte.ui.screens.tickets.wallet.componets.SwipeableTicketItem
 import com.s25am.todotransporte.ui.theme.GrisFondoCl
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
-/**
- * Pantalla principal de la Cartera (Wallet).
- * NOTA: El Scaffold y la TopBar se gestionan de forma global en MainActivity.
- */
 @Composable
 fun WalletScreen(
     viewModel: TicketsViewModel = viewModel()
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(Unit) {
+        coroutineScope.launch {
+            delay(1000)
+            viewModel.fetchSavedBilletesYSaldo()
+        }
+    }
 
 
     val uiState by viewModel.uiState.collectAsState()
 
 
-    //Guardar el id del billete para generar QR
     var billeteSeleccionadoId by remember { mutableStateOf<String?>(null) }
 
 
-    //Si el ID no es nulo, mostramos el diálogo
     billeteSeleccionadoId?.let { id ->
         QrDialog(
             ticketId = id,
@@ -88,11 +93,11 @@ fun WalletScreen(
                 start = 16.dp,
                 end = 16.dp,
                 top = 16.dp,
-                bottom = 80.dp //DAMOS ESPACIO EXTRA abajo para que el último billete no se tape con el menú
+                bottom = 80.dp
             ),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // --- TARJETA DE SALDO (DISEÑO TIPO WALLET) ---
+
             item {
                 Card(
                     modifier = Modifier
@@ -136,7 +141,7 @@ fun WalletScreen(
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
                                     text = "${String.format("%.2f", uiState.saldo)} €",
-                                    style = MaterialTheme.typography.displayMedium.copy(
+                                    style = MaterialTheme.typography.headlineLarge.copy(
                                         fontWeight = FontWeight.ExtraBold,
                                         letterSpacing = (-1).sp
                                     ),
@@ -161,7 +166,7 @@ fun WalletScreen(
                                     modifier = Modifier.size(18.dp)
                                 )
                                 Spacer(Modifier.width(8.dp))
-                                Text("Añadir 10,00 €", fontWeight = FontWeight.Bold)
+                                Text("Añadir 10,00 €", fontWeight = FontWeight.Bold, fontSize = 16.sp)
                             }
                         }
                     }
@@ -169,7 +174,6 @@ fun WalletScreen(
             }
 
 
-            // --- SECCIÓN MIS BILLETES ---
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -178,7 +182,7 @@ fun WalletScreen(
                 ) {
                     Text(
                         "Mis Billetes Activos",
-                        style = MaterialTheme.typography.titleLarge.copy(
+                        style = MaterialTheme.typography.headlineSmall.copy(
                             fontWeight = FontWeight.ExtraBold,
                             color = Color.Black
                         )
@@ -192,7 +196,6 @@ fun WalletScreen(
             }
 
 
-            // Lista dinámica
             items(uiState.listaBilletes, key = { it.id }) { billete ->
                 SwipeableTicketItem(
                     ticket = billete,
