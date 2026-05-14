@@ -1,5 +1,6 @@
 package com.s25am.todotransporte.database
 
+import com.s25am.todotransporte.BuildConfig
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
@@ -9,8 +10,8 @@ import kotlinx.serialization.json.Json
 object SupabaseClient {
 
     val client = createSupabaseClient(
-        supabaseUrl = "https://iyinmvtnpmvcjnbumfqx.supabase.co",
-        supabaseKey = "sb_publishable_fuvQ1DPnDhiuxZhhC8JR7Q_e3VyDK9g"
+        supabaseUrl = BuildConfig.SUPABASE_URL,
+        supabaseKey = BuildConfig.SUPABASE_SECRET_TOKEN
     ) {
         install(Auth) {
             serializer = KotlinXSerializer(Json {
