@@ -134,12 +134,14 @@ fun AlertDialogParada(
         confirmButton = {
             TextButton(
                 onClick = onDismiss,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(id = R.color.RojoP)
+                ),
             ) {
                 Text(
                     "Cerrar",
-                    fontWeight = FontWeight.Bold,
-                    color = colorResource(id = R.color.RojoP)
+                    fontWeight = FontWeight.Bold, color = Color.White
                 )
             }
         }

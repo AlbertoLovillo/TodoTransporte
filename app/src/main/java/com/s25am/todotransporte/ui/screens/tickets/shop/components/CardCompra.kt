@@ -53,7 +53,7 @@ fun CardCompra(
         onToggleRotation = { isRotated = !isRotated },
         modifier = Modifier.fillMaxWidth(),
         frontSide = {
-            // --- TU DISEÑO ORIGINAL (Cara A) ---
+            // --- DISEÑO OPTIMIZADO (Cara A) ---
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 shape = RoundedCornerShape(16.dp),
@@ -61,39 +61,71 @@ fun CardCompra(
                 shadowElevation = 0.dp
             ) {
                 Row(
-                    modifier = Modifier.padding(16.dp).fillMaxSize(),
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .fillMaxSize(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(48.dp)
-                            .background(colorResource(id = R.color.RojoP).copy(alpha = 0.1f), RoundedCornerShape(12.dp)),
+                            .size(40.dp)
+                            .background(colorResource(id = R.color.RojoP).copy(alpha = 0.1f), RoundedCornerShape(10.dp)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             Icons.Default.ConfirmationNumber,
                             contentDescription = null,
-                            tint = colorResource(id = R.color.RojoP)
+                            tint = colorResource(id = R.color.RojoP),
+                            modifier = Modifier.size(20.dp)
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
 
                     Column(modifier = Modifier.weight(1f)) {
-                        Text(opcion.titulo, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = colorResource(id = R.color.rojoFlojito))
-                        Text(opcion.trayecto, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
-                        Text(opcion.fecha, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
-                        Text(opcion.precio, fontWeight = FontWeight.ExtraBold, color = colorResource(id = R.color.RojoP), fontSize = 16.sp)
+                        Text(
+                            opcion.titulo,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            color = colorResource(id = R.color.rojoFlojito)
+                        )
+
+                        Text(
+                            opcion.trayecto,
+                            fontSize = 13.sp,
+                            lineHeight = 16.sp,
+                            color = Color.Gray,
+                            maxLines = 3,
+                            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                        )
+
+                        Text(
+                            opcion.fecha,
+                            fontSize = 12.sp,
+                            color = Color.LightGray
+                        )
+
+                        Text(
+                            opcion.precio,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = colorResource(id = R.color.RojoP),
+                            fontSize = 16.sp
+                        )
                     }
+
+                    Spacer(modifier = Modifier.width(8.dp))
 
                     Button(
                         onClick = onBuyClick,
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.RojoP)),
-                        contentPadding = PaddingValues(horizontal = 12.dp)
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier.height(40.dp)
                     ) {
-                        Icon(Icons.Default.AddShoppingCart, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Icon(Icons.Default.AddShoppingCart, contentDescription = null, modifier = Modifier.size(16.dp),
+                            tint = Color.Black)
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("Añadir", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text("Añadir", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Black)
                     }
                 }
             }

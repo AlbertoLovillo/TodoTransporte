@@ -138,7 +138,7 @@ fun StopDialog(
                     ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Cerrar", fontWeight = FontWeight.Bold)
+                    Text("Cerrar", fontWeight = FontWeight.Bold, color = Color.White)
                 }
             }
         )

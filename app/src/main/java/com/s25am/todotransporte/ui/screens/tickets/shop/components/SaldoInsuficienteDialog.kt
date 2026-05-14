@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -75,11 +76,15 @@ fun SaldoInsuficienteDialog(
         confirmButton = {
             TextButton(
                 onClick = onDismiss,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(id = R.color.RojoP)
+                ),
             ) {
                 Text(
-                    "Entendido",
+                    "cerrar",
                     fontWeight = FontWeight.Bold,
-                    color = colorResource(id = R.color.RojoP)
+                    color = Color.White
                 )
             }
         }
