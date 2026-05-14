@@ -12,7 +12,6 @@ import android.os.Looper
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,10 +24,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MyLocation
-import androidx.compose.material.icons.filled.Store
 import androidx.compose.material.icons.filled.Storefront
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -73,6 +69,7 @@ import com.s25am.todotransporte.ui.screens.sale_point.components.SalePointsMap
 fun SalePointScreen(
     viewModel: SalePointViewModel = viewModel()
 ) {
+
     val context = LocalContext.current
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
     var ubicacionUsuario by remember { mutableStateOf<Location?>(null) }
@@ -89,7 +86,6 @@ fun SalePointScreen(
             }
 
             override fun onLocationAvailability(availability: LocationAvailability) {
-                if (!availability.isLocationAvailable) ubicacionUsuario = null
             }
         }
     }
