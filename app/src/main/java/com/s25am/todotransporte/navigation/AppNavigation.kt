@@ -12,7 +12,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.s25am.todotransporte.ui.screens.SplashScreen.AnimatedSplashScreen
 import com.s25am.todotransporte.ui.screens.authentication.LoginScreen
 import com.s25am.todotransporte.ui.screens.authentication.RegisterScreen
-import com.s25am.todotransporte.ui.screens.bus_map.MapsScreen
+import com.s25am.todotransporte.ui.screens.bus_map.BusMapScreen
 import com.s25am.todotransporte.ui.screens.sale_point.SalePointScreen
 import com.s25am.todotransporte.ui.screens.schedule.ScheduleScreen
 import com.s25am.todotransporte.ui.screens.tickets.TicketsViewModel
@@ -47,7 +47,7 @@ fun AppNavigation(
                         onNavigateToRegister = { backStack.add(Routes.Register) },
                         onLoginSuccess = {
                             while (backStack.isNotEmpty()) { backStack.removeLastOrNull() }
-                            backStack.add(Routes.MapaBus)
+                            backStack.add(Routes.BusMap)
                         }
                     )
                 }
@@ -62,30 +62,30 @@ fun AppNavigation(
                             while (backStack.isNotEmpty()) {
                                 backStack.removeLastOrNull()
                             }
-                            backStack.add(Routes.MapaBus)
+                            backStack.add(Routes.BusMap)
                         }
                     )
                 }
 
-                entry<Routes.MapaBus> {
-                    MapsScreen(ticketsViewModel = ticketsViewModel)
+                entry<Routes.BusMap> {
+                    BusMapScreen(ticketsViewModel = ticketsViewModel)
                 }
 
-                entry<Routes.Horario> {
+                entry<Routes.Schedule> {
                     ScheduleScreen()
                 }
 
-                entry<Routes.Cartera> {
+                entry<Routes.Wallet> {
                     WalletScreen(viewModel = ticketsViewModel)
                 }
-                entry<Routes.PuntosVenta> {
+                entry<Routes.SalePoint> {
                     SalePointScreen()
                 }
-                entry<Routes.Tienda> {
+                entry<Routes.Shop> {
                     ShopScreen(
                         viewModel = ticketsViewModel,
-                        onBack = { backStack.add(Routes.Cartera) },
-                        onNavigateToMaps = {backStack.add(Routes.MapaBus)}
+                        onBack = { backStack.add(Routes.Wallet) },
+                        onNavigateToMaps = {backStack.add(Routes.BusMap)}
                     )
                 }
             }

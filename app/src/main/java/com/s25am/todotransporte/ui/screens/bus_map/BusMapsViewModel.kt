@@ -1,5 +1,6 @@
 package com.s25am.todotransporte.ui.screens.bus_map
 
+import android.location.Location
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -35,6 +36,12 @@ class BusMapsViewModel : ViewModel() {
     val uiState: StateFlow<BusMapsUiState> = _uiState.asStateFlow()
 
 
+
+    fun updateUbicacionUsuario(ubicacion: Location?) {
+        _uiState.update { it.copy(ubicacionUsuario = ubicacion) }
+    }
+
+
     init {
         cargarLineas()
         iniciarSeguimientoBuses()
@@ -48,7 +55,7 @@ class BusMapsViewModel : ViewModel() {
         viewModelScope.launch {
             while (true) {
                 actualizarPosicionesBuses()
-                delay(60000) // 1 minuto
+                delay(60000)
             }
         }
     }
@@ -72,12 +79,11 @@ class BusMapsViewModel : ViewModel() {
             val todosLosBuses = lineasCsv.mapNotNull { linea ->
                 val datos = linea.replace("\"", "").split(",")
                 if (datos.size >= 7) {
-                    // Limpiamos la línea aquí mismo quitando espacios y el ".0" final si existe
                     val lineaLimpia = datos[1].trim().removeSuffix(".0")
 
                     PosicionBus(
                         codBus = datos[0].trim(),
-                        codLinea = lineaLimpia,  // ¡Usamos la línea ya limpia!
+                        codLinea = lineaLimpia,
                         sentido = datos[2].trim().toIntOrNull() ?: 1,
                         lon = datos[3].trim().toDoubleOrNull() ?: 0.0,
                         lat = datos[4].trim().toDoubleOrNull() ?: 0.0,
@@ -174,7 +180,6 @@ class BusMapsViewModel : ViewModel() {
      */
     private fun cargarDatosPorSentido(lineaId: Int, direccion: Int) {
         viewModelScope.launch {
-            // 1. CARGAMOS LAS PARADAS
             try {
                 val cajas = supabase.from("Linea_Parada")
                     .select(Columns.Companion.raw("Parada(*)")) {
@@ -215,19 +220,14 @@ class BusMapsViewModel : ViewModel() {
      * Función interna para actualizar el nombre del destino
      */
     private fun actualizarNombreDestino() {
-        // 1. Obtenemos el estado actual para sacar la línea y la dirección
         val currentState = _uiState.value
         val lineaId = currentState.selectedLinea?.id ?: return
         val direccionActual = currentState.direccionActual
 
         viewModelScope.launch {
             try {
-                // Opcional: Mostramos un pequeño texto de carga en la UI
                 _uiState.update { it.copy(destino = "Cargando...") }
 
-                // 2. Hacemos la consulta a Supabase
-                // Solo necesitamos UN registro que coincida con la línea y dirección
-                // para saber cómo se llama el destino final.
                 val resultado = supabase.from("Horario").select {
                     filter {
                         eq("id_linea", lineaId)
@@ -236,17 +236,15 @@ class BusMapsViewModel : ViewModel() {
                     limit(1)
                 }.decodeSingleOrNull<Horario>()
 
-                // 3. Evaluamos el resultado y actualizamos el estado
                 if (resultado != null) {
                     val destino = resultado.destino ?: "Fin de trayecto"
                     _uiState.update { it.copy(destino = destino) }
                 } else {
-                    // Si la consulta no devuelve nada (ej. una línea sin horarios registrados)
                     _uiState.update { it.copy(destino = "Destino desconocido") }
                 }
 
             } catch (e: Exception) {
-                e.printStackTrace() // Muy útil para ver qué falló en el Logcat
+                e.printStackTrace()
                 _uiState.update { it.copy(destino = "Error al cargar destino") }
             }
         }

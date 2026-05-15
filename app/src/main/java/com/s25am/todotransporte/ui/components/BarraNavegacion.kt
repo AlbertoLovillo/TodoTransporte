@@ -35,8 +35,8 @@ fun BarraNavegacion(
         ) {
 
             NavigationBarItem(
-                selected = currentRoute == Routes.PuntosVenta,
-                onClick = { onNavigate(Routes.PuntosVenta) },
+                selected = currentRoute == Routes.SalePoint,
+                onClick = { onNavigate(Routes.SalePoint) },
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Storefront,
@@ -51,8 +51,8 @@ fun BarraNavegacion(
             )
 
             NavigationBarItem(
-                selected = currentRoute == Routes.Horario,
-                onClick = { onNavigate(Routes.Horario) },
+                selected = currentRoute == Routes.Schedule,
+                onClick = { onNavigate(Routes.Schedule) },
                 icon = {
                     Icon(
                         imageVector = Icons.Default.DateRange,
@@ -67,8 +67,8 @@ fun BarraNavegacion(
             )
 
             NavigationBarItem(
-                selected = currentRoute == Routes.MapaBus,
-                onClick = { onNavigate(Routes.MapaBus) },
+                selected = currentRoute == Routes.BusMap,
+                onClick = { onNavigate(Routes.BusMap) },
                 icon = {
                     Icon(
                         imageVector = Icons.Default.Place,
@@ -83,8 +83,8 @@ fun BarraNavegacion(
             )
 
             NavigationBarItem(
-                selected = currentRoute == Routes.Cartera,
-                onClick = { onNavigate(Routes.Cartera) },
+                selected = currentRoute == Routes.Wallet,
+                onClick = { onNavigate(Routes.Wallet) },
                 icon = {
                     Icon(
                         imageVector = Icons.Default.AccountBalanceWallet,
@@ -99,8 +99,8 @@ fun BarraNavegacion(
             )
 
             NavigationBarItem(
-                selected = currentRoute == Routes.Tienda,
-                onClick = { onNavigate(Routes.Tienda) },
+                selected = currentRoute == Routes.Shop,
+                onClick = { onNavigate(Routes.Shop) },
                 icon = {
                     Icon(
                         imageVector = Icons.Default.AddShoppingCart,
