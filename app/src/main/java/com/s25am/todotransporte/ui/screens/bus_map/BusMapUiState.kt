@@ -17,5 +17,5 @@ data class BusMapsUiState(
     val rutaGeojsonActual: String? = null,
     val destino: String? = null,
     val busesEnTiempoReal: List<PosicionBus> = emptyList(),
-    val ubicacionUsuario: Location? = null,
+    val ubicacionUsuario: Location? = null
 )

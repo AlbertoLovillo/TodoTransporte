@@ -9,7 +9,7 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import com.s25am.todotransporte.ui.screens.SplashScreen.AnimatedSplashScreen
+import com.s25am.todotransporte.ui.components.AnimatedSplashScreen
 import com.s25am.todotransporte.ui.screens.authentication.LoginScreen
 import com.s25am.todotransporte.ui.screens.authentication.RegisterScreen
 import com.s25am.todotransporte.ui.screens.bus_map.BusMapScreen
