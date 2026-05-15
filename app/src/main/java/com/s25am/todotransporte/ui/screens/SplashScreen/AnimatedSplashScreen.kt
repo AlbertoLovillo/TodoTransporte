@@ -42,15 +42,15 @@ fun AnimatedSplashScreen(onNavigationNext: () -> Unit) {
 
     LaunchedEffect(Unit) {
         while (progress < 1f) {
-            delay(40)
-            progress += 0.03f
+            delay(50)
+            progress += 0.02f
         }
 
         isContentVisible = false
-        delay(100)
+        delay(200)
 
         repeat(10) {
-            delay(30)
+            delay(40)
             backgroundAlpha -= 0.1f
         }
 
