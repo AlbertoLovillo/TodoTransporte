@@ -18,7 +18,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
@@ -42,15 +41,15 @@ fun AnimatedSplashScreen(onNavigationNext: () -> Unit) {
 
     LaunchedEffect(Unit) {
         while (progress < 1f) {
-            delay(40)
-            progress += 0.03f
+            delay(50)
+            progress += 0.02f
         }
 
         isContentVisible = false
-        delay(100)
+        delay(200)
 
         repeat(10) {
-            delay(30)
+            delay(40)
             backgroundAlpha -= 0.1f
         }
 
