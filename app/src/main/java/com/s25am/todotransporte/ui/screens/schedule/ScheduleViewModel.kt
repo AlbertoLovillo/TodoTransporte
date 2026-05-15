@@ -109,7 +109,7 @@ class ScheduleViewModel : ViewModel() {
         for (parada in paradasActuales) {
             for (bus in buses) {
                 val distancia = calcularDistancia(parada.latitud, parada.longitud, bus.lat, bus.lon)
-                if (distancia < 0.3) { // 300 metros
+                if (distancia < 0.3) {
                     paradasConBus.add(parada.id)
                     break
                 }
@@ -120,7 +120,7 @@ class ScheduleViewModel : ViewModel() {
 
 
     private fun calcularDistancia(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-        val r = 6371 // km
+        val r = 6371
         val dLat = Math.toRadians(lat2 - lat1)
         val dLon = Math.toRadians(lon2 - lon1)
         val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
@@ -274,7 +274,7 @@ class ScheduleViewModel : ViewModel() {
                             eq("id_linea", lineaId)
                             eq("id_parada", paradaId)
                             eq("service_id", serviceIdHoy)
-                            eq("direccion", direccion) // Filtro mágico
+                            eq("direccion", direccion)
                         }
                         order("hora_llegada", order = Order.ASCENDING)
                     }.decodeList<Horario>()
