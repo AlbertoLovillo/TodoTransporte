@@ -7,8 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="RojoP">#ff3131</color>
+    <color name="rojoPrincipal">#ff3131</color>
     <color name="rojoFlojito">#FF6161</color>
     <color name="rojoMuyFlojito">#FFFFADAD</color>
-    <color name="FondoGrisClaro">#FFF8F9FA</color>
+    <color name="fondoGrisClaro">#FFF8F9FA</color>
 </resources>

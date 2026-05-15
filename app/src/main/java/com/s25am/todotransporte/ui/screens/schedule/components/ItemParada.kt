@@ -43,7 +43,7 @@ fun ItemParada(
                 modifier = Modifier
                     .size(52.dp)
                     .background(
-                        colorResource(id = R.color.RojoP).copy(alpha = 0.1f),
+                        colorResource(id = R.color.rojoPrincipal).copy(alpha = 0.1f),
                         RoundedCornerShape(12.dp)
                     ),
                 contentAlignment = Alignment.Center
@@ -51,7 +51,7 @@ fun ItemParada(
                 Icon(
                     imageVector = Icons.Default.LocationOn,
                     contentDescription = null,
-                    tint = colorResource(id = R.color.RojoP),
+                    tint = colorResource(id = R.color.rojoPrincipal),
                     modifier = Modifier.size(28.dp)
                 )
             }
@@ -70,7 +70,7 @@ fun ItemParada(
 
             if (proximoBusHora != null) {
                 Surface(
-                    color = colorResource(id = R.color.RojoP).copy(alpha = 0.08f),
+                    color = colorResource(id = R.color.rojoPrincipal).copy(alpha = 0.08f),
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Row(
@@ -80,7 +80,7 @@ fun ItemParada(
                         Icon(
                             imageVector = Icons.Default.AccessTime,
                             contentDescription = null,
-                            tint = colorResource(id = R.color.RojoP),
+                            tint = colorResource(id = R.color.rojoPrincipal),
                             modifier = Modifier.size(14.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
@@ -88,7 +88,7 @@ fun ItemParada(
                             text = proximoBusHora,
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold,
-                            color = colorResource(id = R.color.RojoP)
+                            color = colorResource(id = R.color.rojoPrincipal)
                         )
                     }
                 }

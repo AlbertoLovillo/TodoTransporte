@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.s25am.todotransporte.R
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
-import com.s25am.todotransporte.ui.theme.GrisFondoCl
+import com.s25am.todotransporte.ui.theme.GrisFondoClaro
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,11 +59,11 @@ fun StopsList(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(GrisFondoCl)
+            .background(GrisFondoClaro)
     ) {
 
         Surface(
-            color = GrisFondoCl,
+            color = GrisFondoClaro,
             contentColor = Color.White,
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -121,7 +121,7 @@ fun StopsList(
                     .padding(end = 12.dp)
                     .rotate(anguloAnimado)
                     .clip(CircleShape)
-                    .background(colorResource(id = R.color.RojoP))
+                    .background(colorResource(id = R.color.rojoPrincipal))
             ) {
                 Icon(
                     imageVector = Icons.Default.SwapHoriz,

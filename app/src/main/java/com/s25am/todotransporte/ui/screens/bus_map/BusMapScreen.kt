@@ -194,7 +194,7 @@ fun MapsScreen(
                         .align(Alignment.BottomEnd)
                         .padding(bottom = 16.dp, end = 16.dp),
                     containerColor = Color.White,
-                    contentColor = colorResource(id = R.color.RojoP),
+                    contentColor = colorResource(id = R.color.rojoPrincipal),
                     shape = CircleShape
                 ) {
                     Icon(Icons.Default.MyLocation, contentDescription = "Mi ubicación")

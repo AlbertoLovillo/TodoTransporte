@@ -203,7 +203,7 @@ fun SalePointContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Surface(
-                    color = colorResource(id = R.color.RojoP).copy(alpha = 0.1f),
+                    color = colorResource(id = R.color.rojoPrincipal).copy(alpha = 0.1f),
                     shape = CircleShape,
                     modifier = Modifier.size(36.dp)
                 ) {
@@ -211,7 +211,7 @@ fun SalePointContent(
                         Icon(
                             imageVector = Icons.Default.Storefront,
                             contentDescription = null,
-                            tint = colorResource(id = R.color.RojoP),
+                            tint = colorResource(id = R.color.rojoPrincipal),
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -251,7 +251,7 @@ fun SalePointContent(
                 .align(Alignment.BottomEnd)
                 .padding(bottom = 16.dp, end = 16.dp),
             containerColor = Color.White,
-            contentColor = colorResource(id = R.color.RojoP),
+            contentColor = colorResource(id = R.color.rojoPrincipal),
             shape = CircleShape
         ) {
             Icon(Icons.Default.MyLocation, contentDescription = "Mi ubicación")

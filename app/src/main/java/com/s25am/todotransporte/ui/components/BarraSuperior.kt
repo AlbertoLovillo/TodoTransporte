@@ -21,7 +21,7 @@ import com.s25am.todotransporte.navigation.Routes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainTopBar(
+fun BarraSuperior(
     currentRoute: Any?,
     canNavigateBack: Boolean,
     saldo: Double,
@@ -30,7 +30,7 @@ fun MainTopBar(
 
     if (currentRoute != Routes.Login && currentRoute != Routes.Register &&
         currentRoute != Routes.SplashScreen) {
-        val titleText = when (currentRoute) {
+        val cabecera = when (currentRoute) {
             is Routes.PuntosVenta -> "Puntos de Venta"
             is Routes.Horario -> "Horarios"
             is Routes.MapaBus -> "Mapa de Líneas"
@@ -42,7 +42,7 @@ fun MainTopBar(
         TopAppBar(
             title = {
                 Text(
-                    text = titleText,
+                    text = cabecera,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                 )
@@ -53,7 +53,7 @@ fun MainTopBar(
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Volver atrás",
-                            tint = colorResource(id = R.color.RojoP)
+                            tint = colorResource(id = R.color.rojoPrincipal)
                         )
                     }
                 }
@@ -65,13 +65,13 @@ fun MainTopBar(
                         modifier = Modifier.padding(end = 16.dp),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                        color = colorResource(id = R.color.RojoP)
+                        color = colorResource(id = R.color.rojoPrincipal)
                     )
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.White,
-                titleContentColor = colorResource(id = R.color.RojoP)
+                titleContentColor = colorResource(id = R.color.rojoPrincipal)
             )
         )
     }

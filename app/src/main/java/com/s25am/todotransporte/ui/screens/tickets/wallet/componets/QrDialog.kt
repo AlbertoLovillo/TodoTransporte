@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.s25am.todotransporte.R
-import com.s25am.todotransporte.ui.components.generarQR
+import com.s25am.todotransporte.ui.components.generadorQR
 
 @Composable
 fun QrDialog(
@@ -40,7 +40,7 @@ fun QrDialog(
             .padding(16.dp),
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cerrar", color = colorResource(id = R.color.RojoP))
+                Text("Cerrar", color = colorResource(id = R.color.rojoPrincipal))
             }
         },
         title = {
@@ -50,7 +50,7 @@ fun QrDialog(
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
-                color = colorResource(id = R.color.RojoP)
+                color = colorResource(id = R.color.rojoPrincipal)
             )
         },
         text = {
@@ -60,7 +60,7 @@ fun QrDialog(
                     .fillMaxWidth()
                     .padding(vertical = 20.dp)
             ) {
-                val qrBitmap = remember(ticketId) { generarQR(ticketId) }
+                val qrBitmap = remember(ticketId) { generadorQR(ticketId) }
 
                 qrBitmap?.let {
                     Image(

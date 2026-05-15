@@ -51,7 +51,7 @@ import com.s25am.todotransporte.R
 import com.s25am.todotransporte.ui.screens.tickets.TicketsViewModel
 import com.s25am.todotransporte.ui.screens.tickets.wallet.componets.QrDialog
 import com.s25am.todotransporte.ui.screens.tickets.wallet.componets.SwipeableTicketItem
-import com.s25am.todotransporte.ui.theme.GrisFondoCl
+import com.s25am.todotransporte.ui.theme.GrisFondoClaro
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -84,7 +84,7 @@ fun WalletScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(GrisFondoCl)
+            .background(GrisFondoClaro)
     ) {
         LazyColumn(
             modifier = Modifier
@@ -104,7 +104,7 @@ fun WalletScreen(
                         .fillMaxWidth()
                         .height(200.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = colorResource(id = R.color.RojoP)
+                        containerColor = colorResource(id = R.color.rojoPrincipal)
                     ),
                     shape = RoundedCornerShape(24.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
@@ -127,7 +127,7 @@ fun WalletScreen(
                         ) {
                             Column {
                                 Surface(
-                                    color = colorResource(id = R.color.RojoP).copy(alpha = 0.9f),
+                                    color = colorResource(id = R.color.rojoPrincipal).copy(alpha = 0.9f),
                                     shape = RoundedCornerShape(8.dp),
                                     modifier = Modifier.padding(bottom = 8.dp)
                                 ) {
@@ -155,7 +155,7 @@ fun WalletScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color.White,
-                                    contentColor = colorResource(id = R.color.RojoP)
+                                    contentColor = colorResource(id = R.color.rojoPrincipal)
                                 ),
                                 shape = RoundedCornerShape(12.dp),
                                 elevation = ButtonDefaults.buttonElevation(4.dp)

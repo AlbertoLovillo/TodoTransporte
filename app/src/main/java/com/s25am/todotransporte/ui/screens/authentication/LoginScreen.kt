@@ -159,7 +159,7 @@ fun LoginScreen(
                         "TodoTransporte",
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
-                        color = colorResource(id = R.color.RojoP)
+                        color = colorResource(id = R.color.rojoPrincipal)
                     )
 
 
@@ -182,7 +182,7 @@ fun LoginScreen(
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.Black,
                             unfocusedTextColor = Color.Black,
-                            focusedBorderColor = colorResource(id = R.color.RojoP)
+                            focusedBorderColor = colorResource(id = R.color.rojoPrincipal)
                         )
                     )
 
@@ -200,13 +200,13 @@ fun LoginScreen(
                         trailingIcon = {
                             val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Icon(imageVector = image, contentDescription = null, tint = colorResource(id = R.color.RojoP))
+                                Icon(imageVector = image, contentDescription = null, tint = colorResource(id = R.color.rojoPrincipal))
                             }
                         },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.Black,
                             unfocusedTextColor = Color.Black,
-                            focusedBorderColor = colorResource(id = R.color.RojoP)
+                            focusedBorderColor = colorResource(id = R.color.rojoPrincipal)
                         )
                     )
 
@@ -218,7 +218,7 @@ fun LoginScreen(
                         onClick = { viewModel.login() },
                         modifier = Modifier.fillMaxWidth().height(52.dp),
                         enabled = !uiState.isLoading,
-                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.RojoP))
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.rojoPrincipal))
                     ) {
                         if (uiState.isLoading) {
                             CircularProgressIndicator(modifier = Modifier.size(24.dp), color = colorResource(R.color.rojoFlojito))

@@ -60,7 +60,7 @@ fun BusMap(
         }
 
         paradas.forEach { parada ->
-            val colorLinea = colorResource(id = R.color.RojoP).toArgb()
+            val colorLinea = colorResource(id = R.color.rojoPrincipal).toArgb()
             CircleAnnotation(
                 point = Point.fromLngLat(parada.longitud, parada.latitud),
                 circleRadius = 5.0,

@@ -177,7 +177,7 @@ fun ShopScreen(
                         Icon(
                             Icons.Default.Info,
                             contentDescription = null,
-                            tint = colorResource(id = R.color.RojoP)
+                            tint = colorResource(id = R.color.rojoPrincipal)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(

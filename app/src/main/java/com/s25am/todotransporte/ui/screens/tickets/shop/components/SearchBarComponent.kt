@@ -41,9 +41,9 @@ fun TicketSearchBar(
         shape = RoundedCornerShape(12.dp),
         singleLine = true,
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = colorResource(id = R.color.RojoP),
-            cursorColor = colorResource(id = R.color.RojoP),
-            focusedLeadingIconColor = colorResource(id = R.color.RojoP)
+            focusedBorderColor = colorResource(id = R.color.rojoPrincipal),
+            cursorColor = colorResource(id = R.color.rojoPrincipal),
+            focusedLeadingIconColor = colorResource(id = R.color.rojoPrincipal)
         )
     )
 }

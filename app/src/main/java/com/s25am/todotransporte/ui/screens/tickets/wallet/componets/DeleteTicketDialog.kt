@@ -44,7 +44,7 @@ fun DeleteTicketDialog(
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
-                color = colorResource(R.color.RojoP),
+                color = colorResource(R.color.rojoPrincipal),
                 modifier = Modifier.fillMaxWidth()
             )
         },
@@ -90,9 +90,9 @@ fun DeleteTicketDialog(
                     CircularProgressIndicator(
                         progress = { animatedProgress },
                         modifier = Modifier.size(100.dp),
-                        color = colorResource(id = R.color.RojoP),
+                        color = colorResource(id = R.color.rojoPrincipal),
                         strokeWidth = 6.dp,
-                        trackColor = colorResource(id = R.color.FondoGrisClaro),
+                        trackColor = colorResource(id = R.color.fondoGrisClaro),
                         strokeCap = StrokeCap.Round
                     )
 
@@ -103,16 +103,16 @@ fun DeleteTicketDialog(
                             .clip(CircleShape)
                             .background(
                                 if (progress > 0f)
-                                    colorResource(id = R.color.RojoP).copy(alpha = 0.15f)
+                                    colorResource(id = R.color.rojoPrincipal).copy(alpha = 0.15f)
                                 else
-                                    colorResource(id = R.color.FondoGrisClaro)
+                                    colorResource(id = R.color.fondoGrisClaro)
                             ),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = null,
-                            tint = if (progress > 0f) colorResource(id = R.color.RojoP) else Color.DarkGray,
+                            tint = if (progress > 0f) colorResource(id = R.color.rojoPrincipal) else Color.DarkGray,
                             modifier = Modifier.size(32.dp)
                         )
                     }

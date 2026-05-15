@@ -87,7 +87,7 @@ fun MapHeader(
             ) {
                 // Círculo con el código de línea
                 Surface(
-                    color = colorResource(id = R.color.RojoP),
+                    color = colorResource(id = R.color.rojoPrincipal),
                     shape = CircleShape,
                     modifier = Modifier.size(45.dp)
                 ) {

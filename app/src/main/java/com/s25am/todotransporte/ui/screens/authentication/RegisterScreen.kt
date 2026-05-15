@@ -160,7 +160,7 @@ fun RegisterScreen(
                         "Registro",
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
-                        color = colorResource(id = R.color.RojoP)
+                        color = colorResource(id = R.color.rojoPrincipal)
                     )
 
 
@@ -183,7 +183,7 @@ fun RegisterScreen(
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.Black,
                             unfocusedTextColor = Color.Black,
-                            focusedBorderColor = colorResource(id = R.color.RojoP)
+                            focusedBorderColor = colorResource(id = R.color.rojoPrincipal)
                         )
                     )
 
@@ -201,13 +201,13 @@ fun RegisterScreen(
                         trailingIcon = {
                             val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Icon(imageVector = image, contentDescription = null, tint = colorResource(id = R.color.RojoP))
+                                Icon(imageVector = image, contentDescription = null, tint = colorResource(id = R.color.rojoPrincipal))
                             }
                         },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.Black,
                             unfocusedTextColor = Color.Black,
-                            focusedBorderColor = colorResource(id = R.color.RojoP)
+                            focusedBorderColor = colorResource(id = R.color.rojoPrincipal)
                         )
                     )
 
@@ -225,13 +225,13 @@ fun RegisterScreen(
                         trailingIcon = {
                             val image = if (repeatedPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
                             IconButton(onClick = { repeatedPasswordVisible = !repeatedPasswordVisible }) {
-                                Icon(imageVector = image, contentDescription = null, tint = colorResource(id = R.color.RojoP))
+                                Icon(imageVector = image, contentDescription = null, tint = colorResource(id = R.color.rojoPrincipal))
                             }
                         },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.Black,
                             unfocusedTextColor = Color.Black,
-                            focusedBorderColor = colorResource(id = R.color.RojoP)
+                            focusedBorderColor = colorResource(id = R.color.rojoPrincipal)
                         )
                     )
 
@@ -243,7 +243,7 @@ fun RegisterScreen(
                         onClick = { viewModel.register() },
                         modifier = Modifier.fillMaxWidth().height(52.dp),
                         enabled = !uiState.isLoading,
-                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.RojoP))
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.rojoPrincipal))
                     ) {
                         if (uiState.isLoading) {
                             CircularProgressIndicator(modifier = Modifier.size(24.dp), color = colorResource(R.color.rojoFlojito))
