@@ -5,11 +5,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.s25am.todotransporte.database.SupabaseClient
-import com.s25am.todotransporte.database.data.PosicionBus
 import com.s25am.todotransporte.database.data.Calendario
 import com.s25am.todotransporte.database.data.Horario
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
+import com.s25am.todotransporte.database.data.PosicionBus
 import com.s25am.todotransporte.database.data.RespuestaParada
 import com.s25am.todotransporte.database.data.RutaGeometria
 import io.github.jan.supabase.postgrest.from
