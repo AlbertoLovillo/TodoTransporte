@@ -16,9 +16,9 @@ import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotation
 import com.s25am.todotransporte.R
-import com.s25am.todotransporte.database.data.PosicionBus
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
+import com.s25am.todotransporte.database.data.PosicionBus
 import android.graphics.Color as AndroidColor
 
 @OptIn(MapboxExperimental::class)

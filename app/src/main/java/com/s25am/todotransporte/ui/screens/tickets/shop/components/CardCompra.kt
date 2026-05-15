@@ -130,7 +130,6 @@ fun CardCompra(
             }
         },
         backSide = {
-            // --- EL DISEÑO NUEVO (Cara B) ---
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 shape = RoundedCornerShape(16.dp),

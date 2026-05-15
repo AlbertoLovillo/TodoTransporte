@@ -1,9 +1,9 @@
 package com.s25am.todotransporte.ui.screens.schedule
 
-import com.s25am.todotransporte.database.data.PosicionBus
 import com.s25am.todotransporte.database.data.Horario
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
+import com.s25am.todotransporte.database.data.PosicionBus
 
 data class ScheduleUiState(
     val lineas: List<Linea> = emptyList(),
