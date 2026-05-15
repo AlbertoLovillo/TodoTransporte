@@ -80,7 +80,6 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    var passwordVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
 
@@ -194,12 +193,12 @@ fun LoginScreen(
                         value = uiState.password,
                         onValueChange = { viewModel.updatePassword(it) },
                         label = { Text("Contraseña") },
-                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        visualTransformation = if (uiState.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         trailingIcon = {
-                            val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            val image = if (uiState.passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                            IconButton(onClick = { viewModel.updatePasswordVisible(!uiState.passwordVisible) }) {
                                 Icon(imageVector = image, contentDescription = null, tint = colorResource(id = R.color.rojoPrincipal))
                             }
                         },

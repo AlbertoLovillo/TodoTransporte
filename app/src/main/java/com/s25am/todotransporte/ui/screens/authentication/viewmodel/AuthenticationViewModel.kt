@@ -39,6 +39,15 @@ class AuthenticationViewModel : ViewModel() {
         _uiState.update { it.copy(repeatedPassword = value) }
     }
 
+    fun updatePasswordVisible(value: Boolean) {
+        _uiState.update { it.copy(passwordVisible = value) }
+    }
+
+    fun updateRepeatedPasswordVisible(value: Boolean) {
+        _uiState.update { it.copy(repeatedPasswordVisible = value) }
+    }
+
+
     fun register() {
         Log.d(TAG, "register: Iniciando proceso de registro...")
 
@@ -120,6 +129,7 @@ class AuthenticationViewModel : ViewModel() {
             }
         }
     }
+
 
     fun login() {
         Log.d(TAG, "login: Iniciando proceso de login...")
