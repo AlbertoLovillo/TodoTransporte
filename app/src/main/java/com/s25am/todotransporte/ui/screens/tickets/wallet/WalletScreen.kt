@@ -32,10 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -72,13 +69,10 @@ fun WalletScreen(
     val uiState by viewModel.uiState.collectAsState()
 
 
-    var billeteSeleccionadoId by remember { mutableStateOf<String?>(null) }
-
-
-    billeteSeleccionadoId?.let { id ->
+    uiState.billeteSeleccionadoId?.let { id ->
         QrDialog(
             ticketId = id,
-            onDismiss = { billeteSeleccionadoId = null }
+            onDismiss = { viewModel.updateBilleteSeleccionadoId(null) }
         )
     }
     Box(
@@ -199,7 +193,7 @@ fun WalletScreen(
             items(uiState.listaBilletes, key = { it.id }) { billete ->
                 SwipeableTicketItem(
                     ticket = billete,
-                    onQrClick = { billeteSeleccionadoId = billete.id },
+                    onQrClick = { viewModel.updateBilleteSeleccionadoId(billete.id) },
                     onDeleteConfirm = { viewModel.deleteTicket(billete) }
                 )
             }

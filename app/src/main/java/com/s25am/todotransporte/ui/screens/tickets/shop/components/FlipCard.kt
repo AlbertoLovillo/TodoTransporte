@@ -27,7 +27,6 @@ fun FlipCard(
     backSide: @Composable () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Animación del ángulo
     val rotation by animateFloatAsState(
         targetValue = if (isRotated) 180f else 0f,
         animationSpec = tween(
@@ -43,7 +42,7 @@ fun FlipCard(
             .height(160.dp)
             .graphicsLayer {
                 rotationY = rotation
-                cameraDistance = 15f * density // Efecto 3D realista
+                cameraDistance = 15f * density
             }
             .clickable { onToggleRotation() },
         shape = RoundedCornerShape(16.dp),
@@ -58,7 +57,6 @@ fun FlipCard(
                 frontSide()
                 }
             } else {
-                // Cara trasera (la giramos 180 para que el texto no salga al revés)
                 Box(
                     Modifier
                         .fillMaxSize()

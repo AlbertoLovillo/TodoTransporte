@@ -44,7 +44,7 @@ import com.s25am.todotransporte.ui.theme.Negro
 fun CardCompra(
     opcion: Billete,
     onBuyClick: () -> Unit,
-    onVerMapa: (String) -> Unit // Para que el botón de atrás funcione
+    onVerMapa: (String) -> Unit
 ) {
     var isRotated by remember { mutableStateOf(false) }
 
@@ -53,7 +53,6 @@ fun CardCompra(
         onToggleRotation = { isRotated = !isRotated },
         modifier = Modifier.fillMaxWidth(),
         frontSide = {
-            // --- DISEÑO OPTIMIZADO (Cara A) ---
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 shape = RoundedCornerShape(16.dp),

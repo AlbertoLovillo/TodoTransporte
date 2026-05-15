@@ -24,9 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,7 +55,6 @@ fun ShopScreen(
     }
 
     val uiState by viewModel.uiState.collectAsState()
-    var searchText by remember { mutableStateOf("") }
 
     if (uiState.mostrarErrorSaldo) {
         SaldoInsuficienteDialog(
@@ -71,12 +68,12 @@ fun ShopScreen(
         sdf.format(Calendar.getInstance().time)
     }
 
-    val lineasFiltradas = remember(uiState.lineas, searchText) {
+    val lineasFiltradas = remember(uiState.lineas, uiState.searchText) {
         uiState.lineas.filter { linea ->
             val esLineaPermitida = linea.codigo != "91" && linea.codigo != "92" && linea.codigo != "93"
 
             val tituloGenerado = "Billete Línea ${linea.codigo}"
-            val coincideBusqueda = tituloGenerado.contains(searchText, ignoreCase = true)
+            val coincideBusqueda = tituloGenerado.contains(uiState.searchText, ignoreCase = true)
 
             esLineaPermitida && coincideBusqueda
         }
@@ -112,8 +109,8 @@ fun ShopScreen(
             }
 
             TicketSearchBar(
-                query = searchText,
-                onQueryChange = { searchText = it }
+                query = uiState.searchText,
+                onQueryChange = { viewModel.updateSearchText(it) }
             )
 
             LazyColumn(

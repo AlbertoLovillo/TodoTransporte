@@ -31,10 +31,9 @@ fun SaldoInsuficienteDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = Color.White, // Fondo blanco puro
-        shape = RoundedCornerShape(28.dp), // Esquinas muy redondeadas modernas
+        containerColor = Color.White,
+        shape = RoundedCornerShape(28.dp),
         icon = {
-            // Icono de error en la parte superior para que sea más visual
             Icon(
                 imageVector = Icons.Default.ErrorOutline,
                 contentDescription = null,

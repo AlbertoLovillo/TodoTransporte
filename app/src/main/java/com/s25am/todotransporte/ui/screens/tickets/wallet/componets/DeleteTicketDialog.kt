@@ -58,7 +58,6 @@ fun DeleteTicketDialog(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)
                 )
 
-                // CONTENEDOR DEL BOTÓN
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
@@ -86,7 +85,7 @@ fun DeleteTicketDialog(
                             )
                         }
                 ) {
-                    // 1. EL ANILLO DE CARGA
+
                     CircularProgressIndicator(
                         progress = { animatedProgress },
                         modifier = Modifier.size(100.dp),
@@ -96,7 +95,6 @@ fun DeleteTicketDialog(
                         strokeCap = StrokeCap.Round
                     )
 
-                    // 2. EL CÍRCULO CENTRAL
                     Box(
                         modifier = Modifier
                             .size(75.dp)

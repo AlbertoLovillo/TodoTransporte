@@ -22,6 +22,15 @@ class TicketsViewModel: ViewModel() {
 
 
 
+    fun updateBilleteSeleccionadoId(id: String?) {
+        _uiState.update { it.copy(billeteSeleccionadoId = id) }
+    }
+
+    fun updateSearchText(text: String) {
+        _uiState.update { it.copy(searchText = text) }
+    }
+
+
     init {
         cargarLineas()
     }
