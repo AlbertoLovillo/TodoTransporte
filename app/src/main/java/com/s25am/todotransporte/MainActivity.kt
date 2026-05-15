@@ -9,6 +9,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.rememberNavBackStack
 import com.s25am.todotransporte.navigation.AppNavigation
@@ -17,9 +19,14 @@ import com.s25am.todotransporte.ui.components.MainNavigationBar
 import com.s25am.todotransporte.ui.components.MainTopBar
 import com.s25am.todotransporte.ui.screens.tickets.TicketsViewModel
 import com.s25am.todotransporte.ui.theme.TodoTransporteTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        installSplashScreen()//Pantalla de carga
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
@@ -29,7 +36,7 @@ class MainActivity : ComponentActivity() {
                 val walletViewModel: TicketsViewModel = viewModel()
                 val walletUiState by walletViewModel.uiState.collectAsState()
 
-                val backStack = rememberNavBackStack(Routes.Login)
+                val backStack = rememberNavBackStack(Routes.SplashScreen)
                 val currentRoute = backStack.lastOrNull()
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),

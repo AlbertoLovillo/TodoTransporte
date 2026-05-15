@@ -28,7 +28,8 @@ fun MainTopBar(
     onBack: () -> Unit
 ) {
 
-    if (currentRoute != Routes.Login && currentRoute != Routes.Register) {
+    if (currentRoute != Routes.Login && currentRoute != Routes.Register &&
+        currentRoute != Routes.SplashScreen) {
         val titleText = when (currentRoute) {
             is Routes.SalePoint -> "Puntos de Venta"
             is Routes.Schedule -> "Horarios"

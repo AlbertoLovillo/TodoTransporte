@@ -135,7 +135,7 @@ fun SalePointsDialog(
                     ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Entendido", fontWeight = FontWeight.Bold)
+                    Text("Cerrar", fontWeight = FontWeight.Bold, color = Color.White)
                 }
             }
         )
