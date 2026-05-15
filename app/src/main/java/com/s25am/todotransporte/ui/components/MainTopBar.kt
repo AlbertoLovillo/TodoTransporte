@@ -31,11 +31,11 @@ fun MainTopBar(
     if (currentRoute != Routes.Login && currentRoute != Routes.Register &&
         currentRoute != Routes.SplashScreen) {
         val titleText = when (currentRoute) {
-            is Routes.SalePoint -> "Puntos de Venta"
-            is Routes.Schedule -> "Horarios"
-            is Routes.Maps -> "Mapa de Líneas"
-            is Routes.Wallet -> "Mi Cartera"
-            is Routes.Shop -> "Compra de Billetes"
+            is Routes.PuntosVenta -> "Puntos de Venta"
+            is Routes.Horario -> "Horarios"
+            is Routes.MapaBus -> "Mapa de Líneas"
+            is Routes.Cartera -> "Mi Cartera"
+            is Routes.Tienda -> "Compra de Billetes"
             else -> "TodoTransporte"
         }
 
@@ -59,7 +59,7 @@ fun MainTopBar(
                 }
             },
             actions = {
-                if (currentRoute == Routes.Shop) {
+                if (currentRoute == Routes.Tienda) {
                     Text(
                         text = "${String.format("%.2f", saldo)} €",
                         modifier = Modifier.padding(end = 16.dp),

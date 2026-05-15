@@ -11,17 +11,17 @@ sealed class Routes : NavKey {
     data object Register : Routes()
 
     @Serializable
-    data object Maps : Routes()
+    data object MapaBus : Routes()
 
     @Serializable
-    data object Schedule : Routes()
+    data object Horario : Routes()
 
     @Serializable
-    data object Wallet : Routes()
+    data object Cartera : Routes()
     @Serializable
-    data object SalePoint : Routes()
+    data object PuntosVenta : Routes()
     @Serializable
-    data object Shop : Routes()
+    data object Tienda : Routes()
     @Serializable
     data object SplashScreen: Routes()
 }

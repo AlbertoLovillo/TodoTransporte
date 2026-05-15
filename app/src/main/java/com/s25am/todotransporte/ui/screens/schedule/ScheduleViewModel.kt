@@ -3,7 +3,7 @@ package com.s25am.todotransporte.ui.screens.schedule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.s25am.todotransporte.database.SupabaseClient
-import com.s25am.todotransporte.database.data.BusPosition
+import com.s25am.todotransporte.database.data.PosicionBus
 import com.s25am.todotransporte.database.data.Calendario
 import com.s25am.todotransporte.database.data.Horario
 import com.s25am.todotransporte.database.data.Linea
@@ -66,7 +66,7 @@ class ScheduleViewModel : ViewModel() {
             val todosLosBuses = lineasCsv.mapNotNull { linea ->
                 val datos = linea.replace("\"", "").split(",")
                 if (datos.size >= 7) {
-                    BusPosition(
+                    PosicionBus(
                         codBus = datos[0],
                         codLinea = datos[1],
                         sentido = datos[2].toIntOrNull() ?: 1,
@@ -102,7 +102,7 @@ class ScheduleViewModel : ViewModel() {
     /**
      * Tiempo real: Calcula qué paradas tienen un bus a menos de X metros.
      */
-    private fun actualizarParadasCercanas(buses: List<BusPosition>) {
+    private fun actualizarParadasCercanas(buses: List<PosicionBus>) {
         val paradasActuales = _uiState.value.paradas
         val paradasConBus = mutableSetOf<Int>()
 

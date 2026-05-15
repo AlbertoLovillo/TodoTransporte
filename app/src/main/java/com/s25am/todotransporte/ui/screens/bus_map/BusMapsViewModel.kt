@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.s25am.todotransporte.database.SupabaseClient
-import com.s25am.todotransporte.database.data.BusPosition
+import com.s25am.todotransporte.database.data.PosicionBus
 import com.s25am.todotransporte.database.data.Calendario
 import com.s25am.todotransporte.database.data.Horario
 import com.s25am.todotransporte.database.data.Linea
@@ -75,7 +75,7 @@ class BusMapsViewModel : ViewModel() {
                     // Limpiamos la línea aquí mismo quitando espacios y el ".0" final si existe
                     val lineaLimpia = datos[1].trim().removeSuffix(".0")
 
-                    BusPosition(
+                    PosicionBus(
                         codBus = datos[0].trim(),
                         codLinea = lineaLimpia,  // ¡Usamos la línea ya limpia!
                         sentido = datos[2].trim().toIntOrNull() ?: 1,

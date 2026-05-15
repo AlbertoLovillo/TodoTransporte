@@ -40,8 +40,8 @@ fun MainNavigationBar(
         ) {
 
             NavigationBarItem(
-                selected = currentRoute == Routes.SalePoint,
-                onClick = { onNavigate(Routes.SalePoint) },
+                selected = currentRoute == Routes.PuntosVenta,
+                onClick = { onNavigate(Routes.PuntosVenta) },
                 icon = { Icon(Icons.Default.Storefront, contentDescription = "Puntos de Venta") },
 //                label = { Text("Puntos venta") },
                 colors = NavigationBarItemDefaults.colors(
@@ -53,8 +53,8 @@ fun MainNavigationBar(
 
             // Ítem: HORARIOS
             NavigationBarItem(
-                selected = currentRoute == Routes.Schedule,
-                onClick = { onNavigate(Routes.Schedule) },
+                selected = currentRoute == Routes.Horario,
+                onClick = { onNavigate(Routes.Horario) },
                 icon = { Icon(Icons.Default.DateRange, contentDescription = "Horarios") },
 //                label = { Text("Horarios") },
                 colors = NavigationBarItemDefaults.colors(
@@ -66,8 +66,8 @@ fun MainNavigationBar(
 
             // Ítem: MAPA
             NavigationBarItem(
-                selected = currentRoute == Routes.Maps,
-                onClick = { onNavigate(Routes.Maps) },
+                selected = currentRoute == Routes.MapaBus,
+                onClick = { onNavigate(Routes.MapaBus) },
                 icon = { Icon(Icons.Default.Place, contentDescription = "Mapa de Buses") },
 //                label = { Text("Mapa") },
                 colors = NavigationBarItemDefaults.colors(
@@ -79,8 +79,8 @@ fun MainNavigationBar(
 
             // Ítem: CARTERA
             NavigationBarItem(
-                selected = currentRoute == Routes.Wallet,
-                onClick = { onNavigate(Routes.Wallet) },
+                selected = currentRoute == Routes.Cartera,
+                onClick = { onNavigate(Routes.Cartera) },
                 icon = { Icon(Icons.Default.AccountBalanceWallet, contentDescription = "Cartera") },
 //                label = { Text("Cartera") },
                 colors = NavigationBarItemDefaults.colors(
@@ -92,8 +92,8 @@ fun MainNavigationBar(
 
             // Ítem: COMPRAR
             NavigationBarItem(
-                selected = currentRoute == Routes.Shop, // Tu nueva ruta
-                onClick = { onNavigate(Routes.Shop) },
+                selected = currentRoute == Routes.Tienda, // Tu nueva ruta
+                onClick = { onNavigate(Routes.Tienda) },
                 icon = {
                     Icon(Icons.Default.AddShoppingCart, contentDescription = "Tienda")
                 },
@@ -115,7 +115,7 @@ fun MainNavigationBarPreview() {
         Scaffold(
             bottomBar = {
                 MainNavigationBar(
-                    currentRoute = Routes.Maps,
+                    currentRoute = Routes.MapaBus,
                     onNavigate = {}
                 )
             }

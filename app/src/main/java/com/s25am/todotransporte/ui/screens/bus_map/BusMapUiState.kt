@@ -1,6 +1,6 @@
 package com.s25am.todotransporte.ui.screens.bus_map
 
-import com.s25am.todotransporte.database.data.BusPosition
+import com.s25am.todotransporte.database.data.PosicionBus
 import com.s25am.todotransporte.database.data.Horario
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
@@ -15,5 +15,5 @@ data class BusMapsUiState(
     val direccionActual: Int = 0,
     val rutaGeojsonActual: String? = null,
     val destino: String? = null,
-    val busesEnTiempoReal: List<BusPosition> = emptyList()
+    val busesEnTiempoReal: List<PosicionBus> = emptyList()
 )

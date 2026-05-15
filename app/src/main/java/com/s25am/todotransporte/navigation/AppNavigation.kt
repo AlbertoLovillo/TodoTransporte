@@ -35,21 +35,19 @@ fun AppNavigation(
 
                 entry<Routes.SplashScreen> {
                     AnimatedSplashScreen(onNavigationNext = {
-                        // Cuando termina el bus, limpiamos el backStack y vamos al Login
                         while (backStack.isNotEmpty()) {
                             backStack.removeLastOrNull()
                         }
                         backStack.add(Routes.Login)
                     })
                 }
+
                 entry<Routes.Login> {
                     LoginScreen(
                         onNavigateToRegister = { backStack.add(Routes.Register) },
                         onLoginSuccess = {
-                            while (backStack.isNotEmpty()) {
-                                backStack.removeLastOrNull()
-                            }
-                            backStack.add(Routes.Maps)
+                            while (backStack.isNotEmpty()) { backStack.removeLastOrNull() }
+                            backStack.add(Routes.MapaBus)
                         }
                     )
                 }
@@ -64,32 +62,30 @@ fun AppNavigation(
                             while (backStack.isNotEmpty()) {
                                 backStack.removeLastOrNull()
                             }
-                            backStack.add(Routes.Maps)
+                            backStack.add(Routes.MapaBus)
                         }
                     )
                 }
 
-                entry<Routes.Maps> {
+                entry<Routes.MapaBus> {
                     MapsScreen(ticketsViewModel = ticketsViewModel)
                 }
 
-                entry<Routes.Schedule> {
+                entry<Routes.Horario> {
                     ScheduleScreen()
                 }
 
-                entry<Routes.Wallet> {
+                entry<Routes.Cartera> {
                     WalletScreen(viewModel = ticketsViewModel)
                 }
-                entry<Routes.SalePoint> {
+                entry<Routes.PuntosVenta> {
                     SalePointScreen()
                 }
-                entry<Routes.Shop> {
+                entry<Routes.Tienda> {
                     ShopScreen(
                         viewModel = ticketsViewModel,
-                        onBack = {
-                            backStack.add(Routes.Wallet)
-                        },
-                        onNavigateToMaps = {backStack.add(Routes.Maps)}
+                        onBack = { backStack.add(Routes.Cartera) },
+                        onNavigateToMaps = {backStack.add(Routes.MapaBus)}
                     )
                 }
             }
