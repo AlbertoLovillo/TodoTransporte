@@ -71,9 +71,15 @@ fun ShopScreen(
         sdf.format(Calendar.getInstance().time)
     }
 
-    val lineasFiltradas = uiState.lineas.filter { linea ->
-        val tituloGenerado = "Billete Línea ${linea.codigo}"
-        tituloGenerado.contains(searchText, ignoreCase = true)
+    val lineasFiltradas = remember(uiState.lineas, searchText) {
+        uiState.lineas.filter { linea ->
+            val esLineaPermitida = linea.codigo != "91" && linea.codigo != "92" && linea.codigo != "93"
+
+            val tituloGenerado = "Billete Línea ${linea.codigo}"
+            val coincideBusqueda = tituloGenerado.contains(searchText, ignoreCase = true)
+
+            esLineaPermitida && coincideBusqueda
+        }
     }
 
 

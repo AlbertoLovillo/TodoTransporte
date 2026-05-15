@@ -106,7 +106,16 @@ fun StopsList(
             IconButton(
                 onClick = {
                     rotacionTarget += 360f
-                    onAlternarDireccion()
+                    if (lineaSeleccionada?.codigo != "29" &&
+                        lineaSeleccionada?.codigo != "N2" &&
+                        lineaSeleccionada?.codigo != "C5" &&
+                        lineaSeleccionada?.codigo != "C1" &&
+                        lineaSeleccionada?.codigo != "C2" &&
+                        lineaSeleccionada?.codigo != "C3" &&
+                        lineaSeleccionada?.codigo != "C6"
+                    ) {
+                        onAlternarDireccion()
+                    }
                 },
                 modifier = Modifier
                     .padding(end = 12.dp)
@@ -122,14 +131,20 @@ fun StopsList(
             }
 
 
+            val lineasFiltradas = remember(lineas) {
+                lineas.filter {
+                    it.codigo != "91" && it.codigo != "92" && it.codigo != "93"
+                }
+            }
+
             HorizontalMultiBrowseCarousel(
-                state = rememberCarouselState { lineas.count() },
+                state = rememberCarouselState { lineasFiltradas.count() },
                 modifier = Modifier.weight(1f),
                 preferredItemWidth = 50.dp,
                 itemSpacing = 10.dp,
                 contentPadding = PaddingValues(end = 16.dp)
             ) { index ->
-                val linea = lineas[index]
+                val linea = lineasFiltradas[index]
 
                 LineListButtom(
                     linea = linea,
