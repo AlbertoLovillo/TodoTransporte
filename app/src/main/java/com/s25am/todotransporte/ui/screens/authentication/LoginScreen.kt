@@ -68,7 +68,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-import com.mapbox.maps.extension.style.expressions.dsl.generated.color
 import com.s25am.todotransporte.R
 import com.s25am.todotransporte.ui.screens.authentication.viewmodel.AuthenticationViewModel
 
@@ -137,7 +136,7 @@ fun LoginScreen(
                     .verticalScroll(rememberScrollState()),
                 shape = MaterialTheme.shapes.large,
                 elevation = CardDefaults.cardElevation(12.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.95f))
+                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.9f))
             ) {
 
                 Column(
@@ -233,14 +232,6 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-
-//                    TextButton(onClick = onNavigateToRegister) {
-//                        Text(
-//                            text = "¿No tienes cuenta? Regístrate",
-//                            style = TextStyle(textDecoration = TextDecoration.Underline),
-//                            color = colorResource(id = R.color.rojoFlojito)
-//                        )
-//                    }
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically

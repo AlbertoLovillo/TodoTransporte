@@ -137,7 +137,7 @@ fun RegisterScreen(
                     .verticalScroll(rememberScrollState()),
                 shape = MaterialTheme.shapes.large,
                 elevation = CardDefaults.cardElevation(12.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.95f))
+                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.9f))
             ) {
 
                 Column(
@@ -257,14 +257,6 @@ fun RegisterScreen(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-
-//                    TextButton(onClick = onNavigateToLogin) {
-//                        Text(
-//                            text = "¿Ya tienes cuenta? Inicia sesión",
-//                            style = TextStyle(textDecoration = TextDecoration.Underline),
-//                            color = colorResource(id = R.color.rojoFlojito)
-//                        )
-//                    }
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically
