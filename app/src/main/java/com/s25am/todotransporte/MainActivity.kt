@@ -4,13 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.lifecycleScope
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.rememberNavBackStack
 import com.s25am.todotransporte.navigation.AppNavigation
@@ -25,7 +25,6 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        installSplashScreen()//Pantalla de carga
 
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -41,28 +40,39 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
-                        MainTopBar(
-                            currentRoute = currentRoute,
-                            canNavigateBack = backStack.size > 1,
-                            saldo = walletUiState.saldo,
-                            onBack = { backStack.removeLastOrNull() }
-                        )
+                        if (currentRoute != Routes.SplashScreen) {
+                            MainTopBar(
+                                currentRoute = currentRoute,
+                                canNavigateBack = backStack.size > 1,
+                                saldo = walletUiState.saldo,
+                                onBack = { backStack.removeLastOrNull() }
+                            )
+                        }
                     },
                     bottomBar = {
-                        MainNavigationBar(
-                            currentRoute = currentRoute,
-                            onNavigate = { route ->
-                                if (currentRoute != route) {
-                                    // TODO: Forzamos al backStack a aceptar el objeto directamente Esto hay que revisarlo errores raros
-                                    (backStack as androidx.navigation3.runtime.NavBackStack<Any>).add(route)
+                        if (currentRoute != Routes.SplashScreen) {
+                            MainNavigationBar(
+                                currentRoute = currentRoute,
+                                onNavigate = { route ->
+                                    if (currentRoute != route) {
+                                        // TODO: Forzamos al backStack a aceptar el objeto directamente Esto hay que revisarlo errores raros
+                                        (backStack as androidx.navigation3.runtime.NavBackStack<Any>).add(
+                                            route
+                                        )
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 ) { innerPadding ->
+                    val paddingToUse = if (currentRoute == Routes.SplashScreen) {
+                        PaddingValues(0.dp)
+                    } else {
+                        innerPadding
+                    }
                     // Pasamos el padding aquí para que el contenido no se tape
                     AppNavigation(
-                        padding = innerPadding,
+                        padding = paddingToUse,
                         backStack = backStack,
                         ticketsViewModel = walletViewModel
                     )
