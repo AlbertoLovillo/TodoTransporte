@@ -84,13 +84,13 @@ fun StopsList(
                     Text(
                         text = "Cargando líneas...",
                         style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary
+                        color = colorResource(id = R.color.rojoPrincipal)
                     )
                 } else {
                     Text(
                         text = "Sentido: $textoSentido",
                         style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary
+                        color = colorResource(id = R.color.rojoPrincipal)
                     )
                 }
             }

@@ -95,14 +95,14 @@ fun ShopScreen(
                     .padding(horizontal = 20.dp, vertical = 8.dp)
             ) {
                 Text(
-                    "Pase de Viaje",
+                    text = "Pase de Viaje",
                     style = MaterialTheme.typography.headlineSmall.copy(
                         fontWeight = FontWeight.ExtraBold,
                         color = Color.Black
                     )
                 )
                 Text(
-                    "Málaga, $fechaHoy",
+                    text = "Málaga, $fechaHoy",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
@@ -120,7 +120,7 @@ fun ShopScreen(
             ) {
                 item {
                     Text(
-                        "Selecciona tu tarifa",
+                        text = "Selecciona tu tarifa",
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.Gray
                     )
@@ -178,7 +178,7 @@ fun ShopScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            "Los billetes comprados aparecerán automáticamente en tu cartera.",
+                            text = "Los billetes comprados aparecerán automáticamente en tu cartera.",
                             style = MaterialTheme.typography.bodySmall,
                             color = Color.Black
                         )
