@@ -16,9 +16,9 @@ import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotation
 import com.mapbox.maps.extension.compose.annotation.generated.PolylineAnnotation
 import com.s25am.todotransporte.R
-import com.s25am.todotransporte.database.data.BusPosition
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
+import com.s25am.todotransporte.database.data.PosicionBus
 import android.graphics.Color as AndroidColor
 
 @OptIn(MapboxExperimental::class)
@@ -28,7 +28,7 @@ fun BusMap(
     lineaSeleccionada: Linea?,
     rutaGeojson: String?,
     paradas: List<Parada>,
-    busesEnTiempoReal: List<BusPosition>,
+    busesEnTiempoReal: List<PosicionBus>,
     ubicacionUsuario: Location?,
     onParadaClick: (Parada) -> Unit
 ) {
@@ -60,7 +60,7 @@ fun BusMap(
         }
 
         paradas.forEach { parada ->
-            val colorLinea = colorResource(id = R.color.RojoP).toArgb()
+            val colorLinea = colorResource(id = R.color.rojoPrincipal).toArgb()
             CircleAnnotation(
                 point = Point.fromLngLat(parada.longitud, parada.latitud),
                 circleRadius = 5.0,

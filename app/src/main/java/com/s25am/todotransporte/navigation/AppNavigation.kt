@@ -9,10 +9,10 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import com.s25am.todotransporte.ui.screens.SplashScreen.AnimatedSplashScreen
+import com.s25am.todotransporte.ui.components.AnimatedSplashScreen
 import com.s25am.todotransporte.ui.screens.authentication.LoginScreen
 import com.s25am.todotransporte.ui.screens.authentication.RegisterScreen
-import com.s25am.todotransporte.ui.screens.bus_map.MapsScreen
+import com.s25am.todotransporte.ui.screens.bus_map.BusMapScreen
 import com.s25am.todotransporte.ui.screens.sale_point.SalePointScreen
 import com.s25am.todotransporte.ui.screens.schedule.ScheduleScreen
 import com.s25am.todotransporte.ui.screens.tickets.TicketsViewModel
@@ -35,21 +35,19 @@ fun AppNavigation(
 
                 entry<Routes.SplashScreen> {
                     AnimatedSplashScreen(onNavigationNext = {
-                        // Cuando termina el bus, limpiamos el backStack y vamos al Login
                         while (backStack.isNotEmpty()) {
                             backStack.removeLastOrNull()
                         }
                         backStack.add(Routes.Login)
                     })
                 }
+
                 entry<Routes.Login> {
                     LoginScreen(
                         onNavigateToRegister = { backStack.add(Routes.Register) },
                         onLoginSuccess = {
-                            while (backStack.isNotEmpty()) {
-                                backStack.removeLastOrNull()
-                            }
-                            backStack.add(Routes.Maps)
+                            while (backStack.isNotEmpty()) { backStack.removeLastOrNull() }
+                            backStack.add(Routes.BusMap)
                         }
                     )
                 }
@@ -64,13 +62,13 @@ fun AppNavigation(
                             while (backStack.isNotEmpty()) {
                                 backStack.removeLastOrNull()
                             }
-                            backStack.add(Routes.Maps)
+                            backStack.add(Routes.BusMap)
                         }
                     )
                 }
 
-                entry<Routes.Maps> {
-                    MapsScreen(ticketsViewModel = ticketsViewModel)
+                entry<Routes.BusMap> {
+                    BusMapScreen(ticketsViewModel = ticketsViewModel)
                 }
 
                 entry<Routes.Schedule> {
@@ -86,10 +84,8 @@ fun AppNavigation(
                 entry<Routes.Shop> {
                     ShopScreen(
                         viewModel = ticketsViewModel,
-                        onBack = {
-                            backStack.add(Routes.Wallet)
-                        },
-                        onNavigateToMaps = {backStack.add(Routes.Maps)}
+                        onBack = { backStack.add(Routes.Wallet) },
+                        onNavigateToMaps = {backStack.add(Routes.BusMap)}
                     )
                 }
             }

@@ -43,7 +43,7 @@ fun TicketItem(ticket: Billete, onQrClick: () -> Unit) {
             Icon(
                 imageVector = Icons.Default.ConfirmationNumber,
                 contentDescription = null,
-                tint = colorResource(id = R.color.RojoP),
+                tint = colorResource(id = R.color.rojoPrincipal),
                 modifier = Modifier.size(32.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
@@ -55,7 +55,7 @@ fun TicketItem(ticket: Billete, onQrClick: () -> Unit) {
                     color = Color.Black
                 )
                 Text(text = ticket.trayecto, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
-                Text(text = ticket.fecha, style = MaterialTheme.typography.bodyMedium, color = colorResource(id = R.color.RojoP))
+                Text(text = ticket.fecha, style = MaterialTheme.typography.bodyMedium, color = colorResource(id = R.color.rojoPrincipal))
             }
             IconButton(onClick = onQrClick) {
                 Icon(Icons.Default.QrCode, contentDescription = "Ver QR", tint = Color.Black)

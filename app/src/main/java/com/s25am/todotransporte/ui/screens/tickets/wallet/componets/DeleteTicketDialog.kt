@@ -3,13 +3,27 @@ package com.s25am.todotransporte.ui.screens.tickets.wallet.componets
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,7 +58,7 @@ fun DeleteTicketDialog(
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
-                color = colorResource(R.color.RojoP),
+                color = colorResource(R.color.rojoPrincipal),
                 modifier = Modifier.fillMaxWidth()
             )
         },
@@ -58,7 +72,6 @@ fun DeleteTicketDialog(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)
                 )
 
-                // CONTENEDOR DEL BOTÓN
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
@@ -86,33 +99,32 @@ fun DeleteTicketDialog(
                             )
                         }
                 ) {
-                    // 1. EL ANILLO DE CARGA
+
                     CircularProgressIndicator(
                         progress = { animatedProgress },
                         modifier = Modifier.size(100.dp),
-                        color = colorResource(id = R.color.RojoP),
+                        color = colorResource(id = R.color.rojoPrincipal),
                         strokeWidth = 6.dp,
-                        trackColor = colorResource(id = R.color.FondoGrisClaro),
+                        trackColor = colorResource(id = R.color.fondoGrisClaro),
                         strokeCap = StrokeCap.Round
                     )
 
-                    // 2. EL CÍRCULO CENTRAL
                     Box(
                         modifier = Modifier
                             .size(75.dp)
                             .clip(CircleShape)
                             .background(
                                 if (progress > 0f)
-                                    colorResource(id = R.color.RojoP).copy(alpha = 0.15f)
+                                    colorResource(id = R.color.rojoPrincipal).copy(alpha = 0.15f)
                                 else
-                                    colorResource(id = R.color.FondoGrisClaro)
+                                    colorResource(id = R.color.fondoGrisClaro)
                             ),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = null,
-                            tint = if (progress > 0f) colorResource(id = R.color.RojoP) else Color.DarkGray,
+                            tint = if (progress > 0f) colorResource(id = R.color.rojoPrincipal) else Color.DarkGray,
                             modifier = Modifier.size(32.dp)
                         )
                     }

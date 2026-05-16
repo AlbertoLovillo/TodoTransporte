@@ -52,7 +52,7 @@ fun StopDialog(
                     modifier = Modifier
                         .size(52.dp)
                         .background(
-                            colorResource(id = R.color.RojoP).copy(alpha = 0.1f),
+                            colorResource(id = R.color.rojoPrincipal).copy(alpha = 0.1f),
                             RoundedCornerShape(12.dp)
                         ),
                     contentAlignment = Alignment.Center
@@ -60,7 +60,7 @@ fun StopDialog(
                     Icon(
                         imageVector = Icons.Default.DirectionsBus,
                         contentDescription = null,
-                        tint = colorResource(id = R.color.RojoP),
+                        tint = colorResource(id = R.color.rojoPrincipal),
                         modifier = Modifier.size(30.dp)
                     )
                 }
@@ -99,7 +99,7 @@ fun StopDialog(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .background(
-                                colorResource(id = R.color.FondoGrisClaro),
+                                colorResource(id = R.color.fondoGrisClaro),
                                 RoundedCornerShape(12.dp)
                             )
                             .padding(16.dp)
@@ -109,7 +109,7 @@ fun StopDialog(
                         Icon(
                             imageVector = Icons.Default.AccessTime,
                             contentDescription = null,
-                            tint = colorResource(id = R.color.RojoP),
+                            tint = colorResource(id = R.color.rojoPrincipal),
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -134,7 +134,7 @@ fun StopDialog(
                     onClick = onDismiss,
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(id = R.color.RojoP)
+                        containerColor = colorResource(id = R.color.rojoPrincipal)
                     ),
                     shape = RoundedCornerShape(12.dp)
                 ) {

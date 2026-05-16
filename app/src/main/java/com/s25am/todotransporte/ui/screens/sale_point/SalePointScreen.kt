@@ -72,7 +72,6 @@ fun SalePointScreen(
 
     val context = LocalContext.current
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
-    var ubicacionUsuario by remember { mutableStateOf<Location?>(null) }
 
     val locationRequest = remember {
         LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000L)
@@ -82,7 +81,7 @@ fun SalePointScreen(
     val locationCallback = remember {
         object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
-                ubicacionUsuario = result.lastLocation
+                viewModel.updateUbicacionUsuario(result.lastLocation)
             }
 
             override fun onLocationAvailability(availability: LocationAvailability) {
@@ -98,7 +97,7 @@ fun SalePointScreen(
                 Looper.getMainLooper()
             )
         } catch (e: SecurityException) {
-            ubicacionUsuario = null
+            viewModel.updateUbicacionUsuario(null)
         }
     }
 
@@ -109,7 +108,7 @@ fun SalePointScreen(
                     val lm = context?.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
                     val isEnabled = lm?.isProviderEnabled(LocationManager.GPS_PROVIDER) == true ||
                             lm?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) == true
-                    if (isEnabled) startLocationUpdates() else ubicacionUsuario = null
+                    if (isEnabled) startLocationUpdates() else viewModel.updateUbicacionUsuario(null)
                 }
             }
         }
@@ -142,7 +141,7 @@ fun SalePointScreen(
 
     SalePointContent(
         uiState = uiState,
-        ubicacionUsuario = ubicacionUsuario,
+        ubicacionUsuario = uiState.ubicacionUsuario,
         onPuntoClick = { punto -> viewModel.seleccionarPunto(punto) },
         onCerrarDialogo = { viewModel.cerrarDialogo() }
     )
@@ -173,7 +172,6 @@ fun SalePointContent(
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (mapaListo) {
-            // Le pasamos solo los datos necesarios y el evento click
             SalePointsMap(
                 estadoCamara = estadoCamara,
                 puntosVenta = uiState.puntosVenta,
@@ -203,7 +201,7 @@ fun SalePointContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Surface(
-                    color = colorResource(id = R.color.RojoP).copy(alpha = 0.1f),
+                    color = colorResource(id = R.color.rojoPrincipal).copy(alpha = 0.1f),
                     shape = CircleShape,
                     modifier = Modifier.size(36.dp)
                 ) {
@@ -211,7 +209,7 @@ fun SalePointContent(
                         Icon(
                             imageVector = Icons.Default.Storefront,
                             contentDescription = null,
-                            tint = colorResource(id = R.color.RojoP),
+                            tint = colorResource(id = R.color.rojoPrincipal),
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -234,7 +232,6 @@ fun SalePointContent(
             }
         }
 
-        // Botón Mi Ubicación
         FloatingActionButton(
             onClick = {
                 ubicacionUsuario?.let {
@@ -251,7 +248,7 @@ fun SalePointContent(
                 .align(Alignment.BottomEnd)
                 .padding(bottom = 16.dp, end = 16.dp),
             containerColor = Color.White,
-            contentColor = colorResource(id = R.color.RojoP),
+            contentColor = colorResource(id = R.color.rojoPrincipal),
             shape = CircleShape
         ) {
             Icon(Icons.Default.MyLocation, contentDescription = "Mi ubicación")

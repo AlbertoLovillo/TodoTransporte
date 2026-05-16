@@ -2,12 +2,22 @@ package com.s25am.todotransporte.ui.screens.schedule.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +53,7 @@ fun ItemParada(
                 modifier = Modifier
                     .size(52.dp)
                     .background(
-                        colorResource(id = R.color.RojoP).copy(alpha = 0.1f),
+                        colorResource(id = R.color.rojoPrincipal).copy(alpha = 0.1f),
                         RoundedCornerShape(12.dp)
                     ),
                 contentAlignment = Alignment.Center
@@ -51,7 +61,7 @@ fun ItemParada(
                 Icon(
                     imageVector = Icons.Default.LocationOn,
                     contentDescription = null,
-                    tint = colorResource(id = R.color.RojoP),
+                    tint = colorResource(id = R.color.rojoPrincipal),
                     modifier = Modifier.size(28.dp)
                 )
             }
@@ -70,7 +80,7 @@ fun ItemParada(
 
             if (proximoBusHora != null) {
                 Surface(
-                    color = colorResource(id = R.color.RojoP).copy(alpha = 0.08f),
+                    color = colorResource(id = R.color.rojoPrincipal).copy(alpha = 0.08f),
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Row(
@@ -80,7 +90,7 @@ fun ItemParada(
                         Icon(
                             imageVector = Icons.Default.AccessTime,
                             contentDescription = null,
-                            tint = colorResource(id = R.color.RojoP),
+                            tint = colorResource(id = R.color.rojoPrincipal),
                             modifier = Modifier.size(14.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
@@ -88,7 +98,7 @@ fun ItemParada(
                             text = proximoBusHora,
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold,
-                            color = colorResource(id = R.color.RojoP)
+                            color = colorResource(id = R.color.rojoPrincipal)
                         )
                     }
                 }

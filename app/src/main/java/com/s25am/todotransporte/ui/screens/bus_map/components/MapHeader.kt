@@ -58,16 +58,14 @@ fun MapHeader(
 
     AnimatedVisibility(
         visible = visible,
-        // 1. ANIMACIÓN DE ENTRADA: Aparece (Fade) + Sube desde arriba (Slide)
         enter = fadeIn(animationSpec = tween(durationMillis = 1000)) +
                 slideInVertically(
-                    initialOffsetY = { -it }, // 'it' es la altura, -it hace que venga desde arriba
+                    initialOffsetY = { -it },
                     animationSpec = tween(durationMillis = 1000)
                 ),
-        // 2. ANIMACIÓN DE SALIDA: Desaparece (Fade) + Baja hacia arriba (Slide)
         exit = fadeOut(animationSpec = tween(durationMillis = 1000)) +
                 slideOutVertically(
-                    targetOffsetY = { -it }, // Se va hacia arriba para despejar el mapa
+                    targetOffsetY = { -it },
                     animationSpec = tween(durationMillis = 1000)
                 ),
         modifier = modifier
@@ -85,9 +83,8 @@ fun MapHeader(
                 modifier = Modifier.padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Círculo con el código de línea
                 Surface(
-                    color = colorResource(id = R.color.RojoP),
+                    color = colorResource(id = R.color.rojoPrincipal),
                     shape = CircleShape,
                     modifier = Modifier.size(45.dp)
                 ) {
@@ -115,9 +112,9 @@ fun MapHeader(
                         style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                         maxLines = 1,
                         softWrap = false,
-                        overflow = TextOverflow.Visible, // CAMBIO 1: Importante para que Marquee tome el control
+                        overflow = TextOverflow.Visible,
                         modifier = Modifier
-                            .fillMaxWidth() // CAMBIO 2: Aseguramos que el texto intente ocupar el espacio
+                            .fillMaxWidth()
                             .basicMarquee(
                                 iterations = Int.MAX_VALUE,
                                 repeatDelayMillis = 0,

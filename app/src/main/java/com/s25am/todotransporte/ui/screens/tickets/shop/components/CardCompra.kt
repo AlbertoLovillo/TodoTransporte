@@ -44,7 +44,7 @@ import com.s25am.todotransporte.ui.theme.Negro
 fun CardCompra(
     opcion: Billete,
     onBuyClick: () -> Unit,
-    onVerMapa: (String) -> Unit // Para que el botón de atrás funcione
+    onVerMapa: (String) -> Unit
 ) {
     var isRotated by remember { mutableStateOf(false) }
 
@@ -53,7 +53,6 @@ fun CardCompra(
         onToggleRotation = { isRotated = !isRotated },
         modifier = Modifier.fillMaxWidth(),
         frontSide = {
-            // --- DISEÑO OPTIMIZADO (Cara A) ---
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 shape = RoundedCornerShape(16.dp),
@@ -69,13 +68,13 @@ fun CardCompra(
                     Box(
                         modifier = Modifier
                             .size(40.dp)
-                            .background(colorResource(id = R.color.RojoP).copy(alpha = 0.1f), RoundedCornerShape(10.dp)),
+                            .background(colorResource(id = R.color.rojoPrincipal).copy(alpha = 0.1f), RoundedCornerShape(10.dp)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             Icons.Default.ConfirmationNumber,
                             contentDescription = null,
-                            tint = colorResource(id = R.color.RojoP),
+                            tint = colorResource(id = R.color.rojoPrincipal),
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -108,7 +107,7 @@ fun CardCompra(
                         Text(
                             opcion.precio,
                             fontWeight = FontWeight.ExtraBold,
-                            color = colorResource(id = R.color.RojoP),
+                            color = colorResource(id = R.color.rojoPrincipal),
                             fontSize = 16.sp
                         )
                     }
@@ -117,7 +116,7 @@ fun CardCompra(
 
                     Button(
                         onClick = onBuyClick,
-                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.RojoP)),
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.rojoPrincipal)),
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
                         shape = RoundedCornerShape(8.dp),
                         modifier = Modifier.height(40.dp)
@@ -131,7 +130,6 @@ fun CardCompra(
             }
         },
         backSide = {
-            // --- EL DISEÑO NUEVO (Cara B) ---
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 shape = RoundedCornerShape(16.dp),
@@ -151,9 +149,9 @@ fun CardCompra(
                         colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Icon(Icons.Default.Map, contentDescription = null, tint = colorResource(id = R.color.RojoP))
+                        Icon(Icons.Default.Map, contentDescription = null, tint = colorResource(id = R.color.rojoPrincipal))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Ver en BusMap", color = colorResource(id = R.color.RojoP))
+                        Text("Ver en BusMap", color = colorResource(id = R.color.rojoPrincipal))
                     }
 
                     Text("Toca para comprar", style = MaterialTheme.typography.labelSmall, color = Color.Gray, modifier = Modifier.padding(top = 8.dp))

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -32,14 +31,13 @@ fun SaldoInsuficienteDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = Color.White, // Fondo blanco puro
-        shape = RoundedCornerShape(28.dp), // Esquinas muy redondeadas modernas
+        containerColor = Color.White,
+        shape = RoundedCornerShape(28.dp),
         icon = {
-            // Icono de error en la parte superior para que sea más visual
             Icon(
                 imageVector = Icons.Default.ErrorOutline,
                 contentDescription = null,
-                tint = colorResource(id = R.color.RojoP),
+                tint = colorResource(id = R.color.rojoPrincipal),
                 modifier = Modifier.size(48.dp)
             )
         },
@@ -78,7 +76,7 @@ fun SaldoInsuficienteDialog(
                 onClick = onDismiss,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(id = R.color.RojoP)
+                    containerColor = colorResource(id = R.color.rojoPrincipal)
                 ),
             ) {
                 Text(

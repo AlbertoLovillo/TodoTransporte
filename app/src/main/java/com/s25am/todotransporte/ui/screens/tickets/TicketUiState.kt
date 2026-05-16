@@ -9,5 +9,7 @@ data class TicketUiState(
     val isLoading: Boolean = false,
     val saldo: Double = 0.0,
     val mostrarErrorSaldo: Boolean = false,
-    val lineaParaVerEnMapa: String? = null
+    val lineaParaVerEnMapa: String? = null,
+    val billeteSeleccionadoId: String? = null,
+    val searchText: String = ""
 )

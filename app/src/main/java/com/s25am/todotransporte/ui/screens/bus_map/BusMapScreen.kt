@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.location.Location
 import android.location.LocationManager
 import android.os.Looper
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -57,14 +56,13 @@ import com.s25am.todotransporte.ui.screens.tickets.TicketsViewModel
 @SuppressLint("MissingPermission")
 @OptIn(MapboxExperimental::class)
 @Composable
-fun MapsScreen(
+fun BusMapScreen(
     viewModel: BusMapsViewModel = viewModel(),
     ticketsViewModel: TicketsViewModel
 ) {
     val context = LocalContext.current
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
 
-    var ubicacionUsuario by remember { mutableStateOf<Location?>(null) }
 
     val locationRequest = remember {
         LocationRequest
@@ -76,7 +74,7 @@ fun MapsScreen(
     val locationCallback = remember {
         object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
-                ubicacionUsuario = result.lastLocation
+                viewModel.updateUbicacionUsuario(result.lastLocation)
             }
 
             override fun onLocationAvailability(availability: LocationAvailability) {
@@ -92,7 +90,7 @@ fun MapsScreen(
                 Looper.getMainLooper()
             )
         } catch (e: SecurityException) {
-            ubicacionUsuario = null
+            viewModel.updateUbicacionUsuario(null)
         }
     }
 
@@ -107,7 +105,7 @@ fun MapsScreen(
                     if (isEnabled) {
                         startLocationUpdates()
                     } else {
-                        ubicacionUsuario = null
+                        viewModel.updateUbicacionUsuario(null)
                     }
                 }
             }
@@ -168,7 +166,7 @@ fun MapsScreen(
                     rutaGeojson = uiState.rutaGeojsonActual,
                     paradas = uiState.paradas,
                     busesEnTiempoReal = uiState.busesEnTiempoReal,
-                    ubicacionUsuario = ubicacionUsuario,
+                    ubicacionUsuario = uiState.ubicacionUsuario,
                     onParadaClick = { parada -> viewModel.mostrarInfoParada(parada) }
                 )
                 MapHeader(
@@ -177,10 +175,9 @@ fun MapsScreen(
                     modifier = Modifier.align(Alignment.TopCenter)
                 )
 
-                // Botón Mi Ubicación
                 FloatingActionButton(
                     onClick = {
-                        ubicacionUsuario?.let {
+                        uiState.ubicacionUsuario?.let {
                             estadoCamara.flyTo(
                                 CameraOptions.Builder()
                                     .center(Point.fromLngLat(it.longitude, it.latitude))
@@ -194,7 +191,7 @@ fun MapsScreen(
                         .align(Alignment.BottomEnd)
                         .padding(bottom = 16.dp, end = 16.dp),
                     containerColor = Color.White,
-                    contentColor = colorResource(id = R.color.RojoP),
+                    contentColor = colorResource(id = R.color.rojoPrincipal),
                     shape = CircleShape
                 ) {
                     Icon(Icons.Default.MyLocation, contentDescription = "Mi ubicación")

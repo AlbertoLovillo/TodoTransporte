@@ -1,5 +1,6 @@
 package com.s25am.todotransporte.ui.screens.sale_point
 
+import android.location.Location
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.s25am.todotransporte.database.SupabaseClient
@@ -17,6 +18,11 @@ class SalePointViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(SalePointUiState())
     val uiState: StateFlow<SalePointUiState> = _uiState.asStateFlow()
 
+
+
+    fun updateUbicacionUsuario(ubicacion: Location?) {
+        _uiState.update { it.copy(ubicacionUsuario = ubicacion) }
+    }
 
 
     init {

@@ -3,7 +3,7 @@ package com.s25am.todotransporte.database.data
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BusPosition(
+data class PosicionBus(
     val codBus: String,
     val codLinea: String,
     val sentido: Int,

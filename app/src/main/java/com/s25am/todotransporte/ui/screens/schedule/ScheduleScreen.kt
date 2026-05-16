@@ -22,8 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.s25am.todotransporte.ui.screens.bus_map.components.StopsList
 import com.s25am.todotransporte.ui.screens.schedule.components.AlertDialogParada
 import com.s25am.todotransporte.ui.screens.schedule.components.ItemParada
-import com.s25am.todotransporte.ui.theme.GrisFondoCl
-import com.s25am.todotransporte.ui.theme.TodoTransporteTheme
+import com.s25am.todotransporte.ui.theme.GrisFondoClaro
 
 
 @Composable
@@ -60,13 +59,13 @@ fun ScheduleContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = GrisFondoCl)
+            .background(color = GrisFondoClaro)
     ) {
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(GrisFondoCl)
+                .background(GrisFondoClaro)
         ) {
             StopsList(
                 lineas = uiState.lineas,

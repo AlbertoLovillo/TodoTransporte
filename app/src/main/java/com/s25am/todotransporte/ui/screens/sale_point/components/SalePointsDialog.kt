@@ -21,7 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.s25am.todotransporte.R
 import com.s25am.todotransporte.database.data.PuntoVenta
-import com.s25am.todotransporte.ui.theme.GrisFondoCl
 
 
 @Composable
@@ -51,7 +49,7 @@ fun SalePointsDialog(
                     modifier = Modifier
                         .size(52.dp)
                         .background(
-                            colorResource(id = R.color.RojoP).copy(alpha = 0.1f),
+                            colorResource(id = R.color.rojoPrincipal).copy(alpha = 0.1f),
                             RoundedCornerShape(12.dp)
                         ),
                     contentAlignment = Alignment.Center
@@ -59,7 +57,7 @@ fun SalePointsDialog(
                     Icon(
                         imageVector = Icons.Default.Storefront,
                         contentDescription = null,
-                        tint = colorResource(id = R.color.RojoP),
+                        tint = colorResource(id = R.color.rojoPrincipal),
                         modifier = Modifier.size(30.dp)
                     )
                 }
@@ -80,7 +78,7 @@ fun SalePointsDialog(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Surface(
-                        color = colorResource(R.color.FondoGrisClaro),
+                        color = colorResource(R.color.fondoGrisClaro),
                         shape = RoundedCornerShape(8.dp),
                         modifier = Modifier.padding(bottom = 12.dp)
                     ) {
@@ -91,7 +89,7 @@ fun SalePointsDialog(
                             Icon(
                                 Icons.Default.LocationOn,
                                 contentDescription = null,
-                                tint = colorResource(id = R.color.RojoP),
+                                tint = colorResource(id = R.color.rojoPrincipal),
                                 modifier = Modifier.size(14.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
@@ -99,7 +97,7 @@ fun SalePointsDialog(
                                 text = "UBICACIÓN",
                                 style = MaterialTheme.typography.labelSmall,
                                 fontWeight = FontWeight.Bold,
-                                color = colorResource(id = R.color.RojoP)
+                                color = colorResource(id = R.color.rojoPrincipal)
                             )
                         }
                     }
@@ -131,7 +129,7 @@ fun SalePointsDialog(
                     onClick = onDismiss,
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(id = R.color.RojoP)
+                        containerColor = colorResource(id = R.color.rojoPrincipal)
                     ),
                     shape = RoundedCornerShape(12.dp)
                 ) {

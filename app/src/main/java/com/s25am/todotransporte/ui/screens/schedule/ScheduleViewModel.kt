@@ -3,11 +3,11 @@ package com.s25am.todotransporte.ui.screens.schedule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.s25am.todotransporte.database.SupabaseClient
-import com.s25am.todotransporte.database.data.BusPosition
 import com.s25am.todotransporte.database.data.Calendario
 import com.s25am.todotransporte.database.data.Horario
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
+import com.s25am.todotransporte.database.data.PosicionBus
 import com.s25am.todotransporte.database.data.RespuestaParada
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
@@ -66,7 +66,7 @@ class ScheduleViewModel : ViewModel() {
             val todosLosBuses = lineasCsv.mapNotNull { linea ->
                 val datos = linea.replace("\"", "").split(",")
                 if (datos.size >= 7) {
-                    BusPosition(
+                    PosicionBus(
                         codBus = datos[0],
                         codLinea = datos[1],
                         sentido = datos[2].toIntOrNull() ?: 1,
@@ -102,14 +102,14 @@ class ScheduleViewModel : ViewModel() {
     /**
      * Tiempo real: Calcula qué paradas tienen un bus a menos de X metros.
      */
-    private fun actualizarParadasCercanas(buses: List<BusPosition>) {
+    private fun actualizarParadasCercanas(buses: List<PosicionBus>) {
         val paradasActuales = _uiState.value.paradas
         val paradasConBus = mutableSetOf<Int>()
 
         for (parada in paradasActuales) {
             for (bus in buses) {
                 val distancia = calcularDistancia(parada.latitud, parada.longitud, bus.lat, bus.lon)
-                if (distancia < 0.3) { // 300 metros
+                if (distancia < 0.3) {
                     paradasConBus.add(parada.id)
                     break
                 }
@@ -120,7 +120,7 @@ class ScheduleViewModel : ViewModel() {
 
 
     private fun calcularDistancia(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-        val r = 6371 // km
+        val r = 6371
         val dLat = Math.toRadians(lat2 - lat1)
         val dLon = Math.toRadians(lon2 - lon1)
         val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
@@ -274,7 +274,7 @@ class ScheduleViewModel : ViewModel() {
                             eq("id_linea", lineaId)
                             eq("id_parada", paradaId)
                             eq("service_id", serviceIdHoy)
-                            eq("direccion", direccion) // Filtro mágico
+                            eq("direccion", direccion)
                         }
                         order("hora_llegada", order = Order.ASCENDING)
                     }.decodeList<Horario>()

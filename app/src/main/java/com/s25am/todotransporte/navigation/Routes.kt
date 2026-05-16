@@ -11,7 +11,7 @@ sealed class Routes : NavKey {
     data object Register : Routes()
 
     @Serializable
-    data object Maps : Routes()
+    data object BusMap : Routes()
 
     @Serializable
     data object Schedule : Routes()

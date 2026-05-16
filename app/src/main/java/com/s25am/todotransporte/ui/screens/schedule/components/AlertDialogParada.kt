@@ -1,14 +1,28 @@
 package com.s25am.todotransporte.ui.screens.schedule.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.DirectionsBus
-import androidx.compose.material3.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.s25am.todotransporte.R
 import com.s25am.todotransporte.database.data.Horario
 import com.s25am.todotransporte.database.data.Parada
-import com.s25am.todotransporte.ui.theme.GrisFondoCl
+import com.s25am.todotransporte.ui.theme.GrisFondoClaro
 
 @Composable
 fun AlertDialogParada(
@@ -38,7 +52,7 @@ fun AlertDialogParada(
                 modifier = Modifier
                     .size(52.dp)
                     .background(
-                        colorResource(id = R.color.RojoP).copy(alpha = 0.1f),
+                        colorResource(id = R.color.rojoPrincipal).copy(alpha = 0.1f),
                         RoundedCornerShape(12.dp)
                     ),
                 contentAlignment = Alignment.Center
@@ -46,7 +60,7 @@ fun AlertDialogParada(
                 Icon(
                     imageVector = Icons.Default.DirectionsBus,
                     contentDescription = null,
-                    tint = colorResource(id = R.color.RojoP),
+                    tint = colorResource(id = R.color.rojoPrincipal),
                     modifier = Modifier.size(30.dp)
                 )
             }
@@ -93,7 +107,7 @@ fun AlertDialogParada(
                     ) {
                         items(horarios) { horario ->
                             Surface(
-                                color = GrisFondoCl.copy(alpha = 0.5f),
+                                color = GrisFondoClaro.copy(alpha = 0.5f),
                                 shape = RoundedCornerShape(12.dp),
                                 modifier = Modifier.padding(vertical = 4.dp)
                             ) {
@@ -122,7 +136,7 @@ fun AlertDialogParada(
                                         text = horario.hora_llegada,
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.ExtraBold,
-                                        color = colorResource(id = R.color.RojoP)
+                                        color = colorResource(id = R.color.rojoPrincipal)
                                     )
                                 }
                             }
@@ -136,7 +150,7 @@ fun AlertDialogParada(
                 onClick = onDismiss,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(id = R.color.RojoP)
+                    containerColor = colorResource(id = R.color.rojoPrincipal)
                 ),
             ) {
                 Text(

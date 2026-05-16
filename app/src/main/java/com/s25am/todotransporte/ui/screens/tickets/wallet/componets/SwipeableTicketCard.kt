@@ -35,24 +35,21 @@ fun SwipeableTicketItem(
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
-    // Estado del gesto de deslizar
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { value ->
             if (value == SwipeToDismissBoxValue.EndToStart) {
-                showDialog = true // Al deslizar a la izquierda, abrimos el aviso
-                false // No borramos la fila todavía, esperamos al Dialog
+                showDialog = true
+                false
             } else {
                 false
             }
         }
     )
 
-    // Si cerramos el diálogo sin borrar, devolvemos la tarjeta a su sitio
     LaunchedEffect(showDialog) {
         if (!showDialog) dismissState.reset()
     }
 
-    // --- LLAMADA AL DIÁLOGO SEPARADO ---
     if (showDialog) {
         DeleteTicketDialog(
             onConfirm = {
@@ -65,7 +62,7 @@ fun SwipeableTicketItem(
 
     SwipeToDismissBox(
         state = dismissState,
-        enableDismissFromStartToEnd = false, // Solo deslizar hacia la izquierda
+        enableDismissFromStartToEnd = false,
         backgroundContent = {
             val color = if (dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart){
                 colorResource(id = R.color.rojoFlojito)

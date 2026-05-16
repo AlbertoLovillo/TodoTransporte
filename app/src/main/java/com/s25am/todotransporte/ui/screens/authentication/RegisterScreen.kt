@@ -42,9 +42,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -81,9 +79,6 @@ fun RegisterScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    var passwordVisible by remember { mutableStateOf(false) }
-    var repeatedPasswordVisible by remember { mutableStateOf(false) }
-
 
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
@@ -160,7 +155,7 @@ fun RegisterScreen(
                         "Registro",
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
-                        color = colorResource(id = R.color.RojoP)
+                        color = colorResource(id = R.color.rojoPrincipal)
                     )
 
 
@@ -183,7 +178,7 @@ fun RegisterScreen(
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.Black,
                             unfocusedTextColor = Color.Black,
-                            focusedBorderColor = colorResource(id = R.color.RojoP)
+                            focusedBorderColor = colorResource(id = R.color.rojoPrincipal)
                         )
                     )
 
@@ -195,19 +190,19 @@ fun RegisterScreen(
                         value = uiState.password,
                         onValueChange = { viewModel.updatePassword(it) },
                         label = { Text("Contraseña") },
-                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        visualTransformation = if (uiState.passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         trailingIcon = {
-                            val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Icon(imageVector = image, contentDescription = null, tint = colorResource(id = R.color.RojoP))
+                            val image = if (uiState.passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                            IconButton(onClick = { viewModel.updatePasswordVisible(!uiState.passwordVisible) }) {
+                                Icon(imageVector = image, contentDescription = null, tint = colorResource(id = R.color.rojoPrincipal))
                             }
                         },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.Black,
                             unfocusedTextColor = Color.Black,
-                            focusedBorderColor = colorResource(id = R.color.RojoP)
+                            focusedBorderColor = colorResource(id = R.color.rojoPrincipal)
                         )
                     )
 
@@ -219,19 +214,19 @@ fun RegisterScreen(
                         value = uiState.repeatedPassword,
                         onValueChange = { viewModel.updateRepeatedPassword(it) },
                         label = { Text("Repetir Contraseña") },
-                        visualTransformation = if (repeatedPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        visualTransformation = if (uiState.repeatedPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         trailingIcon = {
-                            val image = if (repeatedPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                            IconButton(onClick = { repeatedPasswordVisible = !repeatedPasswordVisible }) {
-                                Icon(imageVector = image, contentDescription = null, tint = colorResource(id = R.color.RojoP))
+                            val image = if (uiState.repeatedPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                            IconButton(onClick = { viewModel.updateRepeatedPasswordVisible(!uiState.repeatedPasswordVisible) }) {
+                                Icon(imageVector = image, contentDescription = null, tint = colorResource(id = R.color.rojoPrincipal))
                             }
                         },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.Black,
                             unfocusedTextColor = Color.Black,
-                            focusedBorderColor = colorResource(id = R.color.RojoP)
+                            focusedBorderColor = colorResource(id = R.color.rojoPrincipal)
                         )
                     )
 
@@ -243,7 +238,7 @@ fun RegisterScreen(
                         onClick = { viewModel.register() },
                         modifier = Modifier.fillMaxWidth().height(52.dp),
                         enabled = !uiState.isLoading,
-                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.RojoP))
+                        colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.rojoPrincipal))
                     ) {
                         if (uiState.isLoading) {
                             CircularProgressIndicator(modifier = Modifier.size(24.dp), color = colorResource(R.color.rojoFlojito))

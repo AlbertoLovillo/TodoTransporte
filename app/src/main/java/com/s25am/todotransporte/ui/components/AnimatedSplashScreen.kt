@@ -1,4 +1,4 @@
-package com.s25am.todotransporte.ui.screens.SplashScreen
+package com.s25am.todotransporte.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
