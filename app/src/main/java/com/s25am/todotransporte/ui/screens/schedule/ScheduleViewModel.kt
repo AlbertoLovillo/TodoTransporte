@@ -7,15 +7,10 @@ import com.s25am.todotransporte.database.data.Calendario
 import com.s25am.todotransporte.database.data.Horario
 import com.s25am.todotransporte.database.data.Linea
 import com.s25am.todotransporte.database.data.Parada
-import com.s25am.todotransporte.database.data.PosicionBus
 import com.s25am.todotransporte.database.data.RespuestaParada
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
-import io.ktor.client.HttpClient
-import io.ktor.client.request.get
-import io.ktor.client.statement.bodyAsText
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,7 +22,6 @@ import java.util.TimeZone
 
 class ScheduleViewModel : ViewModel() {
     private val supabase = SupabaseClient.client
-    private val httpClient = HttpClient()
 
     private val _uiState = MutableStateFlow(ScheduleUiState())
     val uiState: StateFlow<ScheduleUiState> = _uiState.asStateFlow()
@@ -36,98 +30,6 @@ class ScheduleViewModel : ViewModel() {
 
     init {
         cargarLineas()
-        iniciarSeguimientoBuses()
-    }
-
-
-    /**
-     * Tiempo real: Hilo infinito para actualizar la posición de los buses cada minuto.
-     */
-    private fun iniciarSeguimientoBuses() {
-        viewModelScope.launch {
-            while (true) {
-                actualizarPosicionesBuses()
-                delay(60000)
-            }
-        }
-    }
-
-
-    /**
-     * Tiempo real: Descarga los datos de Málaga OpenData y filtra por la línea activa.
-     */
-    private suspend fun actualizarPosicionesBuses() {
-        try {
-            val url = "https://datosabiertos.malaga.eu/recursos/transporte/EMT/EMTlineasUbicaciones/lineasyubicaciones.csv"
-            val response = httpClient.get(url)
-            val csvText = response.bodyAsText()
-            val lineasCsv = csvText.lines().drop(1)
-            
-            val todosLosBuses = lineasCsv.mapNotNull { linea ->
-                val datos = linea.replace("\"", "").split(",")
-                if (datos.size >= 7) {
-                    PosicionBus(
-                        codBus = datos[0],
-                        codLinea = datos[1],
-                        sentido = datos[2].toIntOrNull() ?: 1,
-                        lon = datos[3].toDoubleOrNull() ?: 0.0,
-                        lat = datos[4].toDoubleOrNull() ?: 0.0,
-                        lastUpdate = datos[6]
-                    )
-                } else null
-            }
-
-            val currentState = _uiState.value
-            val codigoLineaSeleccionada = currentState.selectedLinea?.codigo ?: ""
-            val codigoNormalizado = if (codigoLineaSeleccionada.toDoubleOrNull() != null) {
-                codigoLineaSeleccionada.toDouble().toString()
-            } else {
-                codigoLineaSeleccionada
-            }
-
-            val busesFiltrados = todosLosBuses.filter {
-                it.codLinea == codigoNormalizado && it.sentido == (currentState.direccionActual + 1)
-            }
-
-            _uiState.update { it.copy(busesEnTiempoReal = busesFiltrados) }
-
-            actualizarParadasCercanas(busesFiltrados)
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-
-    /**
-     * Tiempo real: Calcula qué paradas tienen un bus a menos de X metros.
-     */
-    private fun actualizarParadasCercanas(buses: List<PosicionBus>) {
-        val paradasActuales = _uiState.value.paradas
-        val paradasConBus = mutableSetOf<Int>()
-
-        for (parada in paradasActuales) {
-            for (bus in buses) {
-                val distancia = calcularDistancia(parada.latitud, parada.longitud, bus.lat, bus.lon)
-                if (distancia < 0.3) {
-                    paradasConBus.add(parada.id)
-                    break
-                }
-            }
-        }
-        _uiState.update { it.copy(paradasConBusEnTiempoReal = paradasConBus) }
-    }
-
-
-    private fun calcularDistancia(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-        val r = 6371
-        val dLat = Math.toRadians(lat2 - lat1)
-        val dLon = Math.toRadians(lon2 - lon1)
-        val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2)
-        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-        return r * c
     }
 
 
@@ -163,12 +65,11 @@ class ScheduleViewModel : ViewModel() {
         actualizarNombreDestino(linea.id, 0)
         cargarParadasDeLinea(linea.id, 0)
         actualizarProximosBuses(linea.id, 0)
-        viewModelScope.launch { actualizarPosicionesBuses() }
     }
 
 
     /**
-     * NUEVO: Función para alternar entre Ida y Vuelta.
+     * Función para alternar entre Ida y Vuelta.
      */
     fun alternarDireccion() {
         val currentState = _uiState.value
@@ -181,7 +82,6 @@ class ScheduleViewModel : ViewModel() {
         cerrarDialogo()
         cargarParadasDeLinea(lineaActual.id, nuevaDireccion)
         actualizarProximosBuses(lineaActual.id, nuevaDireccion)
-        viewModelScope.launch { actualizarPosicionesBuses() }
     }
 
 

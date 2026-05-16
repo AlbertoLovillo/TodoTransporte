@@ -83,7 +83,8 @@ fun LoginScreen(
 
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
-            val videoUri = Uri.parse("android.resource://${context.packageName}/${R.raw.video_fondo_auth}")
+            val videoUri =
+                Uri.parse("android.resource://${context.packageName}/${R.raw.video_fondo_auth}")
             setMediaItem(MediaItem.fromUri(videoUri))
             repeatMode = Player.REPEAT_MODE_ALL
             volume = 0f
@@ -115,7 +116,9 @@ fun LoginScreen(
         )
 
 
-        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)))
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.4f)))
 
 
         Column(
@@ -153,7 +156,7 @@ fun LoginScreen(
 
 
                     Text(
-                        "TodoTransporte",
+                        text = "TodoTransporte",
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
                         color = colorResource(id = R.color.rojoPrincipal)
@@ -161,7 +164,7 @@ fun LoginScreen(
 
 
                     Text(
-                        "Inicia sesión para continuar",
+                        text = "Inicia sesión para continuar",
                         fontSize = 15.sp,
                         color = colorResource(id = R.color.rojoFlojito)
                     )
@@ -195,9 +198,14 @@ fun LoginScreen(
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
                         trailingIcon = {
-                            val image = if (uiState.passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                            val image =
+                                if (uiState.passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
                             IconButton(onClick = { viewModel.updatePasswordVisible(!uiState.passwordVisible) }) {
-                                Icon(imageVector = image, contentDescription = null, tint = colorResource(id = R.color.rojoPrincipal))
+                                Icon(
+                                    imageVector = image,
+                                    contentDescription = null,
+                                    tint = colorResource(id = R.color.rojoPrincipal)
+                                )
                             }
                         },
                         colors = OutlinedTextFieldDefaults.colors(
@@ -213,16 +221,23 @@ fun LoginScreen(
 
                     Button(
                         onClick = { viewModel.login() },
-                        modifier = Modifier.fillMaxWidth().height(52.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
                         enabled = !uiState.isLoading,
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.rojoPrincipal))
                     ) {
                         if (uiState.isLoading) {
-                            CircularProgressIndicator(modifier = Modifier.size(24.dp), color = colorResource(R.color.rojoFlojito))
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                color = colorResource(R.color.rojoFlojito)
+                            )
                         } else {
-                            Text("Entrar", fontSize = 16.sp,
+                            Text(
+                                "Entrar", fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White)
+                                color = Color.White
+                            )
                         }
                     }
 

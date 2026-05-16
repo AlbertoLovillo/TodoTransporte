@@ -19,6 +19,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.s25am.todotransporte.R
 import com.s25am.todotransporte.database.data.Parada
+import kotlinx.coroutines.delay
 
 @Composable
 fun ItemParada(
@@ -35,6 +41,7 @@ fun ItemParada(
     proximoBusHora: String?,
     onClick: () -> Unit
 ) {
+
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -43,12 +50,14 @@ fun ItemParada(
         color = Color.White,
         shadowElevation = 2.dp
     ) {
+
         Row(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             Box(
                 modifier = Modifier
                     .size(52.dp)
@@ -66,7 +75,9 @@ fun ItemParada(
                 )
             }
 
+
             Spacer(modifier = Modifier.width(16.dp))
+
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -76,6 +87,18 @@ fun ItemParada(
                     color = Color.Black,
                     lineHeight = 22.sp
                 )
+            }
+
+
+            var mostrarNA by remember { mutableStateOf(false) }
+
+            LaunchedEffect(proximoBusHora) {
+                if (proximoBusHora == null) {
+                    delay(500)
+                    mostrarNA = true
+                } else {
+                    mostrarNA = false
+                }
             }
 
             if (proximoBusHora != null) {
@@ -102,7 +125,34 @@ fun ItemParada(
                         )
                     }
                 }
+
+            } else if (mostrarNA) {
+                Surface(
+                    color = colorResource(id = R.color.rojoPrincipal).copy(alpha = 0.08f),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.AccessTime,
+                            contentDescription = null,
+                            tint = colorResource(id = R.color.rojoPrincipal),
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "N/A",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(id = R.color.rojoPrincipal)
+                        )
+                    }
+                }
             }
+
         }
+
     }
 }

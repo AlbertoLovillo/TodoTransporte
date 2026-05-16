@@ -84,13 +84,13 @@ fun StopsList(
                     Text(
                         text = "Cargando líneas...",
                         style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary
+                        color = colorResource(id = R.color.rojoPrincipal)
                     )
                 } else {
                     Text(
                         text = "Sentido: $textoSentido",
                         style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary
+                        color = colorResource(id = R.color.rojoPrincipal)
                     )
                 }
             }
@@ -134,7 +134,13 @@ fun StopsList(
             val lineasFiltradas = remember(lineas) {
                 lineas.filter {
                     it.codigo != "91" && it.codigo != "92" && it.codigo != "93"
-                }
+                }.sortedWith(
+                    compareBy<Linea> { linea ->
+                        if (linea.codigo?.firstOrNull()?.isDigit() == true) 0 else 1
+                    }.thenBy { linea ->
+                        linea.codigo?.padStart(5, '0')?.lowercase()
+                    }
+                )
             }
 
             HorizontalMultiBrowseCarousel(

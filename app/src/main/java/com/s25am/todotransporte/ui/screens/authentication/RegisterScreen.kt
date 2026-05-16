@@ -152,7 +152,7 @@ fun RegisterScreen(
 
 
                     Text(
-                        "Registro",
+                        text = "Registro",
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
                         color = colorResource(id = R.color.rojoPrincipal)
@@ -160,7 +160,7 @@ fun RegisterScreen(
 
 
                     Text(
-                        "Crea tu cuenta para empezar",
+                        text = "Crea tu cuenta para empezar",
                         fontSize = 15.sp,
                         color = colorResource(id = R.color.rojoFlojito)
                     )

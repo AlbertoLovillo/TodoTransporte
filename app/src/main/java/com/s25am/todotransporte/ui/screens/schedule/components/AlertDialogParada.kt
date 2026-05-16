@@ -24,6 +24,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +41,7 @@ import com.s25am.todotransporte.R
 import com.s25am.todotransporte.database.data.Horario
 import com.s25am.todotransporte.database.data.Parada
 import com.s25am.todotransporte.ui.theme.GrisFondoClaro
+import kotlinx.coroutines.delay
 
 @Composable
 fun AlertDialogParada(
@@ -85,6 +91,17 @@ fun AlertDialogParada(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
                 )
 
+
+                var tiempoAgotado by remember { mutableStateOf(false) }
+
+                LaunchedEffect(horarios) {
+                    if (horarios.isEmpty()) {
+                        tiempoAgotado = false
+                        delay(3000)
+                        tiempoAgotado = true
+                    }
+                }
+
                 if (horarios.isEmpty()) {
                     Box(
                         modifier = Modifier
@@ -93,7 +110,7 @@ fun AlertDialogParada(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            "Buscando horarios...",
+                            text = if (tiempoAgotado) "No hay horario" else "Buscando horarios...",
                             color = Color.LightGray,
                             style = MaterialTheme.typography.bodyMedium
                         )

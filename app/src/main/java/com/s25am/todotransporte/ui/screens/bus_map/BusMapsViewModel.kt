@@ -16,8 +16,12 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.statement.bodyAsText
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,10 +31,23 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.TimeZone
+import kotlin.coroutines.cancellation.CancellationException
 
 class BusMapsViewModel : ViewModel() {
     private val supabase = SupabaseClient.client
-    private val httpClient = HttpClient()
+    private val httpClient = HttpClient {
+        install(HttpTimeout) {
+            requestTimeoutMillis = 30000
+            connectTimeoutMillis = 30000
+            socketTimeoutMillis = 30000
+        }
+
+        defaultRequest {
+            header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+        }
+    }
+
+    private var actualizacionJob: Job? = null
 
     private val _uiState = MutableStateFlow(BusMapsUiState())
     val uiState: StateFlow<BusMapsUiState> = _uiState.asStateFlow()
@@ -111,8 +128,12 @@ class BusMapsViewModel : ViewModel() {
             }
 
         } catch (e: Exception) {
-            _uiState.update { it.copy(destino = "ERR: ${e.javaClass.simpleName} - ${e.message}") }
-            Log.e("BusViewModel", "Error en el catch", e)
+            if (e is CancellationException) {
+                Log.d("BusViewModel", "Descarga cancelada a propósito (cambio de línea).")
+                throw e
+            }
+
+            Log.e("BusViewModel", "Fallo de red al actualizar: ${e.javaClass.simpleName}")
         }
     }
 
@@ -153,7 +174,10 @@ class BusMapsViewModel : ViewModel() {
         }
         cerrarDialogo()
         cargarDatosPorSentido(linea.id, 0)
-        viewModelScope.launch { actualizarPosicionesBuses() }
+
+        actualizacionJob?.cancel()
+        actualizacionJob = viewModelScope.launch { actualizarPosicionesBuses() }
+
         actualizarNombreDestino()
     }
 
@@ -170,7 +194,10 @@ class BusMapsViewModel : ViewModel() {
 
         cerrarDialogo()
         cargarDatosPorSentido(lineaActual.id, nuevaDireccion)
-        viewModelScope.launch { actualizarPosicionesBuses() }
+
+        actualizacionJob?.cancel()
+        actualizacionJob = viewModelScope.launch { actualizarPosicionesBuses() }
+
         actualizarNombreDestino()
     }
 

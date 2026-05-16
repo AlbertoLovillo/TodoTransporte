@@ -44,7 +44,8 @@ fun BarraSuperior(
                 Text(
                     text = cabecera,
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                    color = colorResource(id = R.color.rojoPrincipal)
                 )
             },
             navigationIcon = {
